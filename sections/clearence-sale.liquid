@@ -1,0 +1,309 @@
+{% schema %}
+{
+  "name": "Clearance Sale Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "top_text",
+      "label": "Top Text",
+      "default": "CLEARANCE SALE!"
+    },
+    {
+      "type": "color",
+      "id": "top_text_color",
+      "label": "heading color"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "background color"
+    },
+    {
+      "type": "text",
+      "id": "discount",
+      "label": "Discount",
+      "default": "70% OFF"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "Description",
+      "default": "ALL CLEARANCE JEANS AT ₹999"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "VIEW ALL"
+    },
+    {
+      "type": "text",
+      "id": "ribbon_text",
+      "label": "ribbon text"
+    },
+    {
+      "type": "color",
+      "id": "ribon_color",
+      "label": "ribbon color"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Clearance Sale Banner"
+    }
+  ]
+}
+{% endschema %}
+
+{%- liquid
+  assign clearance_bg_color = section.settings.background_color | default: '#F6F4F0'
+  assign clearance_text_color = section.settings.top_text_color | default: '#AD2324'
+  assign ribbon_bg_color = section.settings.ribbon_color | default: section.settings.ribon_color | default: '#AD2324'
+  assign ribbon_text_value = section.settings.ribbon_text | default: 'SALE IS LIVE'
+-%}
+
+<section class="clearance-banner">
+  <div class="clearance-banner__content">
+    <p class="sale-top">
+      {{ section.settings.top_text }}
+    </p>
+
+    <div class="discount-wrapper">
+      <h2 class="sale-discount">
+        {{ section.settings.discount }}
+      </h2>
+      <p class="sale-desc plus">+</p>
+      <p class="sale-desc">
+        {{ section.settings.description }}
+      </p>
+
+      <div class="sale-ribbon ribbon-1">
+        <div class="sale-ribbon__track">
+          {% for i in (1..35) %}
+            <span>{{ ribbon_text_value }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- ribbon 2 -->
+      <div class="sale-ribbon ribbon-2">
+        <div class="sale-ribbon__track">
+          {% for i in (1..35) %}
+            <span>{{ ribbon_text_value }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {%- if section.settings.button_text != blank and section.settings.button_link -%}
+      <div class=" flex items-center justify-center w-full">
+        <a
+          class="w-full  flex items-center justify-center view-more-button-featured-collection"
+          {% if section.settings.button_link != blank %}
+            href="{{  section.settings.button_link }}"
+          {% else %}
+            aria-disabled="true"
+          {% endif %}
+        >
+          {{- section.settings.button_text -}}
+          {% render 'icon-arrow-right' %}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+    .clearance-banner {
+      position: relative;
+      background: {{ clearance_bg_color }};
+      padding: 40px 20px;
+      text-align: center;
+      overflow: hidden;
+      margin-top:{{section.settings.padding_top }}px;
+      margin-bottom:{{section.settings.padding_bottom }}px;
+    }
+    
+    .clearance-banner__content {
+      display: flex;
+      flex-direction: column;
+      gap: 60px;
+      align-items: center;
+    }
+    .discount-wrapper {
+      position: relative;
+      width:100%;
+    }
+
+    .sale-top {
+      font-family: 'Bebas Neue', sans-serif;
+      font-weight: 400;
+      font-size: 36px;
+      line-height: 100%;
+      margin:0px;
+      padding:0px;
+      text-align: center;
+      vertical-align: middle;
+      text-transform: uppercase;
+      color: {{ clearance_text_color }};  
+    }
+
+    .sale-discount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-weight: 400;
+      font-size: 62px;
+      line-height: 52px;
+      letter-spacing: -6%;
+      text-align: center;
+      vertical-align: middle;
+      text-transform: uppercase;
+      position: relative;
+      bottom: 20px;
+
+    }
+
+    .sale-desc {
+      font-family: 'Bebas Neue', sans-serif;
+      font-weight: 400;
+      font-size: 32px;
+      line-height: 32px;
+      text-align: center;
+      text-transform: uppercase;
+      max-width: 220px;
+      margin:0 auto;
+
+    }
+    .plus{
+      padding:8px 0;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+    }
+    .sale-button {
+      display: inline-block;
+      margin-top: 30px;
+      text-decoration: none;
+      color: black;
+      font-weight: 600;
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+    }
+
+    /* ribbons */
+
+    .sale-ribbon {
+      position: absolute;
+      width: 200%;
+      left: -50%;
+      background: {{ ribbon_bg_color }};
+      color: white;
+      font-size: 11px;
+      letter-spacing: 2px;
+      padding: 6px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      font-weight:600;
+    }
+
+  .sale-ribbon__track {
+    display: inline-flex;
+    gap: 40px;
+    animation: ribbonScroll 20s linear infinite;
+  }
+
+  .sale-ribbon__track span {
+    flex-shrink: 0;
+  }
+
+  /* animation */
+
+  @keyframes ribbonScroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+    .ribbon-1 {
+      transform: rotate(5.9deg);
+      top: 54px;
+    }
+
+    .ribbon-2 {
+      transform: rotate(-4.45deg);
+      top: 55px;
+    }
+    @media (max-width:768px){
+    .clearance-banner {
+      margin-top:{{section.settings.padding_top_mobile }}px;
+      margin-bottom:{{section.settings.padding_bottom_mobile }}px;
+    }
+    .sale-discount{
+      position:relative;
+      z-index:10;
+    }
+    .sale-ribbon__track {
+      animation: ribbonScroll 20s linear infinite;
+    }
+    .plus{
+      padding:20px 0px 8px 0px;
+    }
+    .sale-ribbon{
+      padding:6px 0px;
+    }
+    .ribbon-1 {
+      transform: rotate(8.9deg);
+      top: 50px;
+    }
+
+    .ribbon-2 {
+      transform: rotate(-8.45deg);
+      top: 50px;
+    }
+  }
+</style>

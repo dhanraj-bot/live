@@ -1,0 +1,265 @@
+{% if collection.handle == 'super-deals' %}
+<div id="sizePopup">
+  <div class="popup-box">
+    
+    <!-- ✨ CLOSE BUTTON ADDED -->
+    <span id="closePopup" class="close-btn">&times;</span>
+
+    <h3>Select Size</h3>
+    <div id="sizeList"></div>
+    <button id="applySizeFilter" style="margin-top:20px; padding:10px 20px;">
+      Apply
+    </button>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let path = window.location.pathname.split("/");
+    let collectionHandle = path[path.indexOf("collections") + 1];
+    document.getElementById("sizePopup").style.display = "block";
+
+    fetch(`/collections/${collectionHandle}/products.json?limit=250`)
+        .then(res => res.json())
+        .then(data => {
+            let products = data.products;
+            let allSizes = new Set();
+
+            products.forEach(product => {
+                let sizeOptionIndex = product.options.findIndex(opt =>
+                    opt.name.toLowerCase() === "size"
+                );
+                if (sizeOptionIndex === -1) return;
+
+                product.variants.forEach(variant => {
+                    if (!variant.available) return;
+                    let sizeValue = variant[`option${sizeOptionIndex + 1}`];
+                    if (sizeValue) allSizes.add(sizeValue);
+                });
+            });
+
+            // Define letter size order (with all possible variations)
+            const letterSizeOrder = {
+                'XS': 1, 'xs': 1,
+                'S': 2, 's': 2,
+                'M': 3, 'm': 3,
+                'L': 4, 'l': 4,
+                'XL': 5, 'xl': 5,
+                '2XL': 6, '2xl': 6, 'XXL': 6, 'xxl': 6,
+                '3XL': 7, '3xl': 7, 'XXXL': 7, 'xxxl': 7,
+                '4XL': 8, '4xl': 8,
+                '5XL': 9, '5xl': 9,
+                '6XL': 10, '6xl': 10
+            };
+            
+            // Sizes that should appear at the very end
+            const lastSizes = {
+                'One Size': 1, 'one size': 1, 'ONE SIZE': 1,
+                'Free Size': 2, 'free size': 2, 'FREE SIZE': 2
+            };
+            
+            // Convert Set to Array for sorting
+            let sizesArray = Array.from(allSizes);
+            
+            // Custom sort function
+            function getSortOrder(size) {
+                let trimmedSize = size.trim();
+                
+                // Check if it's a predefined letter size
+                if (letterSizeOrder.hasOwnProperty(trimmedSize)) {
+                    return { type: 1, order: letterSizeOrder[trimmedSize] };
+                }
+                
+                // Check if it's a number
+                let num = parseInt(trimmedSize);
+                if (!isNaN(num) && trimmedSize.match(/^\d+$/)) {
+                    return { type: 2, order: num };
+                }
+                
+                // Check if it's One Size / Free Size (should be at the very end)
+                if (lastSizes.hasOwnProperty(trimmedSize)) {
+                    return { type: 4, order: lastSizes[trimmedSize] };
+                }
+                
+                // Other sizes - sort alphabetically
+                return { type: 3, order: trimmedSize };
+            }
+            
+            // Sort sizes
+            let sortedSizes = sizesArray.sort((a, b) => {
+                let orderA = getSortOrder(a);
+                let orderB = getSortOrder(b);
+                
+                // First compare by type (letter sizes first, then numbers, then others)
+                if (orderA.type !== orderB.type) {
+                    return orderA.type - orderB.type;
+                }
+                
+                // If same type, compare by order
+                if (typeof orderA.order === 'number' && typeof orderB.order === 'number') {
+                    return orderA.order - orderB.order;
+                }
+
+                // For strings (other sizes), compare alphabetically
+                return String(orderA.order).localeCompare(String(orderB.order));
+            });
+            
+            console.log('Sorted sizes:', sortedSizes);
+
+            let sizeHTML = "";
+            sortedSizes.forEach(size => {
+                sizeHTML += `
+                    <label>
+                        <input type="checkbox" class="sizeCheck" value="${size}">
+                        ${size}
+                    </label>`;
+            });
+            document.getElementById("sizeList").innerHTML = sizeHTML;
+        });
+});
+
+// Apply filter button
+document.getElementById("applySizeFilter").addEventListener("click", function () {
+    let selectedSizes = [];
+    document.querySelectorAll(".sizeCheck:checked").forEach(cb => selectedSizes.push(cb.value));
+
+    if (selectedSizes.length === 0) {
+        alert("Please select a size");
+        return;
+    }
+
+    let path = window.location.pathname.split("/");
+    let collectionHandle = path[path.indexOf("collections") + 1];
+
+    let sizeFilters = selectedSizes
+        .map(size => `filter.v.option.size=${encodeURIComponent(size)}`)
+        .join("&");
+
+    let finalURL = `/collections/${collectionHandle}?${sizeFilters}&filter.v.availability=1&in_stock_first=1`;
+
+    localStorage.setItem("hidePopupAfterFilter", "true");
+    window.location.href = finalURL;
+});
+
+// Close popup after filter
+document.addEventListener("DOMContentLoaded", function () {
+    if (localStorage.getItem("hidePopupAfterFilter") === "true") {
+        document.getElementById("sizePopup").style.display = "none";
+        localStorage.removeItem("hidePopupAfterFilter");
+    }
+});
+
+// ✨ CLOSE BUTTON FUNCTIONALITY
+document.addEventListener("click", function(e){
+    if (e.target.id === "closePopup") {
+        document.getElementById("sizePopup").style.display = "none";
+    }
+});
+</script>
+<style>
+#sizePopup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 99999;
+    padding-top: 60px;
+    box-sizing: border-box;
+    transition: opacity 0.3s ease;
+      animation: popupFade 0.3s ease;
+}
+#closePopup{
+    width: 100%;
+    display: inline-block;
+    text-align: right;
+    font-size: 35px;
+    cursor: pointer;
+    line-height: 0;
+}
+/* Popup Box */
+#sizePopup .popup-box {
+    background: #fff;
+    width: 30%;
+    margin: auto;
+    padding: 22px 25px;
+    border-radius: 12px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#sizePopup.hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Heading */
+#sizePopup h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    text-align:center;
+}
+
+/* Size List */
+#sizeList label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 15px;
+    cursor: pointer;
+        width: 23%;
+}
+
+/* Checkbox style */
+#sizeList input[type="checkbox"] {
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
+    accent-color: black; /* Modern browsers */
+}
+
+/* Apply Button */
+#applySizeFilter {
+    width: 100%;
+    padding: 12px;
+    background: black;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.2s ease;
+}
+
+#applySizeFilter:hover {
+    background: #444;
+}
+div#sizeList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+/* Animation */
+@keyframes popupFade {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+@media(max-width:550px){
+#sizePopup .popup-box{
+width:90%;
+}
+#sizeList label{
+width:30%;
+}
+}
+</style>
+{%  endif %}

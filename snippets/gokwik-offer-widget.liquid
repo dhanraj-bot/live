@@ -1,0 +1,38 @@
+<script>
+  (function() {
+    const offerWidget = document.querySelector('gokwik-offer-widget');
+    const variants = {{product.variants | json}};
+    let variant = {{variant | json}} || {{product.selected_or_first_available_variant | json}};
+    let quantity = 1;
+    const pushChange = () => {
+      if (variant) {
+        offerWidget?.setAttribute('amount', (variant.price / 100 * quantity));
+        offerWidget?.setAttribute('product-id', variant.id);
+      }
+    }
+    {% if settings.gkOfferWidgetContainerSelector.size > 0 %}
+    const listeners = document.querySelectorAll('{{settings.gkOfferWidgetContainerSelector}}');
+    listeners?.forEach((container) => {
+      container.addEventListener('change', () => {
+        const paramsString = window.location.search;
+        const searchParams = new URLSearchParams(paramsString);
+        if (searchParams.get("variant")) {
+          variant = variants.find((val) => val.id?.toString() === searchParams.get("variant"));
+          pushChange();
+        }
+      })
+    });
+    {% endif %}
+
+    {% if settings.gkOfferWidgetQuantitySelector.size > 0 %}
+    const quantityListener = document.querySelector('{{settings.gkOfferWidgetQuantitySelector}}');
+    quantityListener?.addEventListener('change', (ev) => {
+      if (!!ev.target && !isNaN(ev.target.value)) {
+        quantity = parseInt(ev.target.value) || 1;
+        pushChange();
+      }
+    });
+    {% endif %}
+  }());
+</script>
+<script src="https://offer-widget.gokwik.co/offer-widget/offer-widget.js"></script>

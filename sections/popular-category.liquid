@@ -1,0 +1,291 @@
+{% schema %}
+{
+  "name": "Popular Category",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "POPULAR CATEGORY"
+    },
+    {
+      "type": "number",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "default": 40
+    },
+    {
+      "type": "number",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "default": 40
+    },
+    {
+      "type": "number",
+      "id": "padding_left",
+      "label": "Padding Left",
+      "default": 60
+    },
+    {
+      "type": "number",
+      "id": "padding_right",
+      "label": "Padding right",
+      "default": 60
+    },
+    {
+      "type": "number",
+      "id": "padding_top_mobile",
+      "label": "Padding top mobile",
+      "default": 40
+    },
+    {
+      "type": "number",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom mobile",
+      "default": 40
+    },
+    {
+      "type": "number",
+      "id": "padding_left_mobile",
+      "label": "Padding left mobile",
+      "default": 0
+    },
+    {
+      "type": "number",
+      "id": "padding_right_mobile",
+      "label": "Padding right mobile",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Category image desktop"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Category image mobile"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt text"
+        },
+        {
+          "type": "text",
+          "id": "price_text",
+          "label": "Price Text",
+          "default": "Starts @ ₹999"
+        },
+        {
+          "type": "text",
+          "id": "category_name",
+          "label": "Category Name",
+          "default": "T SHIRTS"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Category Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Popular Category"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="popular-category">
+  <h1>{{ section.settings.title }}</h1>
+
+  <div class="category-grid">
+    {% for block in section.blocks %}
+      <a href="{{ block.settings.link }}" class="category-item">
+        <div class="image-wrapper">
+          {% if block.settings.image %}
+            {{
+              block.settings.image
+              | image_url: width: 1200
+              | image_tag:
+                class: 'card-image',
+                loading: 'lazy',
+                sizes: '(max-width: 767px) 100vw, 50vw',
+                widths: '480, 640, 900, 1200',
+                alt: block.settings.alt_text
+            }}
+          {% endif %}
+          {% if block.settings.image_mobile %}
+            {{
+              block.settings.image_mobile
+              | image_url: width: 1200
+              | image_tag:
+                class: 'card-image-mobile',
+                loading: 'lazy',
+                sizes: '(max-width: 767px) 100vw, 50vw',
+                widths: '480, 640, 900, 1200',
+                alt: block.settings.alt_text
+            }}
+          {% endif %}
+          {% if block.settings.price_text !=blank-%}
+            <span class="price-badge">
+              {{ block.settings.price_text }}
+            </span>
+          {%- endif %}
+        </div>
+
+        <div class="category-footer">
+          <h2>{{ block.settings.category_name }}</h2>
+          <span class="arrow-right">{% render 'icon-arrow-left' %}</span>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<style>
+  .popular-category {
+    padding-left: {{ section.settings.padding_left }}px;
+    padding-right: {{ section.settings.padding_right }}px;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    text-align: center;
+  }
+
+  .popular-category h1 {
+    margin-bottom: 28px;
+    font-family: "Bebas Neue",sans-serif;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 28px;
+    line-height: 130%;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color:#453D2B;
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .category-item {
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    display: block;
+    cursor:pointer:
+  }
+
+  .image-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .image-wrapper img {
+    width: 100%;
+    {% comment %} display: block; {% endcomment %}
+    transition: transform 0.4s ease;
+  }
+
+  .category-item:hover img {
+    transform: scale(1.05);
+  }
+
+  .price-badge {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 2px 16px;
+    background-color:#F6F4F0;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 100%;
+    color:black;
+    font-family: 'Montserrat',sans-serif;
+    height:21px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+  }
+
+  .category-footer {
+    background: #453D2B;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    font-size: 14px;
+    font-family: "Bebas Neue",sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color:white;
+    border-left:1px solid white;
+  }
+  .category-footer h2 {
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+  }
+  .category-footer .arrow-right{
+    margin-left:6px;
+  }
+  .category-footer .arrow-right path{
+    stroke: white;
+    color:white;
+  }
+
+  @media (max-width: 768px) {
+    .popular-category{
+      padding-left: {{ section.settings.padding_left_mobile }}px;
+      padding-right: {{ section.settings.padding_right_mobile }}px;
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+    .popular-category h1 {
+      margin-bottom:20px;
+      font-size: 16px;
+    }
+    .category-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+    .price-badge{
+      font-size:11px;
+      line-height:13px;
+      height:17px;
+      white-space: nowrap;
+    }
+    .category-footer {
+      font-size:12px;
+      height: 36px;
+    }
+    .card-image{
+      display:none;
+    }
+
+  }
+  @media(min-width:769px){
+    .card-image-mobile{
+      display:none;
+    }
+  }
+</style>

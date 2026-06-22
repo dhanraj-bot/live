@@ -1,0 +1,71 @@
+<script>
+   const storeUrl = "{{ shop.domain }}";
+   function requestReturn(elem, store, order, customer) {
+       elem.classList.add("loading");
+       fetch('https://' + storeUrl + '/apps/quickreturns/order-detail', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+               },
+               body: JSON.stringify({
+                   store: store,
+                   order: order,
+                   customer: customer
+               }),
+           })
+           .then((response) => response.json())
+           .then((data) => {
+               if (data.success) {
+                   window.location = data.url;
+               } else {
+                 elem.classList.remove("loading");
+               }
+           })
+           .catch((error) => {
+               console.error('Error:', error);
+               elem.classList.remove("loading");
+           });
+   }
+</script>
+
+<style>
+ .return-btn {
+   margin: 10px !important;
+ }
+
+  .return-btn::after {
+     content: '' !important;
+     display: block;
+     width: 1.2em;
+     height: 1.2em;
+     position: absolute !important;
+     left: calc(50% - 0.75em) !important;
+     top: calc(50% - 0.75em) !important;
+     border: 0.15em solid transparent;
+     border-right-color: white;
+     border-radius: 50% !important;
+     animation: loading-rotate 0.7s linear infinite;
+     opacity: 0;
+ }
+
+ @keyframes loading-rotate {
+   from {
+     transform: rotate(0);
+   }
+   to {
+     transform: rotate(360deg);
+   }
+ }
+
+ .return-btn.loading {
+   color: transparent !important;
+   opacity: 0.6;
+   cursor: not-allowed;
+   pointer-events: none;
+ }
+
+ .return-btn.loading::after {
+   opacity: 1;
+ }
+ 
+</style>

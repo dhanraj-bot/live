@@ -1,0 +1,182 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "newsletter_3kVw3t": {
+      "type": "newsletter",
+      "custom_css": [
+        "h2.rich-text__heading {font-weight: bold; color: #d63242; font-size: 20px; margin-bottom: 30px;}",
+        "h2.rich-text__heading:after {border-color: #000; width: 80px;}"
+      ],
+      "name": "t:sections.newsletter.presets.name",
+      "settings": {
+        "color_scheme": "scheme-57ffdc85-42ea-4167-ae58-3f3daab81a96",
+        "layout": "vertical",
+        "heading": "Get Coupons & Offers",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "<p>We make great emails (and even better offers). If you ever find ’em boring, You can unsubscribe anytime.<br/></p>",
+        "text_size": "text-inherit",
+        "alignment": "center",
+        "design": "design-2",
+        "form_width": 450,
+        "newsletter_term": "<p><em>* </em>Don't worry we don't spam</p>",
+        "newsletter_term_size": "text-base",
+        "button_style": "btn--primary",
+        "padding_top": 40,
+        "padding_bottom": 0,
+        "show_section_divider": false,
+        "divider_width": "full"
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "menu_DEKGYP": {
+          "type": "menu",
+          "settings": {
+            "block_width": 16,
+            "heading": "COMPANY",
+            "heading_size": "h4",
+            "menu": "footer-company",
+            "open_default": false,
+            "show_divider": false
+          }
+        },
+        "menu_4eCrBB": {
+          "type": "menu",
+          "settings": {
+            "block_width": 27,
+            "heading": "NEED HELP FROM POWERLOOK",
+            "heading_size": "h4",
+            "menu": "customer-care",
+            "open_default": false,
+            "show_divider": false
+          }
+        },
+        "contact_information_XwCUrR": {
+          "type": "contact_information",
+          "settings": {
+            "block_width": 27,
+            "heading": "SUPPORT",
+            "heading_size": "h4",
+            "address": "",
+            "working_hours": "Mon - Sun : 10:00 AM - 06:00 PM",
+            "email": "support@powerlook.in",
+            "phone": "+91 9696333000",
+            "open_default": false,
+            "show_divider": false
+          }
+        },
+        "image_text_F3FNhx": {
+          "type": "image_text",
+          "settings": {
+            "block_width": 30,
+            "heading": "REGISTERED OFFICE ADDRESS",
+            "heading_size": "h4",
+            "image_width": 150,
+            "text": "<p>Powerlook Apparels Pvt Ltd<br/><br/>Lotus Corporate Park Wing G02 - 1502, Ram Mandir Lane, off Western Express Highway, Goregaon, Mumbai, 400063</p>",
+            "button_label": "",
+            "button_link": "",
+            "open_default": false,
+            "show_divider": false
+          }
+        }
+      },
+      "block_order": [
+        "menu_DEKGYP",
+        "menu_4eCrBB",
+        "contact_information_XwCUrR",
+        "image_text_F3FNhx"
+      ],
+      "custom_css": [
+        ".form-control {--color-border: var(--color-field);}"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "enable_follow_on_shop": false,
+        "show_social": false,
+        "enable_country_selector": true,
+        "enable_language_selector": false,
+        "payment_enable": false,
+        "footer_bottom_menu": "",
+        "footmenu": "t-shirts-for-men-menu",
+        "footmenu1": "shirts-for-men-menu",
+        "footmenu2": "bottoms-for-men-menu",
+        "footmenu3": "jackets-for-men",
+        "footmenu4": "vests-for-men",
+        "footmenu5": "shackets-for-men",
+        "footmenu6": "accessories-for-men",
+        "abouttitle": "At Powerlook, we believe in more than just dressing men—we believe in empowering them through style. This journey began with a vision to break free from conventional fashion and offer something fresh and relatable for men everywhere. Behind every thread, every stitch, is a philosophy that says, “You don’t need any tactics to be heard.” We believe in the quiet power of a well-put-together look.",
+        "abouttext": "<p>Our story isn’t flashy, nor is it drenched in glamorous beginnings. We listened, adapted, and expanded—transitioning from a small storefront into a style sanctuary on our e-commerce platform, enabling us to connect with men nationwide. Powerlook is not just a name; it’s a philosophy that speaks to the idea of giving power to your look. Hence our slogan exclaiming  - EmPOWER your LOOK. </p><p>When you think about the best outfits for men, think beyond the obvious. Powerlook is for the man who wants more than just fabric draped over his frame—it’s for the thinker, the young hustler, the laid-back creative, and the bold achiever. From the streets to the boardroom, our journey is about blending authenticity with style, creating looks that  value individuality while catering to men from all walks of life. </p><h2><strong>Charge Up Your Closet with Powerlook: Exclusive Men's Ensemble</strong></h2><p>We’ve come a long way, and now Powerlook offers a wide range of men’s fashion wear that redefines what it means to dress well. From casual outfits for men to edgy streetwear, your wardrobe is in safe hands. Let’s take a quick tour of our exclusive men’s collection:</p><p><strong>A) T-shirts</strong>: The humble <a href=\"/collections/t-shirtss\" title=\"T-Shirts\">T-Shirt For Men</a> is a staple in every man’s closet, but at Powerlook, we don’t settle for just any tee. Our range of trendy t-shirts for men includes soft, breathable fabrics perfect for any casual day. Graphic tees, oversized fits, or minimalist designs, we have options that suit every personality.</p><p><strong>B) Shirts</strong>: There’s something about <a href=\"/collections/casual-shirts\" title=\"Casual Shirts\">Shirts For Men</a> that can shift a man’s entire demeanor. Powerlook shirts don’t try too hard, but they land the message. From classic button-downs to trendy printed pieces, our shirts are designed to elevate your everyday look.</p><p><strong>C) Bottoms</strong>: We know that comfort matters as much as style. Whether it’s the laid-back swagger of our streetwear clothing for men or the all-day comfort of well-fitted trousers, our collection of <a href=\"/collections/bottoms\" title=\"Bottoms\">bottoms</a> is where you find charisma. Feel invincible in whatever path you’re walking.</p><p><strong>D) Vests</strong>: For those who love layering, our range of <a href=\"/collections/vests\" title=\"Vests\">vests</a> adds that perfect finishing touch to your outfit. Ideal for casual and active wear, these pieces are designed to enhance your silhouette without compromising on comfort.</p><p><strong>E) Jackets:</strong> A jacket can make or break an outfit, and our collection of <a href=\"/collections/jackets\" title=\"Jackets\">men’s jackets</a> does just that. From sleek bombers to versatile denim jackets, we’ve got the perfect pieces to keep you looking sharp and feeling cool, no matter the season.</p><p><strong>F) Co-ords</strong>: Why stress over mixing and matching when our <a href=\"/collections/co-ords\" title=\"Co-ords\">co ord sets for men</a> have done the thinking for you? These sets are designed for men who appreciate the ease of pulling on an outfit that’s already perfectly balanced. Fashion is effortless when it’s this simple.</p><p><strong>G) Shackets</strong>: When the weather can't make up its mind, enter the <a href=\"/collections/shackets\" title=\"Shackets\">Shacket For Men</a>—a stylish hybrid of shirts and jackets. Whether you're braving a breezy evening or layering up for a cool morning, Powerlook's shackets add the perfect edge to your outfit.</p><p>Each piece in our collection is not just meant to be worn, but to be lived in. From easygoing basics to standout statement pieces, Powerlook’s men’s apparel understands that a great outfit doesn’t need to shout—it knows when to speak softly and when to stay silent.</p><h2><strong>Turn Heads, One Outfit at a Time</strong></h2><p>You’ve probably heard the saying: clothes make the man. But here’s a twist—at Powerlook, we believe it’s about how you wear them that truly counts. Hence at our men's clothing store, we don’t just offer men’s fashion wear; we provide a canvas for you to paint your identity. Our every item is designed with the understanding that what you wear should work as hard as you do.</p><p><strong>A) Trendsetting Designs</strong>: At Powerlook, we pride ourselves on offering the best outfits for men that are both trendy and functional. From timeless classics to the old money fashion for men vibe that subtly hints at luxury, our pieces reflect a balance of modernity with a nod to the past. It’s about finding that sweet spot between the now and then forever</p><p><strong>B) Perfect Fits</strong>: Fit is everything. Whether you're a fan of the easy going comfort of oversized clothes for men or prefer a more polished look, our designs ensure that each item feels like it was made just for you. Because, frankly, no one likes being part of the crowd.</p><p><strong>C) Affordable Picks</strong>: You shouldn’t have to choose between looking good and keeping your wallet intact. Powerlook’s mission is to bring you classy outfits for guys that don’t come with a pinch on your well. Your wardrobe should be rich in style, not costly in expense.</p><p><strong>D) Strict Quality Assurance</strong>: Every piece of men’s fashion wear that leaves our warehouse goes through rigorous quality checks. We understand that you deserve nothing but the best, and we won’t settle for anything less. Quality, after all, isn’t just about durability—it’s about how a garment makes you feel every time you put it on. Because when you feel good, you carry that confidence into everything you do.</p><p>You see, at Powerlook, we’re not just here to sell clothes. We’re here to be part of your story. One outfit at a time.</p><h2><strong>Your Next Wardrobe Update with Just a Swipe on Powerlook</strong></h2><p>Updating your wardrobe doesn’t have to be a chore. In fact, we’ve made it dangerously easy (you’ve been warned). Whether you’re scrolling through our app on your morning commute or lounging on your couch, Powerlook’s user interface is designed to keep things simple, smooth, and, dare we say, enjoyable.</p><p><strong>A) User-Friendly Interface</strong>: Picture this—you’re swiping through an endless array of best outfits for men without the hassle of clunky menus or endless tabs. That’s Powerlook for you. Everything is within reach. Easy on the eyes, easy on the fingers.</p><p><strong>B) Secure Payment Methods</strong>: Powerlook takes your security seriously. We offer a range of payment options that are as flexible as your wardrobe. Card payments, UPI, or digital wallets, you can shop with peace of mind knowing we’ve got you covered on all fronts.</p><p><strong>C) Apps on Play Store and iOS</strong>: We didn’t stop at just building a great website. Download our app from the Play Store or iOS, and you’ll have access to exclusive offers, first dibs on new arrivals, and a shopping experience that’s always within reach. It’s fashion at your fingertips—literally. Powerlook ensures the experience is smooth from start to finish. We’re just a swipe away from becoming your new favorite fashion destination.</p><h2><strong>Shop Powerlook for On-Trend Men’s Clothing:</strong></h2><p>At the heart of Powerlook is a simple belief: fashion is about showing up as if you own the space. And when you show up in Powerlook, you’re stepping into a world where style meets substance, where every outfit you wear speaks of confidence, ease, and a touch of rebellion.</p><p>That’s why we’re dedicated to offering versatile and high-quality men’s apparel that suits every mood, occasion, and personality. Style isn’t just about following trends—it’s about making them your own. And with us, you can do exactly that.</p><p>So without further ado, check out our website and find your favorite picks!</p>",
+        "show_section_divider": true,
+        "divider_width": "full"
+      }
+    },
+    "mobile_sticky_bar_aYhgJK": {
+      "type": "mobile-sticky-bar",
+      "blocks": {
+        "home_AP8mmy": {
+          "type": "home",
+          "settings": {
+            "text": "Home"
+          }
+        },
+        "search_n3h4zT": {
+          "type": "search",
+          "settings": {
+            "text": "Search"
+          }
+        },
+        "products_eYYkE8": {
+          "type": "products",
+          "disabled": true,
+          "settings": {
+            "text": "Products",
+            "collection": ""
+          }
+        },
+        "cart_gnnwxQ": {
+          "type": "cart",
+          "settings": {
+            "text": "Cart"
+          }
+        },
+        "link_mJ6QMc": {
+          "type": "link",
+          "settings": {
+            "text": "Account",
+            "url": "/account/login",
+            "icon": "user"
+          }
+        }
+      },
+      "block_order": [
+        "home_AP8mmy",
+        "search_n3h4zT",
+        "products_eYYkE8",
+        "cart_gnnwxQ",
+        "link_mJ6QMc"
+      ],
+      "settings": {
+        "enable_sticky_bar": true,
+        "show_text": true
+      }
+    }
+  },
+  "order": [
+    "newsletter_3kVw3t",
+    "footer",
+    "mobile_sticky_bar_aYhgJK"
+  ]
+}

@@ -1,0 +1,241 @@
+{% assign color_values = '' %}
+{% assign size_values = '' %}
+
+{% for option in product.options_with_values %}
+  {% if option.name == 'Color' %}
+    {% assign color_values = option.values | join: ', ' %}
+  {% elsif option.name == 'Size' %}
+    {% assign size_values = option.values | join: ', ' %}
+  {% endif %}
+{% endfor %}
+
+<script>
+// MoEngage Product Viewed Events
+var mediaUrls = [{% for media in product.media %}"{{ media.preview_image }}"{% unless forloop.last %},{% endunless %}{% endfor %}];
+window.addEventListener('load', function() {
+    var productCategories = "{% for collection in product.collections limit:5 %}{{ collection.title }}{% unless forloop.last %}, {% endunless %}{% endfor %}";
+    var productCategoryIds = "{% for collection in product.collections limit:5 %}{{ collection.id }}{% unless forloop.last %}, {% endunless %}{% endfor %}";
+
+    Moengage.track_event("Product Viewed", {
+      "Product ID": "{{ product.selected_or_first_available_variant.sku }}",
+      "Product Name": "{{ product.title }}",
+      "Category Names": productCategories,
+      "Category IDs": productCategoryIds,
+      "Colour": "{{ color_values }}",
+      "Retail Price": {{ product.selected_or_first_available_variant.compare_at_price | divided_by: 100.0 | round: 2 | default: 0 }},
+      "Discount": 0,
+      "Price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | round: 2 }},
+      "Currency": "{{ shop.currency }}",
+      "Size": "{{ size_values }}",
+      "Stock": "{{ product.selected_or_first_available_variant.inventory_quantity }}",
+      "Image": mediaUrls
+    });
+  });
+
+// Add to cart button click event handler
+document.addEventListener('DOMContentLoaded', function() {
+   function getSelectedVariantDetails() {
+    const variantDetails = {};
+    // Get quantity
+    const quantityInput = document.querySelector('input[name="quantity"]');
+    if (quantityInput) {
+      variantDetails.quantity = quantityInput.value;
+    }
+    // Get variant details from JSON script tag
+    const variantScript = document.querySelector('script[data-selected-variant]');
+    if (variantScript) {
+      try {
+        const variantData = JSON.parse(variantScript.textContent);
+      //  console.log('variantData----------------',variantData);
+        // Extract all variant details from JSON
+        variantDetails.variantId = variantData.id;
+        variantDetails.variantTitle = variantData.title;
+        // Get options (size, color, etc.)
+        if (variantData.options) {
+          variantDetails.options = variantData.options;
+        }
+        // Get individual option values
+        if (variantData.option1) variantDetails.option1 = variantData.option1;
+        if (variantData.option2) variantDetails.option2 = variantData.option2;
+        if (variantData.option3) variantDetails.option3 = variantData.option3;
+        // Get price and compare at price (in cents, convert to dollars)
+        if (variantData.price) {
+          variantDetails.price = (variantData.price / 100).toFixed(2);
+        }
+        if (variantData.compare_at_price) {
+          variantDetails.compareAtPrice = (variantData.compare_at_price / 100).toFixed(2);
+        }
+        // Get featured image details
+        if (variantData.featured_image) { variantDetails.imageSrc = variantData.featured_image.src; } 
+        // Get featured media details
+        if (variantData.featured_media) {
+          if (variantData.featured_media.preview_image) {
+            variantDetails.previewImageSrc = variantData.featured_media.preview_image.src;
+          }
+        }
+
+        // Get SKU
+        if (variantData.sku) {
+          variantDetails.sku = variantData.sku;
+        }
+
+      } catch (error) {
+      //  console.error('Error parsing variant JSON:', error);
+      }
+    }
+    return variantDetails;
+  }
+  // Parse variant title to extract color and size
+      let color = 'N/A';
+      let size = 'N/A';
+      let variantDetails = getSelectedVariantDetails(); // call the function here
+      if(variantDetails){
+        if (variantDetails.variantTitle && variantDetails.variantTitle !== 'N/A') {
+          const variantParts = variantDetails.variantTitle.split('/').map(part => part.trim());
+          if (variantParts.length >= 2) {
+            size = variantParts[0]; // First part is size
+            color = variantParts[1];  // Second part is color
+          } else if (variantParts.length === 1) {
+            // If only one part, assume it's the size
+            size = variantParts[0];
+          }
+        }
+      }
+       // Parse variant title to extract color/size
+    function parseVariantColorSize(variantDetails) {
+      let color = 'N/A', size = 'N/A';
+      if (variantDetails && variantDetails.variantTitle && variantDetails.variantTitle !== 'N/A') {
+        const parts = variantDetails.variantTitle.split('/').map(p => p.trim());
+        if (parts.length >= 2) { size = parts[0]; color = parts[1]; }
+        else if (parts.length === 1) size = parts[0];
+      }
+      return { color, size };
+    }
+  // Add to Bag event on .product-form__submit button click
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.product-form__submit');
+    if (btn && !btn.disabled) {
+      const variantDetails = getSelectedVariantDetails();
+      const { color, size } = parseVariantColorSize(variantDetails);
+      
+      // MoEngage Add to Bag Event
+      if (typeof Moengage !== 'undefined') {
+        Moengage.track_event("Add to Bag", {
+          "Product ID": variantDetails.sku,
+          "Product Name": "{{ product.title }}",
+          "Category Names": "{% for collection in product.collections limit:5 %}{{ collection.title }}{% unless forloop.last %}, {% endunless %}{% endfor %}",
+          "Category IDs": "{% for collection in product.collections limit:5 %}{{ collection.id }}{% unless forloop.last %}, {% endunless %}{% endfor %}",
+          "Variant ID": variantDetails.variantId,
+          "Variant Title": variantDetails.variantTitle,
+          "Colour": color,
+          "Quantity": variantDetails.quantity,
+          "Retail Price": variantDetails.compareAtPrice,
+          "Discount": 0,
+          "Price": variantDetails.price,
+          "Currency": "{{ shop.currency }}",
+          "Size": size,
+          "Image": [variantDetails.imageSrc || "{{ product.featured_image | image_url }}"]
+        });
+      }
+
+      // Google Analytics Add to Cart Event
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'add_to_cart', {
+          items: [{
+            "Product ID": variantDetails.sku,
+            "Product Name": "{{ product.title }}",
+            "Category Names": "{% for collection in product.collections limit:5 %}{{ collection.title }}{% unless forloop.last %}, {% endunless %}{% endfor %}",
+            "Category IDs": "{% for collection in product.collections limit:5 %}{{ collection.id }}{% unless forloop.last %}, {% endunless %}{% endfor %}",
+            "Variant ID": variantDetails.variantId,
+            "Variant Title": variantDetails.variantTitle,
+            "Colour": color,
+            "Quantity": variantDetails.quantity,
+            "Retail Price": variantDetails.compareAtPrice,
+            "Discount": 0,
+            "Price": variantDetails.price,
+            "Currency": "{{ shop.currency }}",
+            "Size": size,
+            "Image": [variantDetails.imageSrc || "{{ product.featured_image | image_url }}"]
+          }],
+          page_type: '{{ template | handleize }}',
+          userID: '{{ customer.id }}',
+          user_type: '{{ customer.tags | join: "," | default: "guest" }}'
+        });
+      }
+
+      // ─── Limechat Add to Bag (Abandoned Cart) ──────────────────────────────
+      // Pushes the same Add to Bag event to Limechat via our Cloudflare Worker
+      // proxy. The access token lives in the Worker secret, NEVER in the theme.
+      // Fires only for logged-in customers, because Limechat requires a phone
+      // number to key the event to a user.
+      try {
+        // Phone is rendered server-side from the logged-in customer (Liquid),
+        // so this does NOT depend on any other snippet/global being present.
+        // Empty for guests / customers with no phone → event is skipped below.
+        var lcRawPhone = {{ customer.phone | default: customer.default_address.phone | default: '' | json }};
+        var lcDigits = String(lcRawPhone || '').replace(/[^\d]/g, ''); // digits only
+        // Indian numbers stored without a country code → prepend 91.
+        if (lcDigits.length === 10) { lcDigits = '91' + lcDigits; }
+
+        // Only send when we have a usable number with country code (>= 11 digits).
+        if (lcDigits.length >= 11) {
+          fetch('https://powerlook-limechat.heena-65c.workers.dev', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            keepalive: true, // survive the page navigating to cart/checkout
+            body: JSON.stringify({
+              distinct_id: lcDigits,        // digits only
+              phone: '+' + lcDigits,        // E.164, with the leading "+"
+              event: 'add_to_bag',          // no spaces, per Limechat docs
+              data: {                       // flat key-values only (no nesting)
+                product_id: variantDetails.sku || '',
+                product_name: {{ product.title | json }},
+                variant_id: String(variantDetails.variantId || ''),
+                variant_title: variantDetails.variantTitle || '',
+                colour: color,
+                size: size,
+                quantity: String(variantDetails.quantity || '1'),
+                price: variantDetails.price || '',
+                retail_price: variantDetails.compareAtPrice || '',
+                currency: {{ shop.currency | json }},
+                product_url: window.location.href
+              }
+            })
+          }).catch(function () { /* swallow — never block the shopper */ });
+        }
+      } catch (e) { /* never break MoEngage / GA / the add-to-cart action */ }
+    }
+  }, true);
+});
+// Notify Me Event JS
+  document.addEventListener('DOMContentLoaded', function () {
+    async function handleNotifyMe(event) {
+      const button = event.target.closest('.gSubscribeBtn, .gEnableSubscribe, .gStopSellingProduct');
+      if (button) {
+        const selectedSizeInput = document.querySelector('input[type="radio"][name^="Size-"]:checked');
+        const selectedSize = selectedSizeInput ? selectedSizeInput.value : 'N/A';
+        const variantDetails = getSelectedVariantDetails();
+
+        if (typeof Moengage !== 'undefined') {
+          Moengage.track_event("Notify Me", {
+            "Product ID": variantDetails.sku || "{{ product.sku }}",
+            "Product Name": "{{ product.title | escape }}",
+           "Category Name": "{{ product.collections.first.title | escape }}",
+           "Category ID": "{{ product.collections.first.id }}",
+            "Retail Price": "{{ product.compare_at_price_max | money_without_currency }}",
+            "Discount": "{{ product.compare_at_price_max | minus: product.price | money_without_currency }}",
+            "Price": "{{ product.price | money_without_currency }}",
+            "Currency": "{{ shop.currency }}",
+            "Size": selectedSize,
+            "Stock": "{{ product.variants.first.inventory_quantity }}",
+            "Image": "{{ product.featured_image | img_url: '800x' }}"
+          });
+        } else {
+        }
+      } else {
+      }
+    }
+
+    document.addEventListener('click', handleNotifyMe);
+  });
+</script>  

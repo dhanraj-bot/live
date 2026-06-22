@@ -1,0 +1,78 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "breadcrumbs_JtDCGM": {
+      "type": "breadcrumbs",
+      "disabled": true,
+      "name": "t:sections.breadcrumbs.name",
+      "settings": {
+        "text_alignment": "center"
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "image_with_text_overlay_KW4f4W": {
+      "type": "image-with-text-overlay",
+      "name": "t:sections.image-with-text-overlay.name",
+      "settings": {
+        "container": "fixed",
+        "image": "shopify://shop_images/Screenshot_2024-08-30_at_12.18.39_PM_2__1_1.png",
+        "desktop_height": "adapt",
+        "overlay_opacity": 0,
+        "enable_parallax": false,
+        "parallax_direction": "vertical",
+        "color_scheme": "",
+        "content_position": "middle-left",
+        "content_alignment": "left",
+        "mobile_height": "auto",
+        "padding_top": 30,
+        "padding_bottom": 50
+      }
+    },
+    "rich_text_VkAy3i": {
+      "type": "rich-text",
+      "blocks": {
+        "text_TcxLHb": {
+          "type": "text",
+          "settings": {
+            "text": "<p>It’s great to see you’ve made the effort to know more about us.<br/> <br/>Powerlook was founded in the bustling streets of Mumbai in 2017 by two brothers, Amar Pawar and Raghav Pawar. It all started with a bold vision to make the Trendiest fashion pieces accessible and affordable for every Indian Man out there. What started as a single store has quickly evolved into one of the fastest homegrown names with 12 stores across India and a vast online community of fashion forwards.<br/> <br/>We understand that looking good should never come at the expense of comfort or affordability. That’s why each piece in our fast fashion collection is crafted uniquely and intelligently, offering both quality and cost savings—and that’s what sets us apart.<br/>Since 2019, we’ve taken our presence online, launching a dynamic digital platform where we continuously update our collections with the latest styles every month to keep our community buzzing with excitement.<br/> <br/>Our designs draw inspiration from the pulse of the streets, blending India’s vibrant style with a cool Western twist. Every thread we use is a testament to our commitment to quality, comfort, and staying ahead of the fashion curve.<br/> <br/>But we’re not just about clothes — we’re about creating a community. A community of Indian men who aren’t afraid to stand out and make a statement.<br/><br/>In 2024, we launched 9 stores & 1 launching soon, bringing our total to 12 + offline stores across India—and we’re just getting started. With plans to expand to 50 more stores, we’re set to bring Powerlook to every corner of the country.</p>",
+            "text_size": "text-lg"
+          }
+        }
+      },
+      "block_order": [
+        "text_TcxLHb"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "customClass": "",
+        "color_scheme": "",
+        "content_alignment": "left",
+        "padding_top": 0,
+        "padding_bottom": 100,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    }
+  },
+  "order": [
+    "breadcrumbs_JtDCGM",
+    "main",
+    "image_with_text_overlay_KW4f4W",
+    "rich_text_VkAy3i"
+  ]
+}

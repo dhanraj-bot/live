@@ -1,0 +1,313 @@
+{%- if section.settings.visibility != 'hide' -%}
+  <link rel="stylesheet" href="{{ 'section-sticky-atc-bar.css' | asset_url }}">
+  <script src="{{ 'sticky-atc-bar.js' | asset_url }}" defer="defer"></script>
+  {%- liquid
+    assign show_dynamic_checkout_buttons = section.settings.show_dynamic_checkout_buttons
+
+    assign wrap_class = ''
+    assign visibility = section.settings.visibility
+
+    case visibility
+      when 'desktop'
+        assign wrap_class = ' hidden md:block'
+      when 'mobile'
+        assign wrap_class = ' block md:hidden'
+    endcase
+  -%}
+
+  <style>
+    .sticky-atc-bar .product-form__buttons.is-sold-out {
+      display: none !important;
+    }
+  </style>
+
+  <div class="sticky-atc-bar{{ wrap_class }}{% if show_dynamic_checkout_buttons %} sticky-atc-bar--with-dynamic-buttons{% endif %}">
+    <sticky-atc-bar
+      class="sticky-atc-bar__inner items-center justify-between"
+      data-product-id="{{ product.id }}"
+      data-section="{{ section.id }}"
+      data-url="{{ product.url }}"
+    >
+      <div class="sticky-atc-bar__product hidden md:flex items-center gap-5">
+        <div class="sticky-atc-bar__product-image media-wrapper blocks-radius-sm" style="--aspect-ratio: 1">
+          {%- if product.featured_image -%}
+            {{
+              product.featured_media
+              | image_url: width: 180
+              | image_tag:
+                loading: 'lazy',
+                fetchpriority: 'low',
+                class: 'motion-reduce',
+                widths: '90, 180',
+                sizes: '90px',
+                is: 'image-lazy'
+            }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+        <div class="sticky-atc-bar__product-info">
+          <h3 class="sticky-atc-bar__product-title text-pcard-title text-limit-2-lines">
+            {{ product.title }}
+          </h3>
+          {%- render 'price', product: product, use_variant: true -%}
+        </div>
+      </div>
+
+      {% if section.settings.showextra_text_sticky %}
+        {% if section.settings.extra_text_sticky != blank %}
+          {% for collection in product.collections %}
+            {% if collection.metafields.custom.show_discount_code == true %}
+              <div class="discounted_extra_text">
+                <span class="extra_text_sticky">{{ section.settings.extra_text_sticky }}</span>
+                <span class="know_how_text">Know How ?</span>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+
+      {%- assign product_form_id = 'product-form-' | append: section.id -%}
+      {%- form 'product',
+        product,
+        id: product_form_id,
+        class: 'sticky-atc-bar__form flex items-center justify-center md:justify-start gap-3 page-width page-width--{{ section.settings.container }}',
+        data-type: 'add-to-cart-form',
+        is: 'product-form'
+      -%}
+        <div class="hidden select{% if product.has_only_default_variant %} hidden{% endif %}">
+          <select
+            name="id"
+            class="sticky-atc-bar__variant-select form-control form-control--select"
+          >
+            {% assign size_list = 'XS,S,M,L,XL,XXL,XXXL,XXXXL,XXXXXL,28,30,32,34,36,38,40,42,44,46,48,50'
+              | split: ','
+            %}
+
+            {% for variant in product.variants %}
+              {% if variant.available %}
+                {% assign title_parts = variant.title | split: ' / ' %}
+                {% assign display_label = '' %}
+
+                {% for part in title_parts %}
+                  {% assign part_up = part | upcase | strip %}
+                  {% if size_list contains part_up %}
+                    {% assign display_label = part_up %}
+                  {% endif %}
+                {% endfor %}
+
+                {% if display_label != '' %}
+                  {% case display_label %}
+                    {% when 'XXL' %}
+                      {% assign display_label = '2XL' %}
+                    {% when 'XXXL' %}
+                      {% assign display_label = '3XL' %}
+                    {% when 'XXXXL' %}
+                      {% assign display_label = '4XL' %}
+                    {% when 'XXXXXL' %}
+                      {% assign display_label = '5XL' %}
+                  {% endcase %}
+
+                  <option
+                    value="{{ variant.id }}"
+                    {% if variant.id == current_variant_id %}
+                      selected
+                    {% endif %}
+                  >
+                    {{ display_label }}
+                  </option>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </select>
+          {%- render 'icon-caret-down' -%}
+        </div>
+        {%- if section.settings.show_quantity -%}
+          <div id="QuantitySticky-{{ section.id }}">
+            {%- liquid
+              assign qty_class = ''
+              unless product.has_only_default_variant
+                assign qty_class = 'hidden md:flex'
+              endunless
+
+              assign cart_qty = cart | item_count_for_variant: product.selected_or_first_available_variant.id
+            -%}
+            <quantity-input
+              class="quantity {{ qty_class }}"
+              data-section-id="{{ section.id }}"
+              data-product-id="{{ product.id }}"
+            >
+              <button class="quantity__button" name="minus" type="button">
+                <span class="visually-hidden">
+                  {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+                </span>
+                {% render 'icon-minus' %}
+              </button>
+              <input
+                class="quantity__input"
+                type="number"
+                name="quantity"
+                id="Quantity-{{ section.id }}"
+                data-cart-quantity="{{ cart_qty }}"
+                step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
+                value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                data-quantity-variant-id="{{ product.selected_or_first_available_variant.id }}"
+                data-min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
+                  data-max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                  max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                {% endif %}
+                inputmode="numeric"
+                autocomplete="off"
+                form="{{ product_form_id }}"
+              >
+              <button class="quantity__button" name="plus" type="button">
+                <span class="visually-hidden">
+                  {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                </span>
+                {% render 'icon-plus' %}
+              </button>
+            </quantity-input>
+          </div>
+        {% endif %}
+        <div class="product-form__buttons flex items-center {% if product.selected_or_first_available_variant.available == false or product.available == false or quantity_rule_soldout %}is-sold-out{% endif %}">
+          {%- if section.settings.show_atc_button -%}
+            <div class="product-form__button_with_price">
+              <div class="flex flex-col ">
+                {%- render 'price',
+                  product: product,
+                  use_variant: true,
+                  show_sale_badge: false,
+                  price_class: 'f-price--large'
+                -%}
+                {%- if shop.taxes_included -%}
+                  <div class="f-product-single__block-tax text-subtext">
+                    {{- 'products.product.include_taxes' | t -}}
+                  </div>
+                {%- endif -%}
+              </div>
+              <button
+                class="product-form__submit_sticky btn--primary-add-to-bag-sticky"
+              >
+                <span>{{ 'products.product.add_to_cart' | t }}</span>
+                {%- render 'loading-spinner' -%}
+              </button>
+              <a
+                href="{{ routes.cart_url }}"
+                class="view_bag_text_button btn mobile_sticky_view_bag"
+                style="display: none;"
+                >View Bag</a
+              >
+            </div>
+          {% endif %}
+          {%- if product.quantity_price_breaks_configured? != true -%}
+            {%- if show_dynamic_checkout_buttons -%}
+              <div class="product-form__button-dynamic hidden md:block">
+                {{ form | payment_button }}
+              </div>
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+        {%- render 'notify-me-button',
+          product: product,
+          variant: product.selected_or_first_available_variant,
+          custom_class: 'sticky_notify_me'
+        -%}
+      {%- endform -%}
+    </sticky-atc-bar>
+    <script type="application/json">
+      {{ product.variants | json }}
+    </script>
+  </div>
+{%- endif -%}
+
+<script>
+  
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.sticky-atc-bar.name",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "[Read How-to](https://foxecom.link/MdDIC1D)"
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "options": [
+        {
+          "value": "fixed",
+          "label": "t:sections.all.container.options__fixed.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.all.container.options__full.label"
+        }
+      ],
+      "default": "full",
+      "label": "t:sections.all.container.label"
+    },
+    {
+      "type": "select",
+      "id": "visibility",
+      "label": "t:sections.sticky-atc-bar.settings.visibility.label",
+      "options": [
+        {
+          "value": "all",
+          "label": "t:sections.sticky-atc-bar.settings.visibility.options__1.label"
+        },
+        {
+          "value": "desktop",
+          "label": "t:sections.sticky-atc-bar.settings.visibility.options__2.label"
+        },
+        {
+          "value": "mobile",
+          "label": "t:sections.sticky-atc-bar.settings.visibility.options__3.label"
+        },
+        {
+          "value": "hide",
+          "label": "t:sections.sticky-atc-bar.settings.visibility.options__4.label"
+        }
+      ],
+      "default": "all"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_atc_button",
+      "label": "t:sections.sticky-atc-bar.settings.show_atc_button.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout_buttons",
+      "label": "t:sections.sticky-atc-bar.settings.show_dynamic_checkout_buttons.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity",
+      "label": "t:sections.sticky-atc-bar.settings.show_quantity.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "showextra_text_sticky",
+      "label": "Show Discount Text"
+    },
+    {
+      "type": "text",
+      "id": "extra_text_sticky",
+      "label": "Extra Text Sticky"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.sticky-atc-bar.name"
+    }
+  ]
+}
+{% endschema %}

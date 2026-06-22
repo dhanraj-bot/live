@@ -1,0 +1,212 @@
+
+<style>
+  .new_deals{{ section.id }} {
+    padding-left: {{ section.settings.padding_left }}px;
+    padding-right: {{ section.settings.padding_right }}px;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    text-align: center;
+  }
+
+  .new_deals{{ section.id }}  .main-heading {
+    margin-bottom: 24px;
+    font-family: "Bebas Neue",sans-serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 130%;
+    letter-spacing: 4%;
+    vertical-align: middle;
+    text-transform: uppercase;
+    color:#453D2B;
+  }
+
+  .new_deals{{ section.id }} .deals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .new_deals{{ section.id }} .deals-link {
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    display: block;
+    cursor:pointer;
+  }
+
+  .new_deals{{ section.id }} .deals-image {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .new_deals{{ section.id }} .deals-image img {
+    width: 100%;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .deals-link .text-section {
+    position: absolute;
+    bottom: 10px;
+    left:16px;
+    max-width: 180px;
+    padding: 8px 10px;
+    display:flex;
+    flex-direction: column;
+    gap:4px;
+  }
+  .text-section .text{
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 130%;
+    letter-spacing: 4%;
+    text-transform: uppercase;
+    color:#2F2F2F;
+    text-align:start;
+    margin:0px;
+  }
+  
+
+  @media (max-width: 768px) {
+    .new_deals{{ section.id }}{
+      padding-left: {{ section.settings.padding_left_mobile }}px;
+      padding-right: {{ section.settings.padding_right_mobile }}px;
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    .new_deals{{ section.id }} .deals-grid{
+      grid-template-columns: repeat(1,1fr);
+      gap:8px;
+    }
+    .new_deals{{ section.id }}  .main-heading {
+      margin-bottom:20px;
+      font-size: 16px;
+    }
+    .deals-link .text-section {
+      max-width: 165px;
+    }
+    .text-section .text{
+      font-size: 12px;
+    }
+  }
+    
+</style>
+
+<section class="new_deals{{ section.id }}" >
+  <h3 class="main-heading">{{ section.settings.title }}</h3>
+  <div class="deals-grid">
+    {% for block in section.blocks %}
+      <a href="{{ block.settings.link }}" class="deals-link">
+        {% if block.settings.image %}
+          {{
+            block.settings.image
+            |image_url: width: 1200
+            |image_tag:
+            class:"deals-image",
+            loading: 'lazy',
+            sizes: '(max-width: 767px) 100vw, 50vw',
+            widths: '480, 640, 900, 1200',
+            alt: block.settings.alt_text
+          }}
+        {% endif %}
+        <div class="text-section">
+          <p class="text">{{ block.settings.deal_text }}</p>
+          {% render 'icon-arrow-left' %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "New Deals",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "New Deals, New Trends"
+    },
+    {
+      "type":"number",
+      "id": "padding_top",
+      "label": "Padding Top",
+    },
+    {
+      "type":"number",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+    },
+    {
+      "type":"number",
+      "id": "padding_left",
+      "label": "Padding Left",
+    },
+    {
+      "type":"number",
+      "id": "padding_right",
+      "label": "Padding right",
+    },
+    {
+      "type":"number",
+      "id": "padding_top_mobile",
+      "label": "Padding top mobile",
+      "default": 0
+    },
+    {
+      "type":"number",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom mobile",
+      "default": 40
+    },
+    {
+      "type":"number",
+      "id": "padding_left_mobile",
+      "label": "Padding left mobile",
+      "default": 0
+    },
+    {
+      "type":"number",
+      "id": "padding_right_mobile",
+      "label": "Padding right mobile",
+      "default": 0
+    },
+  ],
+  "blocks": [
+    {
+      "type": "Deals",
+      "name": "Deals Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Deal Image"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt text"
+        },
+        {
+          "type": "text",
+          "id": "deal_text",
+          "label": "Deal Text",
+          "default": "Explore this new Deal"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Deal Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Deals"
+    }
+  ]
+}
+{% endschema %}

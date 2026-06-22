@@ -1,0 +1,100 @@
+.save-for-later-container .wkh-button {
+    --icon-stroke: black;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    border: none;
+    width: auto;
+    gap: 8px;
+    color: #000;
+    background: transparent !important;
+    justify-content: flex-start;
+    white-space: nowrap;
+    width: 100%;
+    padding: 0;
+    line-height: 2rem;
+    padding: .1rem 0 !important;
+    font-family: var(--font-body-family);
+    font-weight: var(--font-body-weight);
+    font-style: var(--font-body-style);
+    text-transform: capitalize;
+    text-align: left;
+    margin-left: 0;
+    height: auto;
+}
+
+.save-for-later-container .wkh-button .wkh-text {
+  font-size: calc(var(--font-body-size) * .9);
+}
+
+
+.save-for-later-container {
+    display: flex;
+    justify-content: center;
+    font-size: 0;
+    line-height: 2rem;
+    padding: .1rem 0 !important;
+}
+
+.save-for-later-container .wkh-button .wkh-icon {
+    fill: #f1f1f1;
+    stroke: black;
+    margin-top: -1px;
+}
+
+.save-for-later-container .wkh-button .wkh-icon path {
+  stroke-width: 1.4px !important;
+  vector-effect: non-scaling-stroke;
+}
+
+.save-for-later-container .wkh-button.wk-selected .wkh-icon {
+    fill: black;
+}
+
+.save-for-later-container .wk-selected .wkh-text::before {
+  content: "In wishlist";
+}
+
+.save-for-later-container .wkh-button:not(.wk-selected) .wkh-text::before {
+  content: "Move to wishlist";
+}
+
+.save-for-later-container .wkh-text {
+  visibility: hidden;
+  position: relative;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.save-for-later-container .wkh-text::before {
+  visibility: visible;
+  position: absolute;
+  left: 0;
+}
+
+.wk-flex {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    align-items: center;
+    gap: 15px;
+}
+
+@media only screen and (max-width: 1023px) {
+  .wk-flex {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  #Loader-template--19588536336634__main-cart-1 {
+    max-width: 53px;
+  }
+}
+.wk-flex-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}

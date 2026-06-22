@@ -1,0 +1,273 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main-cart": {
+      "type": "main-cart",
+      "blocks": {
+        "estimate_delivery_wgPxgD": {
+          "type": "estimate_delivery",
+          "settings": {
+            "estimatetext": "<span><strong>Free Delivery</strong> by <strong>3–5 days.</strong></span>"
+          }
+        },
+        "subtotal_LeUiVY": {
+          "type": "subtotal",
+          "settings": {}
+        },
+        "buttons_drwbch": {
+          "type": "buttons",
+          "settings": {}
+        },
+        "discount_coupon_JCgmLB": {
+          "type": "discount_coupon",
+          "name": "B3G500",
+          "settings": {
+            "code": "B3G500",
+            "description": "₹500.00 off on Minimum purchase of 3 quantity",
+            "milestone_label": "₹500 off",
+            "min_quantity": 3,
+            "min_value": 0,
+            "eligible_collections": [
+              "not-for-sale"
+            ],
+            "customer_tag": ""
+          }
+        },
+        "discount_coupon_NACNh3": {
+          "type": "discount_coupon",
+          "name": "B2G250",
+          "settings": {
+            "code": "B2G250",
+            "description": "₹250.00 off on Minimum purchase of 2 quantity",
+            "milestone_label": "₹250 off",
+            "min_quantity": 2,
+            "min_value": 0,
+            "eligible_collections": [
+              "not-for-sale"
+            ],
+            "customer_tag": ""
+          }
+        },
+        "discount_coupon_NBMVPA": {
+          "type": "discount_coupon",
+          "name": "SALARY15",
+          "disabled": true,
+          "settings": {
+            "code": "EOSS15",
+            "description": "Buy Any 2 Products & Get 15% OFF. Max discount ₹800",
+            "milestone_label": "15% OFF",
+            "min_quantity": 2,
+            "min_value": 0,
+            "eligible_collections": [
+              "not-for-sale"
+            ],
+            "customer_tag": ""
+          }
+        },
+        "discount_coupon_G7q4nY": {
+          "type": "discount_coupon",
+          "name": "SALARY25",
+          "disabled": true,
+          "settings": {
+            "code": "EOSS30",
+            "description": "Buy Any 3 Products & Get 30% OFF. Max discount ₹1600",
+            "milestone_label": "30% OFF",
+            "min_quantity": 3,
+            "min_value": 0,
+            "eligible_collections": [
+              "not-for-sale"
+            ],
+            "customer_tag": ""
+          }
+        },
+        "discount_coupon_xa9UBh": {
+          "type": "discount_coupon",
+          "name": "FIRST10",
+          "settings": {
+            "code": "FIRST10",
+            "description": "Get 10% Off on Your First Orders Above ₹1,499",
+            "milestone_label": "",
+            "min_quantity": 0,
+            "min_value": 0,
+            "eligible_collections": [
+              "not-for-sale"
+            ],
+            "customer_tag": ""
+          }
+        },
+        "discount_coupon_CpcdXL": {
+          "type": "discount_coupon",
+          "name": "EXTRA1000",
+          "disabled": true,
+          "settings": {
+            "code": "EXTRA1000",
+            "description": "Shop Above ₹4999 & Get ₹1000 FLAT OFF",
+            "milestone_label": "",
+            "min_quantity": 0,
+            "min_value": 4999,
+            "eligible_collections": [
+              "not-for-sale"
+            ],
+            "customer_tag": ""
+          }
+        }
+      },
+      "block_order": [
+        "estimate_delivery_wgPxgD",
+        "subtotal_LeUiVY",
+        "buttons_drwbch",
+        "discount_coupon_JCgmLB",
+        "discount_coupon_NACNh3",
+        "discount_coupon_NBMVPA",
+        "discount_coupon_G7q4nY",
+        "discount_coupon_xa9UBh",
+        "discount_coupon_CpcdXL"
+      ],
+      "settings": {
+        "showoffertext": false,
+        "offer_texts": "",
+        "padding_top": 50,
+        "padding_bottom": 60,
+        "show_title": false,
+        "cart_milestone_hide_mobile": false,
+        "cart_icon_strip_heading_1": "12+ Stores Pan India",
+        "cart_icon_strip_image_1": "shopify://shop_images/store_1.png",
+        "cart_icon_strip_heading_2": "2.5M+ happy customers",
+        "cart_icon_strip_image_2": "shopify://shop_images/customer.png",
+        "cart_icon_strip_heading_3": "Easy Return & Exchange",
+        "cart_icon_strip_image_3": "shopify://shop_images/arrow_Pl.png",
+        "cap_discount_name": "EOSS30",
+        "cap_discount_amount": 1800,
+        "cap_discount_name_2": "EOSS15",
+        "cap_discount_amount_2": 800,
+        "bmlp_enable": true,
+        "bmlp_title": "Buy more in lesser price !!!!",
+        "bmlp_offer1_icon": "shopify://shop_images/SealPercent.svg",
+        "bmlp_offer1_main_text": "Buy 3 Get ₹500 off",
+        "bmlp_offer1_sub_text": "+ Extra 5% off on Prepaid",
+        "bmlp_offer2_icon": "shopify://shop_images/SealPercent.svg",
+        "bmlp_offer2_main_text": "Buy 2 Get ₹250 off",
+        "bmlp_offer2_sub_text": "+ Extra 5% off on Prepaid",
+        "bmlp_offer3_main_text": "",
+        "bmlp_offer3_sub_text": "",
+        "bmlp_offer4_main_text": "",
+        "bmlp_offer4_sub_text": "",
+        "checkout_popup_enable": true,
+        "checkout_popup_icon": "shopify://shop_images/finance-3d-icon-illustration-png-template_1_1.png",
+        "checkout_popup_title": "WAIT !! YOU”RE MISSING OUT",
+        "checkout_popup_message_2_items": "BUY 1 MORE & GET ₹250 OFF",
+        "checkout_popup_message_3_items": "BUY 1 MORE & GET ₹500 OFF",
+        "checkout_popup_tier2_coupon": "B3G500",
+        "checkout_popup_continue_url": "/collections/all",
+        "checkout_popup_continue_btn": "Continue Shopping",
+        "checkout_popup_proceed_btn": "No, I want to Checkout",
+        "mov_enable": true,
+        "mov_minimum_amount": "500",
+        "mov_error_message": "Minimum order value should be ₹500 to proceed with checkout.",
+        "empty_cart_web": "shopify://shop_images/empty-cart.png",
+        "empty_cart_mweb": "shopify://shop_images/empty-cart.png"
+      }
+    },
+    "cart_discount_recommendations_bmNWW3": {
+      "type": "cart-discount-recommendations",
+      "name": "Discount Recommendations",
+      "settings": {
+        "color_scheme": "",
+        "heading": "More in Bag",
+        "subheading": "Less on Bill",
+        "heading_size": "h2",
+        "underline_image": "shopify://shop_images/Group_1.png",
+        "empty_message": "No recommendations available.",
+        "enable_discount": true,
+        "min_quantity_tier1": 2,
+        "discount_tier1_type": "fixed_amount",
+        "discount_tier1_value": 250,
+        "discount_tier1_code": "B2G250",
+        "enable_discount_tier2": true,
+        "min_quantity_tier2": 3,
+        "discount_tier2_type": "fixed_amount",
+        "discount_tier2_value": 500,
+        "discount_tier2_code": "B3G500",
+        "target_collections": "not-for-sale",
+        "target_product_types": "",
+        "columns": 4,
+        "columns_mobile": "2",
+        "column_gap": "medium",
+        "row_gap": "medium",
+        "enable_slider": true,
+        "swipe_on_mobile": true,
+        "controls_position": "inside",
+        "primary_color": "#00a67e",
+        "text_color": "#333333",
+        "background_light": "#f5f9f8",
+        "padding_top": 52,
+        "padding_bottom": 56
+      }
+    },
+    "cart_related_products_YFcnTP": {
+      "type": "cart-related-products",
+      "disabled": true,
+      "name": "Cart Related Products",
+      "settings": {
+        "color_scheme": "",
+        "heading": "You may also like",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "limit": 8,
+        "columns": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "enable_slider": true,
+        "controls_position": "inside",
+        "pcard_image_ratio": "",
+        "columns_mobile": "1",
+        "swipe_on_mobile": true,
+        "padding_top": 20,
+        "padding_bottom": 50,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "recently_viewed_products_ThHgX4": {
+      "type": "recently-viewed-products",
+      "name": "t:sections.recently-viewed-products.name",
+      "settings": {
+        "color_scheme": "",
+        "heading": "Recently viewed products",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "limit": 12,
+        "columns": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "enable_slider": true,
+        "controls_position": "inside",
+        "pcard_image_ratio": "",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 50,
+        "padding_bottom": 80,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    }
+  },
+  "order": [
+    "main-cart",
+    "cart_discount_recommendations_bmNWW3",
+    "cart_related_products_YFcnTP",
+    "recently_viewed_products_ThHgX4"
+  ]
+}

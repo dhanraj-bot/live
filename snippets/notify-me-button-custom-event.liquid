@@ -1,0 +1,181 @@
+<script>
+  (function () {
+
+    // ─── 1. SHOPIFY DATA LAYER ───────────────────────────────────────────────
+    const shopifyProductMeta = {
+      productId:    {{ product.id | json }},
+      productTitle: {{ product.title | json }},
+      variants:     {{ product.variants | json }},
+    };
+
+    const shopifyCustomer = {
+      isLoggedIn: {{ customer | json }} !== null,
+      {% if customer %}
+        id:    {{ customer.id | json }},
+        name:  {{ customer.name | json }},
+        email: {{ customer.email | json }},
+      {% else %}
+        id:    null,
+        name:  null,
+        email: null,
+      {% endif %}
+    };
+
+    // ─── 2. HELPER: Get Currently Selected Variant ───────────────────────────
+    function getSelectedVariant() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const variantId = urlParams.get('variant')
+                     || (window.ShopifyAnalytics?.meta?.selectedVariantId)
+                     || null;
+
+      const variantData = variantId
+        ? shopifyProductMeta.variants.find(v => String(v.id) === String(variantId))
+        : shopifyProductMeta.variants[0];
+
+      return {
+        variantId:    variantData?.id    ?? null,
+        variantTitle: variantData?.title ?? null,
+        variantSku:   variantData?.sku   ?? null,
+        variantPrice: variantData?.price ?? null,
+      };
+    }
+
+    // ─── 3. HELPER: Build Event Payload ──────────────────────────────────────
+    function buildEventPayload() {
+      const variant = getSelectedVariant();
+
+      return {
+        event:              'notify_me_click',
+        element:            'notify_me_button',
+        product_id:         shopifyProductMeta.productId,
+        product_title:      shopifyProductMeta.productTitle,
+        variant_id:         variant.variantId,
+        variant_title:      variant.variantTitle,
+        variant_sku:        variant.variantSku,
+        variant_price:      variant.variantPrice,
+        customer_logged_in: shopifyCustomer.isLoggedIn,
+        customer_id:        shopifyCustomer.id,
+        customer_name:      shopifyCustomer.name,
+        customer_email:     shopifyCustomer.email,
+        page_url:           window.location.href,
+        timestamp:          new Date().toISOString(),
+      };
+    }
+
+    // ─── 4. PUSH TO DATA LAYER (GTM) ─────────────────────────────────────────
+    function pushToDataLayer(payload) {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(payload);
+    }
+
+    // ─── 5. FIRE GA4 EVENT ───────────────────────────────────────────────────
+    function fireGA4Event(payload) {
+      if (typeof window.gtag !== 'function') {
+        console.warn('[GA4] gtag not found.');
+        return;
+      }
+      window.gtag('event', payload.event, {
+        product_id:         payload.product_id,
+        product_title:      payload.product_title,
+        variant_id:         payload.variant_id,
+        variant_title:      payload.variant_title,
+        variant_sku:        payload.variant_sku,
+        variant_price:      payload.variant_price,
+        customer_logged_in: payload.customer_logged_in,
+        customer_id:        payload.customer_id,
+        customer_name:      payload.customer_name,
+      });
+    }
+
+    // ─── 6. MOENGAGE: SDK READINESS GUARD ────────────────────────────────────
+    function getMoEngageInstance() {
+      try {
+        var instance = null;
+
+        if (typeof window.Moengage !== 'undefined' && window.Moengage !== null) {
+          instance = window.Moengage;
+        } else if (typeof window.moe !== 'undefined' && window.moe !== null) {
+          instance = window.moe;
+        }
+
+        if (instance && typeof instance.track_event === 'function') {
+          return instance;
+        }
+
+        return null;
+      } catch (err) {
+        console.warn('[MoEngage] Error resolving SDK instance:', err.message);
+        return null;
+      }
+    }
+
+    function fireMoEngageEvent(payload, attempt, maxAttempts, delayMs) {
+      attempt     = attempt     || 1;
+      maxAttempts = maxAttempts || 10;
+      delayMs     = delayMs     || 300;
+
+      var moe = getMoEngageInstance();
+
+      if (!moe) {
+        if (attempt >= maxAttempts) {
+          console.warn('[MoEngage] SDK not ready after ' + maxAttempts + ' attempts. Event dropped.');
+          return;
+        }
+        setTimeout(function () {
+          fireMoEngageEvent(payload, attempt + 1, maxAttempts, delayMs);
+        }, delayMs);
+        return;
+      }
+
+      try {
+        if (payload.customer_logged_in && payload.customer_id) {
+          moe.add_unique_user_id(String(payload.customer_id));
+          if (payload.customer_name)  moe.add_user_name(payload.customer_name);
+          if (payload.customer_email) moe.add_email(payload.customer_email);
+        }
+
+        moe.track_event('Notify Me Click', {
+          product_id:         payload.product_id,
+          product_title:      payload.product_title,
+          variant_id:         String(payload.variant_id  ?? ''),
+          variant_title:      payload.variant_title,
+          variant_sku:        payload.variant_sku,
+          variant_price:      payload.variant_price,
+          customer_logged_in: payload.customer_logged_in,
+          customer_id:        String(payload.customer_id ?? ''),
+          customer_name:      payload.customer_name,
+          page_url:           payload.page_url,
+          timestamp:          payload.timestamp,
+        });
+
+        console.log('[MoEngage] ✅ Notify Me Click fired.');
+
+      } catch (err) {
+        console.error('[MoEngage] track_event failed:', err);
+      }
+    }
+
+    // ─── 7. FIRE ALL TRACKERS ─────────────────────────────────────────────────
+    function fireAllTrackers() {
+      var payload = buildEventPayload();
+      pushToDataLayer(payload);
+      fireGA4Event(payload);
+      fireMoEngageEvent(payload);
+    }
+
+    // ─── 8. ATTACH NOTIFY ME LISTENER ────────────────────────────────────────
+    function attachNotifyMeListener() {
+      document.body.addEventListener('click', function (event) {
+        if (event.target.closest('.notify-me-btn')) {
+          fireAllTrackers();
+        }
+      });
+    }
+
+    // ─── 9. INIT ──────────────────────────────────────────────────────────────
+    document.readyState === 'loading'
+      ? document.addEventListener('DOMContentLoaded', attachNotifyMeListener)
+      : attachNotifyMeListener();
+
+  })();
+</script>

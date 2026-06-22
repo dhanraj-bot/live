@@ -1,0 +1,257 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+    margin: 0;
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner {
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner__media {
+    position: relative;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner__image {
+    width: 100%;
+    height: auto;
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner__content {
+    position: absolute;
+    top: 50%;
+    right: 1.2rem;
+    transform: translateY(-50%);
+    text-align: right;
+    color: {{ section.settings.text_color }};
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner__heading {
+    margin: 0;
+    font-size: 3.2rem;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner__discount {
+    margin: 0.6rem 0 0;
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner__subtext {
+    margin: 0.3rem 0 0;
+    font-size: 1.2rem;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:6px;
+    text-decoration: none;
+    color: {{ section.settings.cta_text_color }};
+    background: {{ section.settings.cta_bg }};
+    border-top: 0.1rem solid {{ section.settings.cta_border_color }};
+    border-bottom: 0.1rem solid {{ section.settings.cta_border_color }};
+    padding: 0.4rem 1.6rem;
+    font-size: 1.2rem;
+    font-family: 'Montserrat',sans-serif;
+    line-height: 1;
+    cursor:pointer;
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner__cta-left {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    /* gap: 0.8rem; */
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner__pin {
+    font-size: 1.4rem;
+    height:24px;
+    width:24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section.id }} .plp-mobile-banner__arrow {
+    font-size: 1.6rem;
+    height:24px;
+    width:24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #shopify-section-{{ section.id }} .plp-desktop-banner__image{
+    width:100%;
+  }
+{% endstyle %}
+
+{% assign mobile_banner = section.settings.banner_image_mobile %}
+{% assign desktop_banner = section.settings.banner_image_desktop %}
+
+{% for block in section.blocks %}
+  {% if collection and block.settings.collection and block.settings.collection.handle == collection.handle %}
+    {% if block.settings.banner_image_mobile != blank %}
+      {% assign mobile_banner = block.settings.banner_image_mobile %}
+    {% endif %}
+
+    {% if block.settings.banner_image_desktop != blank %}
+      {% assign desktop_banner = block.settings.banner_image_desktop %}
+    {% endif %}
+
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+<div class="plp-mobile-banner">
+  <div class="plp-mobile-banner__media">
+    {% if mobile_banner !=blank %}
+      {{
+        mobile_banner
+        | image_url: width: 1400
+        | image_tag:
+          class: 'plp-mobile-banner__image',
+          loading: 'lazy',
+          widths: '375, 550, 750, 1100, 1400',
+          sizes: '100vw',
+          alt: mobile_banner.alt | default: 'Collection banner'
+      }}
+    {% else %}
+      {{ 'lifestyle-2' | placeholder_svg_tag: 'plp-mobile-banner__image placeholder-svg' }}
+    {% endif %}
+
+    {% if desktop_banner !=blank %}
+      {{
+        desktop_banner
+        | image_url: width: 1200
+        | image_tag:
+          class: 'plp-desktop-banner__image',
+          loading: 'lazy',
+          widths: '375, 550, 750, 1100, 1400',
+          sizes: '100vw',
+          alt: desktop_banner.alt | default: 'Collection banner'
+      }}
+    {% else %}
+      {{ 'lifestyle-2' | placeholder_svg_tag: 'plp-desktop-banner__image placeholder-svg' }}
+    {% endif %}
+
+    <div class="plp-mobile-banner__content">
+      {% if section.settings.heading != blank %}
+        <h2 class="plp-mobile-banner__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+      {% if section.settings.discount != blank %}
+        <p class="plp-mobile-banner__discount">{{ section.settings.discount }}</p>
+      {% endif %}
+      {% if section.settings.subtext != blank %}
+        <p class="plp-mobile-banner__subtext">{{ section.settings.subtext }}</p>
+      {% endif %}
+    </div>
+  </div>
+  {% if shop.customer_accounts_enabled and customer == null %}
+    <a
+      href="javascript:void(0);"
+      onclick="handleKpAndShopifyLogin(window.location.href);"
+      class="plp-mobile-banner__cta"
+    >
+      <span class="plp-mobile-banner__cta-left">
+        <span class="plp-mobile-banner__pin">{% render 'icon-map-pin' %}</span>
+        <span>{{ section.settings.cta_text }}</span>
+      </span>
+      <span class="plp-mobile-banner__arrow">{% render 'icon-arrow-left' %}</span>
+    </a>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "PLP Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "banner_image_mobile",
+      "label": "Default Banner image mobile"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_desktop",
+      "label": "Default Banner image desktop"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Bottom text",
+      "default": "Check availability by location"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Bottom link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Overlay text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Bottom row background",
+      "default": "#f3f3f3"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Bottom row text color",
+      "default": "#202020"
+    },
+    {
+      "type": "color",
+      "id": "cta_border_color",
+      "label": "Bottom row border color",
+      "default": "#cfcfcf"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_banner",
+      "name": "Collection Banner",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Select collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_image_mobile",
+          "label": "Mobile image"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_image_desktop",
+          "label": "Desktop image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PLP Banner"
+    }
+  ]
+}
+{% endschema %}

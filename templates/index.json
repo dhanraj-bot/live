@@ -1,0 +1,1202 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "black_friday_banner_MaXg8z": {
+      "type": "black-friday-banner",
+      "disabled": true,
+      "name": "TIME BOMB Banner",
+      "settings": {
+        "enable_banner": true,
+        "categories": [],
+        "end_date": "2025-12-01",
+        "end_time": "24:00:00",
+        "banner_image": "shopify://shop_images/999_1.jpg",
+        "banner_image_mobile": "shopify://shop_images/mobile_view_1.jpg",
+        "banner_title": "",
+        "banner_subtitle": "",
+        "button_text": "Shop Now",
+        "button_link": "shopify://collections/buy-2-999",
+        "show_countdown": true,
+        "countdown_label_days": "Days",
+        "countdown_label_hours": "Hours",
+        "countdown_label_minutes": "Minutes",
+        "countdown_label_seconds": "Seconds",
+        "full_width": true,
+        "banner_height_desktop": 400,
+        "banner_height_mobile": 300,
+        "content_position": "center",
+        "content_alignment": "center",
+        "bg_color": "#000000",
+        "text_color": "#ffffff",
+        "timer_bg_color": "#ffffff",
+        "timer_text_color": "#000000",
+        "overlay_opacity": 10
+      }
+    },
+    "video_QqXPcC": {
+      "type": "video",
+      "disabled": true,
+      "name": "t:sections.video.name",
+      "settings": {
+        "container": "full",
+        "video": "shopify://files/videos/Beach.mp4",
+        "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+        "video_ratio": "adapt",
+        "description": "",
+        "show_overlay_text": true,
+        "overlay_subheading": "POWERLOOK PRESENTS",
+        "overlay_heading1": "BEYOND",
+        "overlay_heading2": "ORDINARY",
+        "overlay_link_label": "SHOP NOW",
+        "overlay_link": "shopify://collections/all-products-1",
+        "overlay_text_color": "#ffffff",
+        "enable_video_autoplay": true,
+        "enable_video_looping": true,
+        "enable_parallax": true,
+        "parallax_direction": "vertical",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "slideshow_4a3BDn": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_ykLBj3": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "",
+            "background": "shopify://shop_images/1-1.jpg",
+            "background_mobile": "shopify://shop_images/mobile_e2ab734e-a6a6-4cba-9913-f7ef876bfa30.jpg",
+            "image_overlay_opacity": 0,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "title": "",
+            "heading_size": "hd1",
+            "subheading": "",
+            "description": "",
+            "description_size": "text-base",
+            "button_label": "",
+            "button_link": "shopify://collections/back-to-college",
+            "button_style": "btn--primary"
+          }
+        },
+        "slide_rzhCfM": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "",
+            "background": "shopify://shop_images/banner_46.jpg",
+            "background_mobile": "shopify://shop_images/mob_2.jpg",
+            "image_overlay_opacity": 0,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "title": "",
+            "heading_size": "hd1",
+            "subheading": "",
+            "description": "",
+            "description_size": "text-base",
+            "button_label": "",
+            "button_link": "shopify://collections/fathers-day",
+            "button_style": "btn--primary"
+          }
+        },
+        "slide_fc3QUL": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "",
+            "background": "shopify://shop_images/1_90_522e79f2-912c-4caa-a8f6-d193ddd54dcd.jpg",
+            "background_mobile": "shopify://shop_images/mobile_34.jpg",
+            "image_overlay_opacity": 0,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "title": "",
+            "heading_size": "hd1",
+            "subheading": "",
+            "description": "",
+            "description_size": "text-base",
+            "button_label": "",
+            "button_link": "shopify://collections/fashion-with-football",
+            "button_style": "btn--primary"
+          }
+        },
+        "slide_qHy8Mk": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "",
+            "background": "shopify://shop_images/5-_1_942be226-07b2-45e8-8ca6-93a05270bfb0.jpg",
+            "background_mobile": "shopify://shop_images/mobile_35.jpg",
+            "image_overlay_opacity": 0,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "title": "",
+            "heading_size": "hd1",
+            "subheading": "",
+            "description": "",
+            "description_size": "text-base",
+            "button_label": "",
+            "button_link": "shopify://collections/shirts-view-all",
+            "button_style": "btn--primary"
+          }
+        },
+        "slide_6ghyYy": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "",
+            "background": "shopify://shop_images/1-_3_de44152f-66ca-4fe9-a0a2-94e4edf466b8.jpg",
+            "background_mobile": "shopify://shop_images/mobile-1_22.jpg",
+            "image_overlay_opacity": 0,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "title": "",
+            "heading_size": "hd1",
+            "subheading": "",
+            "description": "",
+            "description_size": "text-base",
+            "button_label": "",
+            "button_link": "shopify://collections/new-arrivals-view-all",
+            "button_style": "btn--primary"
+          }
+        }
+      },
+      "block_order": [
+        "slide_ykLBj3",
+        "slide_rzhCfM",
+        "slide_fc3QUL",
+        "slide_qHy8Mk",
+        "slide_6ghyYy"
+      ],
+      "name": "t:sections.slideshow.name",
+      "settings": {
+        "container": "full",
+        "layout": "standard",
+        "slide_height": "adapt",
+        "show_dots": true,
+        "autoplay": true,
+        "autoplay_delay": 3,
+        "controls_position": "bottom",
+        "show_text_below": false,
+        "text_alignment_mobile": "center",
+        "accessibility_info": "Slideshow about our brand",
+        "showtimer": false,
+        "saletext": "",
+        "type": "fixed_time",
+        "style": "number",
+        "time": "2025/08/20 03:45 PM"
+      }
+    },
+    "1776317268c987ed16": {
+      "type": "apps",
+      "blocks": {
+        "whatmore_shoppable_videos_app_block_stories_JBkWLz": {
+          "type": "shopify://apps/whatmore-shoppable-videos/blocks/app-block-stories/20db8a72-315a-4364-8885-64219ee48303",
+          "settings": {
+            "template-type": "template-stories-a",
+            "stories-top-bottom-padding": 40,
+            "story-tile-size": 40,
+            "story-tile-size-desktop": 40
+          }
+        }
+      },
+      "block_order": [
+        "whatmore_shoppable_videos_app_block_stories_JBkWLz"
+      ],
+      "settings": {
+        "include_margins": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "popular_category_slider_b67jkD": {
+      "type": "popular-category-slider",
+      "blocks": {
+        "category_fpTRPJ": {
+          "type": "category",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/icon.jpg",
+            "title": "TRENDING NOW",
+            "link": "shopify://collections/all-products"
+          }
+        },
+        "category_zAHyyK": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/summer.jpg",
+            "title": "Summer Wear",
+            "link": "shopify://collections/summer-essentials"
+          }
+        },
+        "category_ek3iHE": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/t-shirt_27.jpg",
+            "title": "T-Shirts",
+            "link": "shopify://collections/t-shirts"
+          }
+        },
+        "category_M4fgdj": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/shirt_30.jpg",
+            "title": "Shirts",
+            "link": "shopify://collections/shirts"
+          }
+        },
+        "category_6HfF6B": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/bottoms_25.jpg",
+            "title": "Bottoms",
+            "link": "shopify://collections/bottoms-view-all"
+          }
+        },
+        "category_9VtrY7": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/co-ords_6.png",
+            "title": "Co-Ords",
+            "link": "shopify://collections/co-ords"
+          }
+        },
+        "category_RN7qbt": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/new_arrival_15.jpg",
+            "title": "New Arrivals",
+            "link": "shopify://collections/new-arrivals-view-all"
+          }
+        }
+      },
+      "block_order": [
+        "category_fpTRPJ",
+        "category_zAHyyK",
+        "category_ek3iHE",
+        "category_M4fgdj",
+        "category_6HfF6B",
+        "category_9VtrY7",
+        "category_RN7qbt"
+      ],
+      "name": "Popular Category Slider",
+      "settings": {
+        "heading": "POPULAR CATEGORIES",
+        "background_color": "#ffffff",
+        "desktop_columns": 6,
+        "padding_top": 0,
+        "padding_bottom": 60,
+        "padding_left": 64,
+        "padding_right": 64,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 40,
+        "padding_left_mobile": 16,
+        "padding_right_mobile": 16
+      }
+    },
+    "triple_image_banner_home": {
+      "type": "triple-image-banner",
+      "settings": {
+        "hero_image": "shopify://shop_images/Untitled-1.jpg..jpg",
+        "hero_image_mobile": "shopify://shop_images/Untitled-1_4_bb2268dd-63b3-44b5-a25c-2b9641acb227.jpg",
+        "heading": "",
+        "subtext": "Basics Are Boring",
+        "left_image": "shopify://shop_images/2_69_e71e5dd8-1d56-4fb7-a2ab-132033c6b73d.jpg",
+        "left_text": "Casual Leave Collection",
+        "left_sub_text": "",
+        "left_link": "shopify://collections/casual-leave",
+        "right_image": "shopify://shop_images/3_57.jpg",
+        "right_text": "Pinterest Collection",
+        "right_sub_text": "",
+        "right_link": "shopify://collections/find-pinterest-looks",
+        "line1": false,
+        "line2": true,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0
+      }
+    },
+    "new_deals_new_ideas_GVJ8PN": {
+      "type": "new_deals_new_ideas",
+      "blocks": {
+        "deals_VyKcDb": {
+          "type": "Deals",
+          "settings": {
+            "image": "shopify://shop_images/900x379--1.jpg",
+            "alt_text": "Red hot sale",
+            "deal_text": "",
+            "link": "shopify://collections/gen-z"
+          }
+        },
+        "deals_KfdaHq": {
+          "type": "Deals",
+          "settings": {
+            "image": "shopify://shop_images/900x379--2_1.jpg",
+            "alt_text": "Bottoms",
+            "deal_text": "",
+            "link": "shopify://collections/millennials"
+          }
+        },
+        "deals_pJ7F7K": {
+          "type": "Deals",
+          "settings": {
+            "image": "shopify://shop_images/900x379-_2.jpg",
+            "alt_text": "Plain shirt",
+            "deal_text": "",
+            "link": "shopify://collections/linen-collection"
+          }
+        },
+        "deals_c3pVg8": {
+          "type": "Deals",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/900x379-2_1.jpg",
+            "alt_text": "Tshirts",
+            "deal_text": "",
+            "link": "shopify://collections/t-shirts-textured-polos"
+          }
+        }
+      },
+      "block_order": [
+        "deals_VyKcDb",
+        "deals_KfdaHq",
+        "deals_pJ7F7K",
+        "deals_c3pVg8"
+      ],
+      "name": "New Deals",
+      "settings": {
+        "title": "Life before sold out!",
+        "padding_top": 60,
+        "padding_bottom": 0,
+        "padding_left": 64,
+        "padding_right": 64,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 0,
+        "padding_left_mobile": 0,
+        "padding_right_mobile": 0
+      }
+    },
+    "popular_category_zMBDke": {
+      "type": "popular-category",
+      "blocks": {
+        "category_7Ax7J6": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/600x357-3_07a53f46-1514-461c-b9c4-e8c3d637f037.jpg",
+            "image_mobile": "shopify://shop_images/600x357-3_07a53f46-1514-461c-b9c4-e8c3d637f037.jpg",
+            "alt_text": "",
+            "price_text": "",
+            "category_name": "Easy day always",
+            "link": "shopify://collections/comfort-core"
+          }
+        },
+        "category_QKETPx": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/600x357-6_d2385985-bdd8-473b-ab75-a477c35276d0.jpg",
+            "image_mobile": "shopify://shop_images/600x357-6_d2385985-bdd8-473b-ab75-a477c35276d0.jpg",
+            "alt_text": "shirts",
+            "price_text": "",
+            "category_name": "DATE READY",
+            "link": "shopify://collections/date-ready"
+          }
+        },
+        "category_nBqX7b": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/Concert_Fits_7223660d-25fe-42ea-bbfd-12775464afbe.jpg",
+            "image_mobile": "shopify://shop_images/Concert_Fits_7223660d-25fe-42ea-bbfd-12775464afbe.jpg",
+            "alt_text": "",
+            "price_text": "",
+            "category_name": "LOVE FOR concert",
+            "link": "shopify://collections/concert-core"
+          }
+        },
+        "category_aJC8hR": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/casual_wear_c661fcb8-e539-4283-b93f-a4fe735da505.jpg",
+            "image_mobile": "shopify://shop_images/casual_wear_c661fcb8-e539-4283-b93f-a4fe735da505.jpg",
+            "alt_text": "",
+            "price_text": "",
+            "category_name": "AFTER OFFICE",
+            "link": "shopify://collections/office-drip"
+          }
+        },
+        "category_xfJiKz": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/new_drops_6089f17e-502e-4801-98ea-b6738b20cecd.jpg",
+            "image_mobile": "shopify://shop_images/new_drops_6089f17e-502e-4801-98ea-b6738b20cecd.jpg",
+            "alt_text": "",
+            "price_text": "",
+            "category_name": "NEW DROPS",
+            "link": "shopify://collections/new-arrivals-view-all"
+          }
+        },
+        "category_Qecxii": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/600x357-2_a553ceae-fe37-405d-a07e-919a1855b00f.jpg",
+            "image_mobile": "shopify://shop_images/600x357-2_a553ceae-fe37-405d-a07e-919a1855b00f.jpg",
+            "alt_text": "",
+            "price_text": "",
+            "category_name": "9 to 5",
+            "link": "shopify://collections/work-wears"
+          }
+        }
+      },
+      "block_order": [
+        "category_7Ax7J6",
+        "category_QKETPx",
+        "category_nBqX7b",
+        "category_aJC8hR",
+        "category_xfJiKz",
+        "category_Qecxii"
+      ],
+      "name": "Popular Category",
+      "settings": {
+        "title": "THE SALE YOUR CART MANIFESTED",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_left": 64,
+        "padding_right": 64,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_left_mobile": 0,
+        "padding_right_mobile": 0
+      }
+    },
+    "banner_with_products_ihPyXD": {
+      "type": "banner-with-products",
+      "name": "products image banner",
+      "settings": {
+        "hero_image": "shopify://shop_images/Untitled-4_3.jpg",
+        "hero_image_mobile": "shopify://shop_images/Untitled-2_7.jpg",
+        "heading": "Aesthetic Style Of Social Media",
+        "subtext": "",
+        "line1": false,
+        "line2": true,
+        "collection": "aesthetic-style-for-social-media",
+        "limit": 7,
+        "limit_mobile": 9,
+        "columns": 7,
+        "columns_mobile": "1",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0,
+        "bottom_label": "View all",
+        "pcard_image_ratio": "adapt"
+      }
+    },
+    "time_ticking_deals_96xDzL": {
+      "type": "time-ticking-deals",
+      "disabled": true,
+      "name": "Time ticking deals",
+      "settings": {
+        "heading": "Time Ticking deals",
+        "timer_hours": 1,
+        "timer_minutes": 24,
+        "timer_seconds": 53,
+        "hours_label": "H",
+        "minutes_label": "M",
+        "seconds_label": "S",
+        "padding_top": 60,
+        "padding_bottom": 0,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 0,
+        "collection": "all-products-1",
+        "items_to_show": 4,
+        "items_to_show_mobile": 2,
+        "columns": 4,
+        "columns_mobile": 2,
+        "column_gap": "20",
+        "button_label": "View all",
+        "row_gap": "inherit",
+        "column_gap_mobile": "12",
+        "enable_slider": true,
+        "swipe_on_mobile": true,
+        "padding_horizontal_products": 64,
+        "padding_horizontal_products_mobile": 16,
+        "padding_top_products": 24,
+        "padding_top_products_mobile": 20
+      }
+    },
+    "featured_collection_jhQm8R": {
+      "type": "featured-collection",
+      "disabled": true,
+      "name": "t:sections.featured-collection.presets.name",
+      "settings": {
+        "color_scheme": "",
+        "header_layout": "vertical",
+        "heading": "Our Bestsellers",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "text_size": "text-base",
+        "show_collection_description": false,
+        "collection": "best-sellers",
+        "limit": 8,
+        "columns": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "grid_layout": "standard",
+        "enable_slider": true,
+        "controls_position": "inside",
+        "pcard_image_ratio": "",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "show_all_button_on_top": false,
+        "button_label": "view all",
+        "button_style": "btn--underline",
+        "padding_top": 0,
+        "padding_bottom": 60,
+        "padding_left": 64,
+        "padding_right": 64,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "product_tabs_iJHLzK": {
+      "type": "product-tabs",
+      "blocks": {
+        "tab_Yz8Mnz": {
+          "type": "tab",
+          "settings": {
+            "title": "T-Shirt",
+            "collection": "new-arrivals-t-shirts",
+            "collectionLink": "shopify://collections/new-arrivals-t-shirts"
+          }
+        },
+        "tab_9cGBUe": {
+          "type": "tab",
+          "settings": {
+            "title": "Shirt",
+            "collection": "new-arrivals-shirts",
+            "collectionLink": "shopify://collections/new-arrivals-shirts"
+          }
+        },
+        "tab_AfgNn8": {
+          "type": "tab",
+          "settings": {
+            "title": "Bottoms",
+            "collection": "new-arrivals-bottoms",
+            "collectionLink": "shopify://collections/new-arrivals-bottoms"
+          }
+        },
+        "tab_YbeVBL": {
+          "type": "tab",
+          "settings": {
+            "title": "Co-ords",
+            "collection": "co-ords",
+            "collectionLink": "shopify://collections/co-ords"
+          }
+        },
+        "tab_Jy8i9X": {
+          "type": "tab",
+          "settings": {
+            "title": "All Products",
+            "collection": "all-products-1",
+            "collectionLink": "shopify://collections/all-products-1"
+          }
+        }
+      },
+      "block_order": [
+        "tab_Yz8Mnz",
+        "tab_9cGBUe",
+        "tab_AfgNn8",
+        "tab_YbeVBL",
+        "tab_Jy8i9X"
+      ],
+      "settings": {
+        "color_scheme": "",
+        "header_layout": "vertical",
+        "heading": "New Arrivals",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "limit": 4,
+        "enable_infinite_scroll": false,
+        "infinite_scroll_batch": 4,
+        "infinite_scroll_max_products": 40,
+        "columns": 4,
+        "column_gap": "small",
+        "row_gap": "extra-small",
+        "grid_layout": "standard",
+        "pcard_image_ratio": "",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "show_all_button_on_top": true,
+        "button_label": "View All",
+        "button_link": "shopify://collections/all-products-1",
+        "button_style": "btn--underline",
+        "tabs_nav_style": "design-2",
+        "padding_top": 50,
+        "padding_bottom": 0,
+        "padding_left": 64,
+        "padding_right": 64,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "clearence_sale_adfbFR": {
+      "type": "clearence-sale",
+      "name": "Clearance Sale Banner",
+      "settings": {
+        "top_text": "",
+        "top_text_color": "#ffffff",
+        "background_color": "#adadad",
+        "discount": "SHOP IT SAVE IT",
+        "description": "COLLECTION UNDER ₹999/-",
+        "button_link": "shopify://collections/under-999",
+        "button_text": "SHOP NOW",
+        "ribbon_text": "SHOP IT SAVE IT",
+        "ribon_color": "#000000",
+        "padding_top": 60,
+        "padding_bottom": 10,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 0
+      }
+    },
+    "17697694197a281cfb": {
+      "type": "apps",
+      "blocks": {
+        "whatmore_shoppable_videos_app_block_LGfbQ7": {
+          "type": "shopify://apps/whatmore-shoppable-videos/blocks/app-block/20db8a72-315a-4364-8885-64219ee48303",
+          "settings": {
+            "heading": "STYLE AND LOVED BY ALL",
+            "widget-identity": "wgt_default",
+            "template-type": "template-j",
+            "title-font-size": 28,
+            "title-font-size-portrait": 16,
+            "landscape-padding": 16,
+            "top-bottom-padding": 0,
+            "scroll-video-tile-size": 80,
+            "scroll-video-tile-size-portrait": 80,
+            "min-height": 350
+          }
+        }
+      },
+      "block_order": [
+        "whatmore_shoppable_videos_app_block_LGfbQ7"
+      ],
+      "settings": {
+        "include_margins": true,
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    },
+    "banner_and_category_products_MNV4Fe": {
+      "type": "banner-and-category-products",
+      "name": "Banner and products",
+      "settings": {
+        "hero_image": "shopify://shop_images/belt.jpg",
+        "hero_image_mobile": "shopify://shop_images/mb3.jpg",
+        "heading": "Elegant Belts",
+        "subtext": "Tighten your style",
+        "line1": false,
+        "line2": true,
+        "padding_top": 48,
+        "padding_bottom": 0,
+        "padding_top_mobile": 28,
+        "padding_bottom_mobile": 0,
+        "collection": "belts",
+        "items_to_show": 4,
+        "items_to_show_mobile": 2,
+        "columns": 4,
+        "columns_mobile": 2,
+        "column_gap": "20",
+        "button_label": "View All",
+        "row_gap": "inherit",
+        "column_gap_mobile": "12",
+        "enable_slider": true,
+        "swipe_on_mobile": true,
+        "padding_horizontal_products": 60,
+        "padding_horizontal_products_mobile": 16,
+        "padding_top_products": 60,
+        "padding_top_products_mobile": 26
+      }
+    },
+    "banner_and_category_products_Mfywbn": {
+      "type": "banner-and-category-products",
+      "name": "Banner and products",
+      "settings": {
+        "hero_image": "shopify://shop_images/Embroidery-1.jpg",
+        "hero_image_mobile": "shopify://shop_images/mb1.jpg",
+        "heading": "Party pairings",
+        "subtext": "Elegance in every detail",
+        "line1": false,
+        "line2": true,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0,
+        "collection": "embroidery-collection",
+        "items_to_show": 4,
+        "items_to_show_mobile": 2,
+        "columns": 4,
+        "columns_mobile": 2,
+        "column_gap": "20",
+        "button_label": "View All",
+        "row_gap": "inherit",
+        "column_gap_mobile": "12",
+        "enable_slider": true,
+        "swipe_on_mobile": true,
+        "padding_horizontal_products": 60,
+        "padding_horizontal_products_mobile": 16,
+        "padding_top_products": 60,
+        "padding_top_products_mobile": 40
+      }
+    },
+    "triple_image_banner_UrrpCG": {
+      "type": "triple-image-banner",
+      "disabled": true,
+      "name": "Triple image banner",
+      "settings": {
+        "hero_image": "shopify://shop_images/main-bg.png",
+        "hero_image_mobile": "shopify://shop_images/deal-of-day-mobile.png",
+        "heading": "CHANNEL THE OLD MONEY VIBE",
+        "subtext": "40% OFF ON SELECTED ITEMS",
+        "left_image": "shopify://shop_images/shirt.png",
+        "left_text": "SHOP TOPWEAR",
+        "left_sub_text": "",
+        "left_link": "",
+        "right_image": "shopify://shop_images/pant.png",
+        "right_text": "SHOP BOTTOMWEAR",
+        "right_sub_text": "",
+        "right_link": "",
+        "line1": true,
+        "line2": true,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0
+      }
+    },
+    "banner_and_category_products_eEm47J": {
+      "type": "banner-and-category-products",
+      "name": "Banner and products",
+      "settings": {
+        "hero_image": "shopify://shop_images/cotton-1.jpg",
+        "hero_image_mobile": "shopify://shop_images/mb2.jpg",
+        "heading": "Shirts",
+        "subtext": "Straight out of your saved posts",
+        "line1": false,
+        "line2": true,
+        "padding_top": 58,
+        "padding_bottom": 0,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 0,
+        "collection": "cotton-collection",
+        "items_to_show": 4,
+        "items_to_show_mobile": 2,
+        "columns": 4,
+        "columns_mobile": 2,
+        "column_gap": "20",
+        "button_label": "View All",
+        "row_gap": "inherit",
+        "column_gap_mobile": "12",
+        "enable_slider": true,
+        "swipe_on_mobile": true,
+        "padding_horizontal_products": 60,
+        "padding_horizontal_products_mobile": 16,
+        "padding_top_products": 60,
+        "padding_top_products_mobile": 40
+      }
+    },
+    "banner_and_category_products_XWa9mL": {
+      "type": "banner-and-category-products",
+      "disabled": true,
+      "name": "Banner and products",
+      "settings": {
+        "hero_image": "shopify://shop_images/pant1.png",
+        "hero_image_mobile": "shopify://shop_images/product-banner-mobile.png",
+        "heading": "Trouser",
+        "subtext": "Get the Vibe Under ₹799",
+        "line1": false,
+        "line2": true,
+        "padding_top": 58,
+        "padding_bottom": 0,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 0,
+        "collection": "trousers",
+        "items_to_show": 4,
+        "items_to_show_mobile": 2,
+        "columns": 4,
+        "columns_mobile": 2,
+        "column_gap": "20",
+        "button_label": "View All",
+        "row_gap": "inherit",
+        "column_gap_mobile": "12",
+        "enable_slider": true,
+        "swipe_on_mobile": true,
+        "padding_horizontal_products": 60,
+        "padding_horizontal_products_mobile": 16,
+        "padding_top_products": 60,
+        "padding_top_products_mobile": 40
+      }
+    },
+    "style_follows_you_bLadUc": {
+      "type": "style-follows-you",
+      "blocks": {
+        "style_card_amWUFJ": {
+          "type": "style_card",
+          "settings": {
+            "image": "shopify://shop_images/376x262-1.jpg",
+            "mobile_image": "shopify://shop_images/171x120-1.jpg",
+            "title": "OLD MONEY",
+            "link": "shopify://collections/shirts-oversized-shirts-1"
+          }
+        },
+        "style_card_MMfUbx": {
+          "type": "style_card",
+          "settings": {
+            "image": "shopify://shop_images/376x262-2.jpg",
+            "mobile_image": "shopify://shop_images/171x120-2.jpg",
+            "title": "Korean Fit",
+            "link": "shopify://collections/t-shirts-oversized-t-shirts"
+          }
+        },
+        "style_card_YTaG6R": {
+          "type": "style_card",
+          "settings": {
+            "image": "shopify://shop_images/376x262-3.jpg",
+            "mobile_image": "shopify://shop_images/355x248.jpg",
+            "title": "Streetwear",
+            "link": "shopify://collections/bottoms-track-pants"
+          }
+        },
+        "style_card_q3TYM6": {
+          "type": "style_card",
+          "settings": {
+            "image": "shopify://shop_images/572x262-1.jpg",
+            "mobile_image": "shopify://shop_images/171x120-3.jpg",
+            "title": "Minimalist",
+            "link": ""
+          }
+        },
+        "style_card_e4QnD4": {
+          "type": "style_card",
+          "settings": {
+            "image": "shopify://shop_images/572x262-2.jpg",
+            "mobile_image": "shopify://shop_images/171x120-4.jpg",
+            "title": "OLD MONEY",
+            "link": "shopify://collections/all-products-1"
+          }
+        }
+      },
+      "block_order": [
+        "style_card_amWUFJ",
+        "style_card_MMfUbx",
+        "style_card_YTaG6R",
+        "style_card_q3TYM6",
+        "style_card_e4QnD4"
+      ],
+      "disabled": true,
+      "name": "Style Follows You",
+      "settings": {
+        "heading": "STYLE THAT FOLLOWS YOU",
+        "background_color": "#ffffff",
+        "padding_top": 0,
+        "padding_bottom": 120,
+        "padding_left": 64,
+        "padding_right": 64,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 40,
+        "padding_left_mobile": 10,
+        "padding_right_mobile": 10
+      }
+    },
+    "shop_the_look_q6CQaF": {
+      "type": "shop-the-look",
+      "blocks": {
+        "product_4NGFVD": {
+          "type": "product",
+          "settings": {
+            "product": "cocoa-brown-crinkled-shirt",
+            "top": 28,
+            "left": 50,
+            "top_mobile": 35,
+            "left_mobile": 50
+          }
+        },
+        "product_aqmmPt": {
+          "type": "product",
+          "settings": {
+            "product": "beige-regular-fit-corduroy-pant",
+            "top": 48,
+            "left": 50,
+            "top_mobile": 53,
+            "left_mobile": 50
+          }
+        }
+      },
+      "block_order": [
+        "product_4NGFVD",
+        "product_aqmmPt"
+      ],
+      "disabled": true,
+      "name": "Shop the Look",
+      "settings": {
+        "color_scheme": "",
+        "heading": "Shop the Look",
+        "subheading": "",
+        "description": "",
+        "image": "shopify://shop_images/shop_the_look.png",
+        "image_mobile": "shopify://shop_images/mobile_1.png",
+        "annotation_color": "dark",
+        "buy_button_label": "",
+        "buy_button_link": "",
+        "enable_size_selection": false,
+        "padding_top": 20,
+        "padding_bottom": 60,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "featured_collection_9dGRaM": {
+      "type": "featured-collection",
+      "name": "t:sections.featured-collection.presets.name",
+      "settings": {
+        "color_scheme": "",
+        "header_layout": "vertical",
+        "heading": "RECOMMENDED FOR YOU",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "text_size": "text-base",
+        "show_collection_description": false,
+        "collection": "trending-now",
+        "limit": 8,
+        "columns": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "grid_layout": "standard",
+        "enable_slider": true,
+        "controls_position": "inside",
+        "pcard_image_ratio": "",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "show_all_button_on_top": false,
+        "button_label": "View All",
+        "button_style": "btn--primary",
+        "padding_top": 0,
+        "padding_bottom": 62,
+        "padding_left": 64,
+        "padding_right": 64,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "176093745931b09b6e": {
+      "type": "apps",
+      "blocks": {
+        "shoppable_video_instagram_reel_app_block_4z9KPL": {
+          "type": "shopify://apps/shoppable-video-instagram-reel/blocks/app-block/f19e5d4b-198e-478b-9f10-15eb1964910e",
+          "disabled": true,
+          "settings": {
+            "carousel_name": "Homepage 1"
+          }
+        }
+      },
+      "block_order": [
+        "shoppable_video_instagram_reel_app_block_4z9KPL"
+      ],
+      "settings": {
+        "include_margins": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "extra_benifits_rieaW7": {
+      "type": "extra-benifits",
+      "blocks": {
+        "benifits_jED3ef": {
+          "type": "benifits",
+          "settings": {
+            "icon": "shopify://shop_images/truck-icon.png",
+            "title": "Free Shipping on all orders"
+          }
+        },
+        "benifits_bkb3kG": {
+          "type": "benifits",
+          "disabled": true,
+          "settings": {
+            "icon": "shopify://shop_images/ClockCountdown.png",
+            "title": "Order Dispatch in 24 hours"
+          }
+        },
+        "benifits_y3hqCd": {
+          "type": "benifits",
+          "settings": {
+            "icon": "shopify://shop_images/store_1.png",
+            "title": "12+ Stores Pan India"
+          }
+        },
+        "benifits_yxFWqt": {
+          "type": "benifits",
+          "settings": {
+            "icon": "shopify://shop_images/customer.png",
+            "title": "Trusted by 2.5M+ Happy Customers"
+          }
+        }
+      },
+      "block_order": [
+        "benifits_jED3ef",
+        "benifits_bkb3kG",
+        "benifits_y3hqCd",
+        "benifits_yxFWqt"
+      ],
+      "name": "Extra benifits",
+      "settings": {
+        "image": "shopify://shop_images/1-_jpg.jpg",
+        "image_mobile": "shopify://shop_images/mob_jpg.jpg",
+        "heading": "",
+        "alt_text": "image",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "padding_left": 0,
+        "padding_right": 0,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0,
+        "padding_left_mobile": 0,
+        "padding_right_mobile": 0
+      }
+    },
+    "product_tabs_QJApFg": {
+      "type": "product-tabs",
+      "blocks": {
+        "tab_6HncMz": {
+          "type": "tab",
+          "settings": {
+            "title": "All",
+            "collection": "all-products",
+            "collectionLink": "shopify://collections/all-products"
+          }
+        },
+        "tab_rYWYk8": {
+          "type": "tab",
+          "settings": {
+            "title": "Polo-T-Shirts",
+            "collection": "t-shirts-textured-polos",
+            "collectionLink": "shopify://collections/t-shirts-textured-polos"
+          }
+        },
+        "tab_cL6XwD": {
+          "type": "tab",
+          "settings": {
+            "title": "Printed T-Shirts",
+            "collection": "t-shirts-printed-t-shirts",
+            "collectionLink": "shopify://collections/t-shirts-printed-t-shirts"
+          }
+        },
+        "tab_7GWApQ": {
+          "type": "tab",
+          "settings": {
+            "title": "Plain Shirts",
+            "collection": "shirts-plain-shirts",
+            "collectionLink": "shopify://collections/shirts-plain-shirts"
+          }
+        },
+        "tab_LNExV8": {
+          "type": "tab",
+          "settings": {
+            "title": "Jeans",
+            "collection": "bottoms-jeans-cargo",
+            "collectionLink": "shopify://collections/bottoms-jeans-cargo"
+          }
+        },
+        "tab_zyMGwU": {
+          "type": "tab",
+          "settings": {
+            "title": "Trousers",
+            "collection": "trousers",
+            "collectionLink": "shopify://collections/trousers"
+          }
+        },
+        "tab_tKHfXN": {
+          "type": "tab",
+          "settings": {
+            "title": "Track Pants",
+            "collection": "bottoms-track-pants",
+            "collectionLink": "shopify://collections/bottoms-track-pants"
+          }
+        }
+      },
+      "block_order": [
+        "tab_6HncMz",
+        "tab_rYWYk8",
+        "tab_cL6XwD",
+        "tab_7GWApQ",
+        "tab_LNExV8",
+        "tab_zyMGwU",
+        "tab_tKHfXN"
+      ],
+      "settings": {
+        "color_scheme": "",
+        "header_layout": "vertical",
+        "heading": "Our Products",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "limit": 8,
+        "enable_infinite_scroll": true,
+        "infinite_scroll_batch": 6,
+        "infinite_scroll_max_products": 48,
+        "columns": 4,
+        "column_gap": "small",
+        "row_gap": "small",
+        "grid_layout": "standard",
+        "pcard_image_ratio": "",
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "show_all_button_on_top": false,
+        "button_label": "View All",
+        "button_link": "shopify://collections/t-shirts-view-all-non-use",
+        "button_style": "btn--underline",
+        "tabs_nav_style": "design-2",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_left": 64,
+        "padding_right": 64,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    }
+  },
+  "order": [
+    "black_friday_banner_MaXg8z",
+    "video_QqXPcC",
+    "slideshow_4a3BDn",
+    "1776317268c987ed16",
+    "popular_category_slider_b67jkD",
+    "triple_image_banner_home",
+    "new_deals_new_ideas_GVJ8PN",
+    "popular_category_zMBDke",
+    "banner_with_products_ihPyXD",
+    "time_ticking_deals_96xDzL",
+    "featured_collection_jhQm8R",
+    "product_tabs_iJHLzK",
+    "clearence_sale_adfbFR",
+    "17697694197a281cfb",
+    "banner_and_category_products_MNV4Fe",
+    "banner_and_category_products_Mfywbn",
+    "triple_image_banner_UrrpCG",
+    "banner_and_category_products_eEm47J",
+    "banner_and_category_products_XWa9mL",
+    "style_follows_you_bLadUc",
+    "shop_the_look_q6CQaF",
+    "featured_collection_9dGRaM",
+    "176093745931b09b6e",
+    "extra_benifits_rieaW7",
+    "product_tabs_QJApFg"
+  ]
+}

@@ -1,0 +1,18 @@
+/* Smooth transition for hiding countdown sections */
+.countdown__wrapper {
+  transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+}
+
+.countdown__wrapper[style*="display: none"] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Alternative approach using CSS classes */
+.countdown__wrapper.countdown--hidden {
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease-out, visibility 0.3s ease-out, height 0.3s ease-out;
+}

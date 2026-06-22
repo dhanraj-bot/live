@@ -1,0 +1,439 @@
+{{ 'component-article-card.css' | asset_url | stylesheet_tag }}
+
+{% comment %}
+  Enhanced Blog Tabs by Blog Snippet
+  Displays different blogs as tabs with search functionality
+{% endcomment %}
+
+{% liquid
+  assign current_blog_handle = blog.handle
+  assign all_blogs = blogs
+  assign articles_per_tab = section.settings.post_limit | default: 6
+  assign columns_desktop = section.settings.columns_desktop | default: 3
+  assign columns_tablet = columns_desktop
+  if columns_desktop > 3
+    assign columns_tablet = columns_desktop | divided_by: 2.0 | ceil
+  endif
+%}
+
+<div class="blog-tabs-by-blog-enhanced section section--padding" 
+     style="--section-padding-top: {{ section.settings.padding_top | default: 50 }}px;--section-padding-bottom: {{ section.settings.padding_bottom | default: 50 }}px;">
+  <div class="page-width">
+    
+    <!-- Blog Tabs Navigation with Search -->
+    <div class="blog-tabs-by-blog-enhanced__header spacing--large">
+      <div class="blog-tabs-by-blog-enhanced__navigation">
+        <div class="swipe-mobile text-center">
+          <ul class="inline-flex items-center flex-nowrap md:flex-wrap font-navigation blog-tabs-by-blog-enhanced__list" role="tablist">
+            {% for blog_item in all_blogs limit: 5 %}
+              <li class="blog-tabs-by-blog-enhanced__item" role="presentation">
+                <button class="blog-tabs-by-blog-enhanced__button reversed-link{% if current_blog_handle == blog_item.handle %} active{% endif %}" 
+                        data-blog="{{ blog_item.handle }}" 
+                        role="tab" 
+                        aria-selected="{% if current_blog_handle == blog_item.handle %}true{% else %}false{% endif %}"
+                        aria-controls="tab-panel-{{ blog_item.handle }}">
+                  {{ blog_item.title }}
+                </button>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        
+        <!-- Search Icon -->
+        <div class="blog-tabs-by-blog-enhanced__search">
+          <button class="blog-tabs-by-blog-enhanced__search-button" aria-label="Search blogs">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 19L13 13M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blog Tabs Content -->
+    <div class="blog-tabs-by-blog-enhanced__content">
+      
+      <!-- Blog Tab Panels -->
+      {% for blog_item in all_blogs limit: 5 %}
+        <div class="blog-tabs-by-blog-enhanced__panel{% if current_blog_handle == blog_item.handle %} active{% endif %}" 
+             id="tab-panel-{{ blog_item.handle }}" 
+             role="tabpanel" 
+             aria-labelledby="tab-button-{{ blog_item.handle }}">
+          <grid-list class="blog-tabs-by-blog-enhanced__grid f-grid f-grid-1-cols md:f-grid-{{ columns_tablet }}-cols lg:f-grid-{{ columns_desktop }}-cols f-grid--gap-{{ section.settings.column_gap | default: 'extra-large' }}">
+            {%- for article in blog_item.articles limit: articles_per_tab -%}
+              <div class="f-column">
+                {%- render 'card-article',
+                  article: article,
+                  show_date: section.settings.show_date | default: true,
+                  show_excerpt: section.settings.show_excerpt | default: true,
+                  show_button: section.settings.show_button | default: true,
+                  index: forloop.index,
+                  title_size: section.settings.card_title_size | default: 'h3'
+                -%}
+              </div>
+            {%- endfor -%}
+          </grid-list>
+        </div>
+      {% endfor %}
+
+    </div>
+
+  </div>
+</div>
+
+<style>
+.blog-tabs-by-blog-enhanced__header {
+  margin-bottom: 3rem;
+}
+
+.blog-tabs-by-blog-enhanced__navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.blog-tabs-by-blog-enhanced__list {
+  gap: 2rem;
+  justify-content: center;
+  flex: 1;
+}
+
+.blog-tabs-by-blog-enhanced__button {
+  position: relative;
+  padding: 0.5rem 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.blog-tabs-by-blog-enhanced__button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-accent, #ff6b6b);
+  transition: width 0.3s ease;
+}
+
+.blog-tabs-by-blog-enhanced__button.active::after {
+  width: 100%;
+}
+
+.blog-tabs-by-blog-enhanced__button:hover {
+  color: var(--color-accent, #ff6b6b);
+}
+
+.blog-tabs-by-blog-enhanced__search {
+  flex-shrink: 0;
+}
+
+.blog-tabs-by-blog-enhanced__search-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-text, #333);
+  transition: color 0.3s ease;
+  border-radius: 50%;
+}
+
+.blog-tabs-by-blog-enhanced__search-button:hover {
+  color: var(--color-accent, #ff6b6b);
+  background-color: rgba(255, 107, 107, 0.1);
+}
+
+.blog-tabs-by-blog-enhanced__panel {
+  display: none;
+}
+
+.blog-tabs-by-blog-enhanced__panel.active {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .blog-tabs-by-blog-enhanced__navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .blog-tabs-by-blog-enhanced__list {
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    width: 100%;
+  }
+  
+  .blog-tabs-by-blog-enhanced__button {
+    white-space: nowrap;
+  }
+  
+  .blog-tabs-by-blog-enhanced__search {
+    align-self: flex-end;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tabButtons = document.querySelectorAll('.blog-tabs-by-blog-enhanced__button');
+  const tabPanels = document.querySelectorAll('.blog-tabs-by-blog-enhanced__panel');
+  const searchButton = document.querySelector('.blog-tabs-by-blog-enhanced__search-button');
+
+  // Tab functionality
+  tabButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const targetBlog = this.getAttribute('data-blog');
+      
+      // Remove active class from all buttons and panels
+      tabButtons.forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
+      });
+      
+      tabPanels.forEach(panel => {
+        panel.classList.remove('active');
+      });
+      
+      // Add active class to clicked button and corresponding panel
+      this.classList.add('active');
+      this.setAttribute('aria-selected', 'true');
+      
+      const targetPanel = document.getElementById(`tab-panel-${targetBlog}`);
+      if (targetPanel) {
+        targetPanel.classList.add('active');
+      }
+    });
+  });
+
+  // Search functionality (placeholder)
+  if (searchButton) {
+    searchButton.addEventListener('click', function() {
+      // You can implement search functionality here
+      console.log('Search clicked');
+      // Example: open search modal or redirect to search page
+      // window.location.href = '/search?q=blog';
+    });
+  }
+});
+</script>
+
+
+{% schema %}
+{
+  "name": "Blog Tabs",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "default": "hd2",
+      "options": [
+        {
+          "value": "h6",
+          "label": "H6"
+        },
+        {
+          "value": "h5",
+          "label": "H5"
+        },
+        {
+          "value": "h4",
+          "label": "H4"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "hd3",
+          "label": "HD3"
+        },
+        {
+          "value": "hd2",
+          "label": "HD2"
+        },
+        {
+          "value": "hd1",
+          "label": "HD1"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Blog Settings"
+    },
+    {
+      "type": "range",
+      "id": "post_limit",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 6,
+      "label": "Posts per blog"
+    },
+    {
+      "type": "header",
+      "content": "Grid Settings"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3,
+      "label": "Columns (Desktop)"
+    },
+    {
+      "type": "select",
+      "id": "column_gap",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "extra-small",
+          "label": "Extra Small"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "extra-large",
+          "label": "Extra Large"
+        }
+      ],
+      "default": "extra-large",
+      "label": "Column Gap"
+    },
+    {
+      "type": "header",
+      "content": "Card Settings"
+    },
+    {
+      "type": "select",
+      "id": "card_title_size",
+      "label": "Card Title Size",
+      "default": "h3",
+      "options": [
+        {
+          "value": "h6",
+          "label": "H6"
+        },
+        {
+          "value": "h5",
+          "label": "H5"
+        },
+        {
+          "value": "h4",
+          "label": "H4"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "hd3",
+          "label": "HD3"
+        },
+        {
+          "value": "hd2",
+          "label": "HD2"
+        },
+        {
+          "value": "hd1",
+          "label": "HD1"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "Show date"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "default": true,
+      "label": "Show excerpt"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "default": true,
+      "label": "Show read more button"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog Tabs"
+    }
+  ]
+}
+{% endschema %}

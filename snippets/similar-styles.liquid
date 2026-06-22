@@ -1,0 +1,75 @@
+{%- comment -%}
+  More Colours Snippet
+  Loops through a product metafield (list of product references) and displays each product's image and link.
+  Usage: {% render 'more-colours', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign more_colours = product.metafields.custom.product_variant.value
+  assign similar_styles_wrapper_id = wrapper_id | default: 'similar-styles-list'
+  assign render_inline_styles = include_styles
+  if render_inline_styles == nil
+    assign render_inline_styles = true
+  endif
+-%}
+{% if more_colours %}
+  <div class="more-colours" id="{{ similar_styles_wrapper_id }}">
+    <legend
+      {% unless is_fieldset_tag %}
+        for="Option-{{ section.id }}-{{ forloop.index0 }}"
+      {% endunless %}
+      class="form__label"
+    >
+      {% comment %} <div class="flex flex-wrap gap-2"> {% endcomment %}
+        <h4 class="similar-styles-title">Similar Style:</h4>
+      {% comment %} </div> {% endcomment %}
+    </legend>
+    <div class="more-colours__list">
+      {%- for related_product in more_colours -%}
+        <a href="{{ related_product.url }}" class="more-colours__item" aria-label="{{ related_product.title }}">
+          {%- if related_product.featured_image -%}
+            <img
+              src="{{ related_product.featured_image | image_url: width: 200 }}"
+              alt="{{ related_product.title | escape }}"
+              class="more-colours__image"
+              loading="lazy"
+              width=""
+              height=""
+            >
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+{% endif %}
+{% if render_inline_styles %}
+  <style>
+    /* .more-colours { margin: 2.4rem 0; } */
+    
+     /* .more-color-title {
+        margin-bottom: 1rem;
+     } */
+    .more-colours__title {
+       font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;
+       }
+    .more-colours__list { 
+      display: flex; 
+      flex-wrap: wrap;
+      row-gap: 0.4rem;
+    }
+    .more-colours__item {
+      display: block;
+      border-radius: 0px;
+      overflow: hidden;
+      width: 68px;
+      max-width: 70px;
+      height: 100%;
+      }
+    .more-colours__image { 
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+  }
+  </style>
+{% endif %}

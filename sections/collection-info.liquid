@@ -1,0 +1,120 @@
+{% schema %}
+{
+  "name": "Collection Info",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_heading",
+      "label": "Section Heading",
+      "default": "About This Collection"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace",
+      "label": "Metafield Namespace",
+      "default": "custom"
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "Metafield Key",
+      "default": "collection_description"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Info"
+    }
+  ]
+}
+{% endschema %}
+{% assign metafield_content = collection.metafields.custom.collection_info %}
+
+{% if metafield_content != blank %}
+<div class="collection-description-section">
+  <div class="page-width">
+    <h2 class="rich-text__heading hd2">
+      <motion-element class="block" data-motion="fade-up">
+        {% render 'highlight-text',
+          text: section.settings.section_heading
+        %}
+      </motion-element>
+    </h2>
+
+    <div class="read-more-container">
+      <div id="contentWrapper" class="description-content collapsed mt-6">
+        {{ metafield_content | metafield_tag }}
+      </div>
+
+      <button
+        type="button"
+        id="toggleButton"
+        class="inline-button"
+        style="color:#453D2B;"
+      >
+        Read More
+      </button>
+    </div>
+  </div>
+</div>
+{% endif %}
+<style>
+  .description-content.collapsed {
+  max-height: 150px;
+  overflow: hidden;
+  position: relative;
+}
+
+.description-content.collapsed::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,1)
+  );
+}
+
+.inline-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 12px;
+}
+.metafield-rich_text_field h1{
+  font-size: 20px;
+}
+.metafield-rich_text_field h2, .metafield-rich_text_field h3{
+  font-size: 16px;
+}
+@media (max-width:768px) {
+  .metafield-rich_text_field h1{
+  font-size: 18px;
+}
+.metafield-rich_text_field h2, .metafield-rich_text_field h3{
+  font-size: 14px;
+}
+}
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  const button = document.getElementById('toggleButton');
+  const content = document.getElementById('contentWrapper');
+
+  if (!button || !content) return;
+
+  button.addEventListener('click', function () {
+    content.classList.toggle('collapsed');
+
+    button.textContent =
+      content.classList.contains('collapsed')
+        ? 'Read More'
+        : 'Read Less';
+  });
+});
+</script>

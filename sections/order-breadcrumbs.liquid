@@ -1,0 +1,54 @@
+<style>
+section.breadcrumbs-section.order_breadcrumbs nav.breadcrumbs{
+  padding-bottom: 10px;
+  justify-content: flex-start;
+}
+li.breadcrumb-item {
+  font-size: calc(var(--font-body-size) * .9);
+  color: rgb(var(--color-foreground));
+}
+@media (max-width: 767px) {
+li.breadcrumb-item {
+    font-size: 11px; 
+}
+}
+</style>
+
+<section class="breadcrumbs-section order_breadcrumbs">
+ <div class="page-width">
+      <nav class="breadcrumbs justify-center md:justify-start" role="navigation" aria-label="breadcrumbs">
+    <ol class="breadcrumb-list" style="display:flex; align-items:center; gap:8px; list-style:none; padding:0; margin:0;">
+      <li class="breadcrumb-item">
+        <a href="/">Home</a>
+      </li>
+      <li style="color:#777;">›</li>
+
+      <li class="breadcrumb-item">
+        <a href="/account">My Account</a>
+      </li>
+      <li style="color:#777;">›</li>
+
+      <li class="breadcrumb-item">
+        <a href="/account/orders">My Orders</a>
+      </li>
+      <li style="color:#777;">›</li>
+
+      <li class="breadcrumb-item">
+        ID {{ order.name }}
+      </li>
+    </ol>
+  </nav>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Dynamic Breadcrumbs",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Dynamic Breadcrumbs"
+    }
+  ]
+}
+{% endschema %}

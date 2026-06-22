@@ -1,0 +1,505 @@
+{%- liquid
+  assign section_id = section.id
+  assign heading_text = section.settings.heading | default: ''
+  assign subtext_text = section.settings.subtext | default: ''
+  assign banner_collection = collections[section.settings.collection]
+  assign button_link = banner_collection.url
+  assign products_to_display = section.settings.limit
+  assign products_to_display_mobile = section.settings.limit_mobile | default: section.settings.limit
+  assign max_products_to_display = products_to_display
+  if products_to_display_mobile > max_products_to_display
+    assign max_products_to_display = products_to_display_mobile
+  endif
+  if banner_collection != blank
+    if banner_collection.all_products_count < products_to_display
+      assign products_to_display = banner_collection.all_products_count
+    endif
+    if banner_collection.all_products_count < products_to_display_mobile
+      assign products_to_display_mobile = banner_collection.all_products_count
+    endif
+    if banner_collection.all_products_count < max_products_to_display
+      assign max_products_to_display = banner_collection.all_products_count
+    endif
+  endif
+-%}
+{%- capture image_sizes -%}
+(max-width: 767px) calc((100vw - 36px) / {{ section.settings.columns_mobile }}),
+{{ settings.page_width | divided_by: section.settings.columns }}px
+{%- endcapture -%}
+
+<section class="products-banner products-banner--{{ section_id }}">
+  <div class="products-banner__hero">
+    {%- if section.settings.hero_image != blank -%}
+      {{
+        section.settings.hero_image
+        | image_url: width: 2200
+        | image_tag:
+          class: 'products-banner__hero-image',
+          loading: 'lazy',
+          sizes: '100vw',
+          widths: '640, 900, 1200, 1600, 2200',
+          alt: heading_text
+      }}
+    {%- else -%}
+      <div class="products-banner__hero-placeholder"></div>
+    {%- endif -%}
+    {%- if section.settings.hero_image_mobile != blank -%}
+      {{
+        section.settings.hero_image_mobile
+        | image_url: width: 2200
+        | image_tag:
+          class: 'products-banner__hero-image-mobile',
+          loading: 'lazy',
+          sizes: '100vw',
+          widths: '640, 900, 1200, 1600, 2200',
+          alt: heading_text
+      }}
+    {%- endif -%}
+    <div class="products-banner__hero-overlay"></div>
+  </div>
+
+  <div class="main-content-wrapper">
+    <div class="products-banner__hero-content">
+      {%- if section.settings.line1 -%}
+        <div class="line1"></div>
+      {%- endif -%}
+      <h2 class="products-banner__title">{{ heading_text }}</h2>
+      <div class="products-banner__badge-container">
+        <div class="products-banner__badge">
+          <p class="products-banner__badge_text">{{ subtext_text }}</p>
+        </div>
+        {%- if section.settings.line2 -%}
+          <div class="line2"></div>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="products-banner__products ">
+      <div class="products-banner__products-grid">
+        {%- if banner_collection != blank and max_products_to_display > 0 -%}
+          {%- for product in banner_collection.products limit: max_products_to_display -%}
+            <a
+              href="{{ product.url }}"
+              aria-label="{{ product.title | escape }}"
+              tabindex="-1"
+              class="products-banner__product-link{% if forloop.index > products_to_display %} products-banner__product-link--desktop-hidden{% endif %}{% if forloop.index > products_to_display_mobile %} products-banner__product-link--mobile-hidden{% endif %}"
+            >
+              <div class="products-banner__product-item">
+                {{
+                  product.featured_media
+                  | image_url: width: 400
+                  | image_tag:
+                    loading: 'lazy',
+                    fetchpriority: 'low',
+                    class: 'motion-reduce product-image',
+                    width: '260',
+                    height: '260',
+                    sizes: image_sizes,
+                    is: 'image-lazy'
+                }}
+              </div>
+            </a>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+    {%- if section.settings.bottom_label != blank -%}
+      <div class="flex items-center justify-center">
+        <a
+          class="w-full flex items-center justify-center view-more-button-products-with-banner "
+          {% if button_link != blank %}
+            href="{{ button_link }}"
+          {% else %}
+            aria-disabled="true"
+          {% endif %}
+        >
+          {{- section.settings.bottom_label -}}
+          {% render 'icon-arrow-right' %}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+  .products-banner--{{ section_id }} {
+    padding-top:{{section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    background: #1a1d1f;
+    position: relative;
+  }
+  .products-banner--{{ section_id }} .main-content-wrapper{
+    position:absolute;
+    bottom:20px;
+    left:0px;
+    right:0px;
+  }
+  .products-banner--{{ section_id }} .products-banner__hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .products-banner--{{ section_id }} .products-banner__hero-image,
+  .products-banner--{{ section_id }} .products-banner__hero-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .products-banner--{{ section_id }} .products-banner__hero-image-mobile {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+  .products-banner--{{ section_id }} .products-banner__hero-overlay {
+    display:none;
+  }
+  .products-banner__product-item .product-image{
+    width:164px;
+    height:164px;
+    aspect_ratio:square;
+    object-fit:cover;
+  }
+
+  .products-banner--{{ section_id }} .products-banner__hero-content {
+    
+    text-align: center;
+    z-index: 5;
+    width: 100%;
+    max-height: max-content;
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    align-items:center; 
+    padding:16px 0px;
+  }
+
+  .products-banner--{{ section_id }} .products-banner__title {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 44px;
+    letter-spacing: 0.01em%;
+    text-align: center;
+    vertical-align: middle;
+    color: #FFFFFF;
+  }
+  .products-banner__badge-container{
+    margin:0 auto;
+    width:calc(100% - 2rem);
+    position:relative;
+  }
+  .products-banner--{{ section_id }} .products-banner__badge {
+    padding-top: 10px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    background:white;
+    margin:0px;
+    max-width:max-content;
+    margin:0 auto;
+    z-index:5;
+    position:relative;
+
+  }
+  .products-banner--{{ section_id }} .products-banner__badge_text {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 35px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    vertical-align: middle;
+    text-transform: uppercase;
+    color:#453D2B;
+    margin:0px;
+  }
+  .products-banner--{{ section_id }} .products-banner__products {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    position:relative;
+    overflow-x:scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display:flex;
+    justify-content:center;
+  }
+  .products-banner--{{ section_id }} .products-banner__products-grid {
+    display:flex;
+    gap: 2px;
+    justify-content:center;
+    width:max-content;
+    flex-wrap:wrap;
+  }
+
+  .products-banner--{{ section_id }} .products-banner__products ::-webkit-scrollbar {
+    display: none;
+  }
+  .products-banner--{{ section_id }} .products-banner__product-item {
+    min-width: 164px;
+    cursor:pointer;
+  }
+  .products-banner--{{ section_id }} .products-banner__product-link--desktop-hidden {
+    display: none;
+  }
+
+  .line2{
+    width:100%;
+    border: 1px solid var(--Stroke-Light, #FFFFFF1A);
+    position:absolute;
+    bottom:50%;
+    transform:translateY(-50%);
+    z-index:2;
+
+  }
+  .line1{
+    width: calc(100% - 2rem);
+    border: 1px solid var(--Stroke-Light, #FFFFFF1A);
+    top:-3rem;
+    position:absolute;
+  }
+  @media (max-width: 767px) {
+    .products-banner--{{ section_id }} {
+      padding-top:{{section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+    .products-banner--{{ section_id }} .products-banner__title {
+      font-size: 44px;
+      line-height: 44px;
+      max-width:240px;
+    }
+    .products-banner--{{ section_id }} .products-banner__hero-content {
+      display:none;
+    }
+    .products-banner--{{ section_id }} .products-banner__products-grid {
+      
+      gap: 6px;
+      
+    }
+    .products-banner--{{ section_id }} .products-banner__product-item {
+      min-width: 108px;
+      max-width: 108px;
+      cursor:pointer;
+    }
+    .products-banner--{{ section_id }} .products-banner__product-link--desktop-hidden {
+      display: block;
+    }
+    .products-banner--{{ section_id }} .products-banner__product-link--mobile-hidden {
+      display: none;
+    }
+    .products-banner__product-item .product-image{
+      width:108px;
+      height:108px;
+    }
+    .products-banner--{{ section_id }} .products-banner__products {
+      overflow-x:hidden;
+    }
+    .products-banner--{{ section_id }} .products-banner__products-grid {
+      width: 100%;
+    }
+    .products-banner--{{ section_id }} .products-banner__hero-image,
+    .products-banner--{{ section_id }} .products-banner__hero-placeholder {
+      min-height: 32rem;
+    }
+    .products-banner--{{ section_id }} .products-banner__hero-image {
+      display: none;
+    }
+    .products-banner--{{ section_id }} .products-banner__hero-image-mobile {
+      display: block;
+      min-height: 32rem;
+    }
+
+    .products-banner--{{ section_id }} .products-banner__hero-content {
+      bottom: 1.6rem;
+      width:100%;
+    }
+
+    .products-banner--{{ section_id }} .products-banner__badge {
+      font-size: 1.2rem;
+      padding: 0.45rem 0.8rem;
+    }
+
+    .products-banner--{{ section_id }} .products-banner__grid {
+      padding:16px;
+    }
+    .products-banner--{{ section_id }} .products-banner__products {
+      padding-top: 0px;
+      padding-bottom: 16px;
+    }
+    .products-banner--{{ section_id }} .main-content-wrapper{
+      position:static;
+      background-color:#F5F5F5;
+    }
+    .products-banner--{{ section_id }} .products-banner__hero-overlay {
+      display:block;
+      height:95px;
+      width:100%;
+      background: linear-gradient(360deg, #F5F5F5 14.78%, rgba(245, 245, 245, 0) 86.09%);
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:10;
+      overflow:hidden;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Banner with product img",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Background Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image_mobile",
+      "label": "Hero Background Image mobile"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtext"
+    },
+    {
+      "type": "checkbox",
+      "id": "line1",
+      "label": "Line before heading",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "line2",
+      "label": "Line center of sub heading",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Products to show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 7
+    },
+    {
+      "type": "range",
+      "id": "limit_mobile",
+      "label": "Products to show on mobile",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 7,
+      "step": 1,
+      "default": 7
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1 column" },
+        { "value": "2", "label": "2 columns" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "bottom_label",
+      "label": "Button label",
+      "default": "View all"
+    },
+    {
+      "type": "select",
+      "id": "pcard_image_ratio",
+      "label": "Product image ratio",
+      "default": "adapt",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "products image banner"
+    }
+  ]
+}
+{% endschema %}

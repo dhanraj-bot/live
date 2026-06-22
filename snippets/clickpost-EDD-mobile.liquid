@@ -1,0 +1,31 @@
+{%- comment -%}
+  Mobile-only block: Next Day Delivery option. Shown only when cut-off remaining and Express is available.
+  JS controls visibility via inline style - hidden by default.
+{%- endcomment -%}
+<div
+  class="clickpost-edd-mobile clickpost-edd__option"
+  data-clickpost-section-id="{{ section_id }}"
+  aria-hidden="true"
+  style="display: none;"
+>
+  {%- if block.settings.express_delivery_icon != blank -%}
+    <img
+      class="clickpost-edd__option-icon"
+      src="{{ block.settings.express_delivery_icon | image_url: width: 48 }}"
+      alt=""
+      width="24"
+      height="24"
+      loading="lazy"
+    >
+  {%- endif -%}
+  <div class="clickpost-edd__option-body">
+    <div class="clickpost-edd__express-row">
+      <p class="clickpost-edd__option-heading clickpost-edd__option-heading--express" style="color: #d63242;">
+        {{ block.settings.express_delivery_heading | default: 'Express Delivery | Order in' }}
+      </p>
+      <span class="clickpost-edd__timer" data-js-timer aria-live="polite" style="color:#d63242;border:0.0625rem solid #e5e5e5;"></span>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,1614 @@
+{% comment %}
+  Dynamic Cart Discount Recommendations Section  
+  Matches Related Products design with slider support
+{% endcomment %}
+
+{%- liquid
+  assign columns = section.settings.columns
+  assign columns_mobile = section.settings.columns_mobile | plus: 0
+  assign enable_slider = false
+  assign enable_swipe_mobile = false
+  assign recommendation_limit = 12
+  assign recommendation_pool_limit = recommendation_limit | times: 2
+  assign recommendation_pool_count = 0
+  assign recommendation_pool_json = ''
+  assign target_collection_handles = section.settings.target_collections | split: ','
+
+  assign columns_tablet = columns | minus: 1
+  if columns < 3
+    assign columns_tablet = columns
+  endif
+
+  if section.settings.swipe_on_mobile
+    assign enable_swipe_mobile = true
+  endif
+
+  assign item_css_class = 'f-column'
+  if section.settings.enable_slider
+    assign enable_slider = true
+    assign item_css_class = item_css_class | append: ' swiper-slide'
+  endif
+
+  for collection_handle_raw in target_collection_handles
+    if recommendation_pool_count >= recommendation_pool_limit
+      break
+    endif
+
+    assign collection_handle = collection_handle_raw | strip
+    if collection_handle == blank
+      continue
+    endif
+
+    assign recommendation_collection = collections[collection_handle]
+    if recommendation_collection == blank
+      continue
+    endif
+
+    for product in recommendation_collection.products
+      if recommendation_pool_count >= recommendation_pool_limit
+        break
+      endif
+
+      assign product_in_cart = false
+      for item in cart.items
+        if item.product_id == product.id
+          assign product_in_cart = true
+          break
+        endif
+      endfor
+
+      if product_in_cart or product.variants.size == 0
+        continue
+      endif
+
+      if recommendation_pool_json != blank
+        assign recommendation_pool_json = recommendation_pool_json | append: ','
+      endif
+
+      capture recommendation_product_json
+        assign featured_image_url = ''
+        if product.featured_media and product.featured_media.preview_image
+          assign featured_image_url = product.featured_media.preview_image | image_url: width: 720
+        elsif product.featured_image
+          assign featured_image_url = product.featured_image | image_url: width: 720
+        endif
+
+        echo '{'
+        echo '"id":' | append: product.id | append: ','
+        echo '"title":' | append: product.title | json | append: ','
+        echo '"handle":' | append: product.handle | json | append: ','
+        echo '"url":' | append: product.url | json | append: ','
+        echo '"featured_image":' | append: featured_image_url | json | append: ','
+        echo '"options":['
+        for option in product.options_with_values
+          if forloop.index0 > 0
+            echo ','
+          endif
+          echo '{'
+          echo '"name":' | append: option.name | json | append: ','
+          echo '"position":' | append: forloop.index
+          echo '}'
+        endfor
+        echo '],'
+        echo '"variants":['
+        for variant in product.variants
+          if forloop.index0 > 0
+            echo ','
+          endif
+
+          assign variant_image_url = ''
+          if variant.featured_media and variant.featured_media.preview_image
+            assign variant_image_url = variant.featured_media.preview_image | image_url: width: 720
+          elsif variant.image
+            assign variant_image_url = variant.image | image_url: width: 720
+          endif
+
+          echo '{'
+          echo '"id":' | append: variant.id | append: ','
+          echo '"available":' | append: variant.available | append: ','
+          echo '"price":' | append: variant.price | append: ','
+          if variant.compare_at_price
+            echo '"compare_at_price":' | append: variant.compare_at_price | append: ','
+          else
+            echo '"compare_at_price":null,'
+          endif
+          echo '"title":' | append: variant.title | json | append: ','
+          echo '"option1":' | append: variant.option1 | json | append: ','
+          echo '"option2":' | append: variant.option2 | json | append: ','
+          echo '"option3":' | append: variant.option3 | json | append: ','
+          echo '"featured_image":' | append: variant_image_url | json
+          echo '}'
+        endfor
+        echo ']'
+        echo '}'
+      endcapture
+
+      assign recommendation_pool_json = recommendation_pool_json | append: recommendation_product_json
+      assign recommendation_pool_count = recommendation_pool_count | plus: 1
+    endfor
+  endfor
+-%}
+
+<script src="{{ 'product-slider.js' | asset_url }}" defer="defer"></script>
+{% if cart.item_count > 0 %}
+{% unless cart == empty %}
+<section class="section section-{{ section.id }} cart-discount-recommendations color-{{ section.settings.color_scheme }}" 
+  data-section-id="{{ section.id }}"
+  data-section-type="cart-discount-recommendations"
+  data-discount-enabled="{{ section.settings.enable_discount }}"
+  data-discount-tier1-type="{{ section.settings.discount_tier1_type }}"
+  data-discount-tier1-value="{{ section.settings.discount_tier1_value }}"
+  data-discount-tier1-min="{{ section.settings.min_quantity_tier1 }}"
+  data-discount-tier1-code="{{ section.settings.discount_tier1_code }}"
+  data-discount-tier2-enabled="{{ section.settings.enable_discount_tier2 }}"
+  data-discount-tier2-type="{{ section.settings.discount_tier2_type }}"
+  data-discount-tier2-value="{{ section.settings.discount_tier2_value }}"
+  data-discount-tier2-min="{{ section.settings.min_quantity_tier2 }}"
+  data-discount-tier2-code="{{ section.settings.discount_tier2_code }}"
+  data-target-collections="{{ section.settings.target_collections }}"
+  data-target-types="{{ section.settings.target_product_types }}"
+  data-columns="{{ columns }}"
+  data-columns-tablet="{{ columns_tablet }}"
+  data-enable-slider="{{ enable_slider }}"
+  data-recommendation-limit="{{ recommendation_limit }}"
+  data-show-edd="{{ settings.edd_show_on_cards }}"
+  data-edd-standard-icon="{% if settings.edd_standard_delivery_icon != blank %}{{ settings.edd_standard_delivery_icon | image_url: width: 48 }}{% endif %}"
+  data-edd-tomorrow-icon="{% if settings.edd_next_day_delivery_icon != blank %}{{ settings.edd_next_day_delivery_icon | image_url: width: 48 }}{% endif %}"
+  data-edd-standard-heading="{{ settings.edd_standard_delivery_heading | default: 'Get it by : 2-5 Days' }}"
+  data-customer-logged-in="{% if customer %}true{% else %}false{% endif %}"
+  style="--section-padding-top: {{ section.settings.padding_top }}px; --section-padding-bottom: {{ section.settings.padding_bottom }}px; {% if section.settings.background_image != blank %}background-image: url('{{ section.settings.background_image | image_url: width: 2000 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;{% endif %}; display: block;">
+  <script type="application/json" data-initial-cart>
+    {
+      "item_count": {{ cart.item_count }},
+      "items": [
+        {%- for item in cart.items -%}
+          {
+            "product_id": {{ item.product_id }},
+            "product_type": {{ item.product_type | json }},
+            "vendor": {{ item.vendor | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+  <script type="application/json" data-recommendation-pool>[{{ recommendation_pool_json }}]</script>
+
+  <div class="discount-recommendations__header text-center">
+    {% if section.settings.heading != blank %}
+      <h2 class="discount-recommendations__title {{ section.settings.heading_size }}">
+        {{ section.settings.heading }}
+      </h2>
+    {% endif %}
+    {% if section.settings.subheading != blank %}
+      <p class="discount-recommendations__subtitle {{ section.settings.heading_size }}">
+        {{ section.settings.subheading }}
+      </p>
+    {% endif %}
+    {% if section.settings.underline_image != blank %}
+      <div class="discount-recommendations__underline-img">
+        <img src="{{ section.settings.underline_image | image_url: width: 300 }}" alt="" width="300" height="auto" loading="lazy">
+      </div>
+    {% else %}
+      <div class="discount-recommendations__underline"></div>
+    {% endif %}
+  </div>
+
+  <div class="page-width">
+
+  <div class="discount-recommendations__offer flex items-center justify-center" id="discount-offer-message" style="display: none;">
+    <p class="offer-text" id="offer-text-content">
+      <!-- Dynamic message will be inserted here -->
+    </p>
+  </div>
+
+  <product-slider
+    class="relative swiper-show-nav-on-hover"
+    data-section-id="{{ section.id }}"
+    {% if enable_slider %}
+      data-enable-slider="true"
+      data-items="{{ columns }}"
+      data-tablet-items="{{ columns_tablet }}"
+      data-calc-button-position="true"
+    {% endif %}
+  >
+    <div class="products-grid-wrap{% if enable_slider %} swiper swiper-equal-height{% endif %}{% if enable_swipe_mobile %} swipe-mobile swipe-mobile--{{ columns_mobile }}-cols{% endif %}">
+      {% comment %} <div id="products-grid" class="products-grid f-grid f-grid-{{ columns_mobile }}-cols md:f-grid-{{ columns_tablet }}-cols lg:f-grid-{{ columns }}-cols f-grid--gap-{{ section.settings.column_gap }} f-grid--row-gap-{{ section.settings.row_gap }}{% if enable_slider %} swiper-wrapper{% endif %}{% if enable_swipe_mobile %} swipe-mobile__inner{% endif %}"> {% endcomment %}
+        <!-- Products will be loaded here -->
+      {% comment %} </div> {% endcomment %}
+       <div id="products-grid" class="products-grid f-grid f-grid-{{ columns_mobile }}-cols md:f-grid-{{ columns_tablet }}-cols lg:f-grid-{{ columns }}-cols f-grid--gap-{{ section.settings.column_gap }} f-grid--row-gap-{{ section.settings.row_gap }}{% if enable_slider %} swiper-wrapper{% endif %}{% if enable_swipe_mobile %} swipe-mobile__inner{% endif %}">
+        {% for i in (1..4) %}
+          <div class="{{ item_css_class }}">
+            <div class="cart-rec-skeleton-card">
+              <div class="cart-rec-skeleton-image"></div>
+              <div class="cart-rec-skeleton-line cart-rec-skeleton-line--title"></div>
+              <div class="cart-rec-skeleton-line cart-rec-skeleton-line--price"></div>
+            </div>
+          </div>
+        {% endfor %}
+
+      </div>
+    </div>
+
+    {%- if enable_slider -%}
+      <div class="swiper-controls swiper-controls--{{ section.settings.controls_position }} hidden md:block">
+        <button class="swiper-button-prev btn" name="previous" aria-label="{{ 'general.slider.previous_slide' | t }}">
+          {% render 'icon-slider-prev' %}
+        </button>
+        <button class="swiper-button-next btn" name="next" aria-label="{{ 'general.slider.next_slide' | t }}">
+          {% render 'icon-slider-next' %}
+        </button>
+      </div>
+    {%- endif -%}
+  </product-slider>
+
+  <div class="discount-recommendations__empty text-center" id="recommendations-empty" style="display: none;">
+    <p>{{ section.settings.empty_message | default: 'No recommendations available at the moment.' }}</p>
+  </div>
+
+  </div>
+</section>
+{% endunless %}
+{% endif %}
+<style>
+  .cart-discount-recommendations {
+    padding-top: var(--section-padding-top);
+    padding-bottom: var(--section-padding-bottom);
+    position: relative;
+  }
+  .discount-recommendations__title {
+    color: {{ section.settings.text_color | default: '#333333' }};
+    letter-spacing: normal;
+  }
+
+  .discount-recommendations__subtitle {
+    color: {{ section.settings.primary_color | default: '#00A67E' }};
+    margin-bottom: 0.5rem;
+    letter-spacing: normal;
+  }
+
+  .discount-recommendations__underline {
+    width: 100px;
+    height: 3px;
+    background-color: {{ section.settings.primary_color | default: '#00A67E' }};
+    margin: 1rem auto;
+  }
+
+  .discount-recommendations__underline-img {
+    margin: 0 auto;
+    max-width: 200px;
+    display: flex;
+  }
+
+  .discount-recommendations__underline-img img {
+    width: 100%;
+    height: auto;
+  }
+
+  .cart-discount-recommendations .products-grid-wrap{
+    margin-top: 20px;
+  }
+  .discount-recommendations__header.text-center{
+    margin-bottom: 20px;
+}
+  .offer-icon {
+    font-size: 1.5rem;
+  }
+
+  .offer-amount {
+    color: {{ section.settings.primary_color | default: '#00A67E' }};
+  }
+
+  /* Variant selector styling - ONLY for recommendation cards, NOT cart items */
+  .cart-discount-recommendations .variant-selector {
+    width: max-content;
+    font-size: 12px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.15s ease-in-out;
+    padding: 3px;
+    padding-right:16px;
+  }
+  .product-card__actions_divider span.product-card__compare-price {
+    text-decoration: line-through;
+    opacity: .5;
+}
+.product-card__price-wrapper.flex.items-center.gap-2{
+    flex-wrap: wrap;
+    row-gap: 0;
+}
+  .cart-discount-recommendations .variant-selector:hover {
+    border-color: #d1d5db;
+  }
+
+  .cart-discount-recommendations .variant-selector:focus {
+    outline: none;
+    border-color: {{ section.settings.primary_color | default: '#00A67E' }};
+    box-shadow: 0 0 0 1px {{ section.settings.primary_color | default: '#00A67E' }};
+  }
+
+  .cart-discount-recommendations .variant-selector option:disabled {
+    color: #9ca3af;
+  }
+
+  .cart-discount-recommendations .product-card__variant {
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .cart-discount-recommendations .variant-label {
+    font-size: 12px;
+    color: #4B5563;
+    font-weight: 400;
+  }
+  .product-card__actions_divider {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+button.product-card__add-btn {
+    background: #F3F4F6;
+    border: none;
+    padding: 15px;
+}
+.product-card__actions_divider span.product-card__price{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: normal;
+}
+.product-card__actions_divider span.product-card__discount {
+    color: #07A865;
+    font-weight: 500;
+    width: 100%;
+}
+.product_discount_main_data h3.product-card__title {
+    font-family: var(--font-pcard-title-family);
+    font-style: var(--font-pcard-title-style);
+    font-weight: var(--font-pcard-title-weight);
+    font-size: var(--font-pcard-title-size, 1.6rem);
+    text-transform: var(--font-pcard-title-transform);
+    line-height: calc(1 + .625 / var(--font-pcard-title-scale));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.product-card__content.product_discount_main_data {
+    padding: 12px 0 0;
+}
+p#offer-text-content{
+    margin: 0;
+}
+.cart-discount-recommendations {
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+}
+@media (max-width: 767px) {
+.discount-recommendations__underline-img{
+    margin: 1rem auto 0;
+    max-width: 150px;
+}
+.discount-recommendations__title, .discount-recommendations__subtitle {
+    font-size: 20px;
+}
+.product-card__actions_divider span.product-card__price {
+    font-size: 14px;
+}
+.product-card__actions_divider span.product-card__discount, .product-card__actions_divider span.product-card__compare-price{
+    font-size: 12px;
+}
+button.product-card__add-btn {
+    padding: 12px;
+    height: 100%;
+}
+}
+
+/* EDD card block styles */
+.cart-discount-recommendations .clickpost-divider {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid #e5e5e5;
+}
+
+.cart-discount-recommendations .clickpost-edd__card-block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #333;
+}
+
+.cart-discount-recommendations .clickpost-edd__option-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.cart-discount-recommendations .clickpost-edd__option_content {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+/* Icon toggle based on EDD display */
+.cart-discount-recommendations .clickpost-edd__card-block .clickpost-edd__card-icon--tomorrow {
+  display: none;
+}
+.cart-discount-recommendations .clickpost-edd__card-block .clickpost-edd__card-icon--days {
+  display: inline-block;
+}
+.cart-discount-recommendations .clickpost-edd__card-block[data-edd-display="tomorrow"] .clickpost-edd__card-icon--tomorrow {
+  display: inline-block;
+}
+.cart-discount-recommendations .clickpost-edd__card-block[data-edd-display="tomorrow"] .clickpost-edd__card-icon--days {
+  display: none;
+}
+@keyframes cartRecSkeleton {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.cart-rec-skeleton-card {
+  width: 100%;
+}
+
+.cart-rec-skeleton-image {
+  background: #f3f4f6;
+  border-radius: 8px;
+  aspect-ratio: 3/4;
+  animation: cartRecSkeleton 1.2s ease-in-out infinite;
+}
+
+.cart-rec-skeleton-line {
+  height: 12px;
+  border-radius: 4px;
+  background: #f3f4f6;
+  margin-top: 10px;
+  animation: cartRecSkeleton 1.2s ease-in-out infinite;
+}
+
+.cart-rec-skeleton-line--title {
+  width: 80%;
+}
+
+.cart-rec-skeleton-line--price {
+  width: 45%;
+}
+</style>
+
+<script>
+(function() {
+  'use strict';
+
+  class DiscountRecommendations {
+    constructor(section) {
+      this.section = section;
+      this.grid = section.querySelector('#products-grid');
+      this.offerMessage = section.querySelector('#discount-offer-message');
+      this.emptyMessage = section.querySelector('#recommendations-empty');
+      this.limit = parseInt(section.dataset.recommendationLimit, 10) || 12;
+      this.preloadedProducts = this.parseJsonScript('[data-recommendation-pool]', []);
+      this.collectionCache = new Map();
+      this.cart = this.parseJsonScript('[data-initial-cart]', null);
+      this.activeTier = null;
+      this.products = [];
+      this.hasStarted = false;
+
+      this.settings = {
+        discountEnabled: section.dataset.discountEnabled === 'true',
+        tier1: {
+          type: section.dataset.discountTier1Type || 'fixed_amount',
+          value: parseInt(section.dataset.discountTier1Value) || 300,
+          minQuantity: parseInt(section.dataset.discountTier1Min) || 2,
+          code: section.dataset.discountTier1Code || ''
+        },
+        tier2: {
+          enabled: section.dataset.discountTier2Enabled === 'true',
+          type: section.dataset.discountTier2Type || 'percentage',
+          value: parseInt(section.dataset.discountTier2Value) || 30,
+          minQuantity: parseInt(section.dataset.discountTier2Min) || 3,
+          code: section.dataset.discountTier2Code || ''
+        },
+        targetCollections: (section.dataset.targetCollections || '').split(',').map(s => s.trim()).filter(Boolean),
+        targetTypes: (section.dataset.targetTypes || '').split(',').map(s => s.trim()).filter(Boolean),
+        enableSlider: section.dataset.enableSlider === 'true',
+        showEdd: section.dataset.showEdd === 'true',
+        eddStandardIcon: section.dataset.eddStandardIcon || '',
+        eddTomorrowIcon: section.dataset.eddTomorrowIcon || '',
+        eddStandardHeading: section.dataset.eddStandardHeading || 'Get it by : 2-5 Days',
+        customerLoggedIn: section.dataset.customerLoggedIn === 'true'
+      };
+
+      this.setupCartListeners();
+    }
+
+    parseJsonScript(selector, fallback) {
+      const element = this.section.querySelector(selector);
+      if (!element) {
+        return fallback;
+      }
+
+      try {
+        return JSON.parse(element.textContent);
+      } catch (error) {
+        console.error('Failed to parse recommendation payload:', error);
+        return fallback;
+      }
+    }
+
+    start() {
+      if (this.hasStarted) {
+        return;
+      }
+
+      this.hasStarted = true;
+      this.init();
+    }
+
+    // async init(forceRefresh = false) {
+    //   try {
+    //     if (!this.cart || forceRefresh) {
+    //       this.cart = await this.fetchCart(forceRefresh);
+    //     }
+
+    //     if (!this.cart || this.cart.item_count === 0) {
+    //       this.hideSection();
+    //       return;
+    //     }
+
+    //     this.activeTier = this.determineActiveTier();
+
+    //     if (!this.settings.discountEnabled || !this.activeTier) {
+    //       this.hideSection();
+    //       return;
+    //     }
+
+    //     const recommendations = await this.getRecommendations(forceRefresh);
+
+    //     if (recommendations.length > 0) {
+    //       this.products = recommendations;
+    //       this.renderProducts();
+    //       this.updateOfferMessage();
+    //       this.showSection();
+    //     } else {
+    //       this.hideSection();
+    //     }
+    //   } catch (error) {
+    //     console.error('Error loading discount recommendations:', error);
+    //     this.hideSection();
+    //   }
+    // }
+    async init(forceRefresh = false) {
+      try {
+        // Cart is already preloaded from Liquid — no fetch needed on first load
+        if (!this.cart || forceRefresh) {
+          this.cart = await this.fetchCart(forceRefresh);
+        }
+
+        if (!this.cart || this.cart.item_count === 0) {
+          this.hideSection();
+          return;
+        }
+
+        this.activeTier = this.determineActiveTier();
+
+        if (!this.settings.discountEnabled || !this.activeTier) {
+          this.hideSection();
+          return;
+        }
+
+        // Show skeleton while we finalize product list
+        // this.grid.innerHTML = this.getSkeletonHtml();
+
+        const recommendations = await this.getRecommendations(forceRefresh);
+
+        if (recommendations.length > 0) {
+          this.products = recommendations;
+          this.renderProducts();
+          this.updateOfferMessage();
+          this.showSection();
+        } else {
+          this.hideSection();
+        }
+      } catch (error) {
+        console.error('Error loading discount recommendations:', error);
+        this.hideSection();
+      }
+    }
+
+    getSkeletonHtml() {
+      const count = window.innerWidth <= 768 ? 2 : 4;
+      return Array(count).fill('').map(() => `
+        <div class="f-column">
+          <div style="background:#f0f0f0;border-radius:4px;aspect-ratio:3/4;animation:cartRecSkeleton 1.2s ease-in-out infinite;"></div>
+          <div style="background:#f0f0f0;height:14px;margin-top:10px;border-radius:4px;width:80%;animation:cartRecSkeleton 1.2s ease-in-out infinite;"></div>
+          <div style="background:#f0f0f0;height:12px;margin-top:6px;border-radius:4px;width:50%;animation:cartRecSkeleton 1.2s ease-in-out infinite;"></div>
+        </div>
+      `).join('');
+    }
+
+    showSection() {
+      this.section.style.display = 'block';
+      if (this.emptyMessage) {
+        this.emptyMessage.style.display = 'none';
+      }
+    }
+
+    hideSection() {
+      this.section.style.display = 'none';
+      if (this.offerMessage) {
+        this.offerMessage.style.display = 'none';
+      }
+      if (this.emptyMessage) {
+        this.emptyMessage.style.display = 'none';
+      }
+    }
+
+    async fetchCart(forceRefresh = false) {
+      return window.CartDataManager
+        ? await window.CartDataManager.getCart(forceRefresh)
+        : await fetch('/cart.js').then(response => response.json());
+    }
+
+    setupCartListeners() {
+      document.addEventListener('cart:updated', () => this.refreshRecommendations());
+      document.addEventListener('cart:refresh', () => this.refreshRecommendations());
+    }
+
+    async refreshRecommendations() {
+      if (this.refreshTimeout) {
+        clearTimeout(this.refreshTimeout);
+      }
+
+      this.refreshTimeout = setTimeout(async () => {
+        try {
+          this.cart = await this.fetchCart(true);
+
+          if (!this.cart || this.cart.item_count === 0) {
+            this.hideSection();
+            return;
+          }
+
+          this.activeTier = this.determineActiveTier();
+
+          if (!this.settings.discountEnabled || !this.activeTier) {
+            this.hideSection();
+            return;
+          }
+
+          const recommendations = await this.getRecommendations(true);
+          if (recommendations.length === 0) {
+            this.hideSection();
+            return;
+          }
+
+          this.products = recommendations;
+          this.renderProducts();
+          this.updateOfferMessage();
+          this.showSection();
+        } catch (error) {
+          console.error('Error refreshing recommendations:', error);
+        }
+      }, 200);
+    }
+
+    determineActiveTier() {
+      const itemCount = this.cart?.item_count || 0;
+
+      if (this.settings.tier2.enabled && itemCount >= this.settings.tier2.minQuantity) {
+        return {
+          number: 2,
+          ...this.settings.tier2,
+          currentCount: itemCount,
+          itemsNeeded: 0 // Already qualified
+        };
+      }
+
+      if (itemCount < this.settings.tier1.minQuantity && itemCount >= this.settings.tier1.minQuantity - 5) {
+        return {
+          number: 1,
+          ...this.settings.tier1,
+          currentCount: itemCount,
+          itemsNeeded: this.settings.tier1.minQuantity - itemCount
+        };
+      }
+
+      if (itemCount >= this.settings.tier1.minQuantity) {
+        if (this.settings.tier2.enabled && itemCount < this.settings.tier2.minQuantity) {
+          return {
+            number: 2,
+            ...this.settings.tier2,
+            currentCount: itemCount,
+            itemsNeeded: this.settings.tier2.minQuantity - itemCount,
+            upsell: true
+          };
+        }
+
+        return {
+          number: 1,
+          ...this.settings.tier1,
+          currentCount: itemCount,
+          itemsNeeded: 0 // Already qualified
+        };
+      }
+
+      return null;
+    }
+
+    async getRecommendations(forceRefresh = false) {
+      const preloadedMatches = this.filterProducts(this.preloadedProducts);
+      if (preloadedMatches.length >= this.limit) {
+        return preloadedMatches.slice(0, this.limit);
+      }
+
+      const fetchedProducts = await this.fetchRecommendationCandidates(forceRefresh);
+      const mergedProducts = this.mergeProducts(this.preloadedProducts, fetchedProducts);
+      return this.filterProducts(mergedProducts).slice(0, this.limit);
+    }
+
+    filterProducts(products) {
+      const cartProductIds = new Set((this.cart?.items || []).map((item) => Number(item.product_id)));
+      const seenProductIds = new Set();
+
+      return (Array.isArray(products) ? products : []).filter((product) => {
+        const productId = Number(product?.id);
+        if (!productId || seenProductIds.has(productId) || cartProductIds.has(productId)) {
+          return false;
+        }
+
+        if (!Array.isArray(product.variants) || product.variants.length === 0) {
+          return false;
+        }
+
+        seenProductIds.add(productId);
+        return true;
+      });
+    }
+
+    mergeProducts(...productLists) {
+      const merged = [];
+      const seenProductIds = new Set();
+
+      productLists.flat().forEach((product) => {
+        const productId = Number(product?.id);
+        if (!productId || seenProductIds.has(productId)) {
+          return;
+        }
+
+        seenProductIds.add(productId);
+        merged.push(product);
+      });
+
+      return merged;
+    }
+
+    async fetchRecommendationCandidates(forceRefresh = false) {
+      const collectionHandles = this.resolveCollectionHandles();
+      if (collectionHandles.length === 0) {
+        return [];
+      }
+
+      const collectionResults = await Promise.all(
+        collectionHandles.map((handle) => this.fetchCollection(handle, forceRefresh))
+      );
+
+      return this.mergeProducts(...collectionResults);
+    }
+
+    resolveCollectionHandles() {
+      if (this.settings.targetCollections.length > 0) {
+        return this.settings.targetCollections;
+      }
+
+      const cartDerivedCollections = this.extractCartCollections();
+      return cartDerivedCollections.length > 0 ? cartDerivedCollections : ['all'];
+    }
+
+    extractCartCollections() {
+      const collections = new Set();
+
+      for (const item of this.cart?.items || []) {
+        if (item.product_type) {
+          const handle = item.product_type.toLowerCase().replace(/\s+/g, '-');
+          collections.add(handle);
+          if (this.settings.targetTypes.includes(item.product_type)) {
+            collections.add(handle);
+          }
+        }
+
+        if (item.vendor) {
+          const handle = item.vendor.toLowerCase().replace(/\s+/g, '-');
+          collections.add(handle);
+        }
+      }
+
+      return Array.from(collections);
+    }
+
+    async fetchCollection(handle, forceRefresh = false) {
+      const normalizedHandle = String(handle || '').trim();
+      if (!normalizedHandle) {
+        return [];
+      }
+
+      if (!forceRefresh && this.collectionCache.has(normalizedHandle)) {
+        return this.collectionCache.get(normalizedHandle);
+      }
+
+      const request = fetch(`/collections/${encodeURIComponent(normalizedHandle)}/products.json?limit=${Math.max(this.limit * 2, 24)}`)
+        .then((response) => (response.ok ? response.json() : { products: [] }))
+        .then((data) => (Array.isArray(data.products) ? data.products : []))
+        .catch((error) => {
+          console.error(`Error fetching collection ${normalizedHandle}:`, error);
+          return [];
+        });
+
+      this.collectionCache.set(normalizedHandle, request);
+
+      try {
+        const products = await request;
+        this.collectionCache.set(normalizedHandle, products);
+        return products;
+      } catch (error) {
+        this.collectionCache.delete(normalizedHandle);
+        return [];
+      }
+    }
+
+    renderProducts() {
+      this.grid.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+
+      this.products.forEach((product) => {
+        const card = this.createProductCard(product);
+        fragment.appendChild(card);
+      });
+
+      this.grid.appendChild(fragment);
+
+      const slider = this.section.querySelector('product-slider');
+      if (this.settings.enableSlider && slider && typeof slider.destroySlider === 'function' && typeof slider.init === 'function') {
+        slider.destroySlider();
+        slider.init();
+      }
+
+      if (this.settings.showEdd && this.settings.customerLoggedIn && typeof window.applyPlpEddCache === 'function') {
+        setTimeout(() => {
+          window.applyPlpEddCache();
+        }, 100);
+      }
+    }
+
+    createProductCard(product) {
+      const div = document.createElement('div');
+      div.className = 'f-column' + (this.settings.enableSlider ? ' swiper-slide' : '');
+
+      const firstVariant = product.variants.find(v => v.available) || product.variants[0];
+      const priceCents = this.normalizeMoneyValue(firstVariant.price);
+      const comparePriceCents = this.normalizeMoneyValue(firstVariant.compare_at_price);
+
+      let image = this.getProductImage(product, firstVariant);
+      const productUrl = product.url || `/products/${product.handle}`;
+      const price = this.formatMoney(priceCents);
+      const comparePrice = comparePriceCents ? this.formatMoney(comparePriceCents) : null;
+      const discountPercent = comparePriceCents && comparePriceCents > priceCents
+        ? Math.round(((comparePriceCents - priceCents) / comparePriceCents) * 100)
+        : 0;
+      const hasMultipleVariants = product.variants && product.variants.length > 1;
+      let sizeOptionsHtml = '';
+      let uniqueSizes = new Map();
+
+      if (hasMultipleVariants && product.options) {
+        const sizeOption = product.options.find(opt =>
+          opt.name.toLowerCase().includes('size') ||
+          opt.name.toLowerCase() === 's' ||
+          opt.name.toLowerCase() === 'm' ||
+          opt.name.toLowerCase() === 'l' ||
+          opt.name.toLowerCase() === 'xl'
+        );
+
+        if (sizeOption) {
+          const sizePosition = Number(sizeOption.position);
+          product.variants.forEach(v => {
+            const sizeValue = v[`option${sizePosition}`];
+            if (!uniqueSizes.has(sizeValue)) {
+              uniqueSizes.set(sizeValue, v);
+            } else {
+              const stored = uniqueSizes.get(sizeValue);
+              if (v.available && !stored.available) {
+                uniqueSizes.set(sizeValue, v);
+              }
+            }
+          });
+
+          sizeOptionsHtml = Array.from(uniqueSizes.values()).map(v => 
+            `<option value="${v.id}" ${!v.available ? 'disabled' : ''} data-price="${this.normalizeMoneyValue(v.price) || 0}" data-compare-price="${this.normalizeMoneyValue(v.compare_at_price) || 0}">
+              ${this.escapeHtml(v[`option${sizePosition}`])}
+            </option>`
+          ).join('');
+        } else {
+          sizeOptionsHtml = product.variants.map(v => 
+            `<option value="${v.id}" ${!v.available ? 'disabled' : ''} data-price="${this.normalizeMoneyValue(v.price) || 0}" data-compare-price="${this.normalizeMoneyValue(v.compare_at_price) || 0}">
+              ${this.escapeHtml(v.title)}
+            </option>`
+          ).join('');
+        }
+      }
+      
+      const hasSizeOptions = uniqueSizes.size > 1 || (hasMultipleVariants && !product.options);
+
+      div.innerHTML = `
+        <div class="product-card" data-product-id="${product.id}">
+          <div class="product-card__wrapper h-full">
+            <div class="product-card__image-wrapper">
+              <a href="${productUrl}" class="block">
+                <div class="media-wrapper product-card__image" style="--aspect-ratio: 3/4">
+                  <img src="${image}" alt="${this.escapeHtml(product.title)}" loading="lazy" class="w-full h-full object-cover">
+                </div>
+              </a>
+            </div>
+            <div class="product-card__content product_discount_main_data">
+              <h3 class="product-card__title">
+                <a href="${productUrl}">${this.escapeHtml(product.title)}</a>
+              </h3>
+              ${hasSizeOptions ? `
+                <div class="product-card__variant discounted_product-card__variant">
+                  <label class="variant-label text-xs text-gray-600 block mb-1">Size:</label>
+                  <select class="variant-selector" data-product-id="${product.id}">
+                    ${sizeOptionsHtml}
+                  </select>
+                </div>
+              ` : ''}
+                <div class="product-card__actions_divider">
+                <div class="product-card__price-wrapper flex items-center gap-2" data-price-container>
+                    <span class="product-card__price" data-price>${price}</span>
+                    ${comparePrice ? `<span class="product-card__compare-price" data-compare-price>${comparePrice}</span>` : ''}
+                    ${discountPercent > 0 ? `<span class="product-card__discount" data-discount>${discountPercent}% off</span>` : ''}
+                </div>
+                <div class="product-card__add-btn-wrapper">
+                    <button class="product-card__add-btn" data-variant-id="${firstVariant.id}" data-product-title="${this.escapeHtml(product.title)}" aria-label="Add to cart">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 5V19M5 12H19" stroke="#D63242" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+                </div>
+              ${this.getEddHtml(product.id)}
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Add variant selector change handler
+      if (hasSizeOptions) {
+        const selector = div.querySelector('.variant-selector');
+        if (selector) {
+          selector.addEventListener('change', (e) => this.handleVariantChange(e, div));
+        }
+      }
+
+      const btn = div.querySelector('.product-card__add-btn');
+      btn.addEventListener('click', (e) => this.handleAddToCart(e, product.title));
+
+      return div;
+    }
+
+    getEddHtml(productId) {
+      if (!this.settings.showEdd || !this.settings.customerLoggedIn) {
+        return '';
+      }
+
+      const tomorrowIcon = this.settings.eddTomorrowIcon 
+        ? `<img class="clickpost-edd__option-icon clickpost-edd__card-icon--tomorrow" src="${this.settings.eddTomorrowIcon}" alt="" width="24" height="24" loading="lazy" aria-hidden="true">`
+        : '';
+
+      const daysIcon = this.settings.eddStandardIcon 
+        ? `<img class="clickpost-edd__option-icon clickpost-edd__card-icon--days" src="${this.settings.eddStandardIcon}" alt="" width="24" height="24" loading="lazy" aria-hidden="true">`
+        : '';
+
+      return `
+        <hr class="clickpost-divider">
+        <div class="clickpost-edd__heading clickpost-edd__card-block" data-edd-display="days" data-product-id="${productId}">
+          ${tomorrowIcon}
+          ${daysIcon}
+          <p class="clickpost-edd__option_content">${this.settings.eddStandardHeading}</p>
+        </div>
+      `;
+    }
+
+    handleVariantChange(event, cardElement) {
+      const select = event.target;
+      const selectedOption = select.options[select.selectedIndex];
+      const variantId = selectedOption.value;
+      const priceCents = Number(selectedOption.dataset.price) || 0;
+      const comparePriceCents = Number(selectedOption.dataset.comparePrice) || 0;
+      const priceElement = cardElement.querySelector('[data-price]');
+      const comparePriceElement = cardElement.querySelector('[data-compare-price]');
+      const discountElement = cardElement.querySelector('[data-discount]');
+      
+      if (priceElement) {
+        priceElement.textContent = this.formatMoney(priceCents);
+      }
+      
+      if (comparePriceCents > 0 && comparePriceCents > priceCents) {
+        const discountPercent = Math.round(((comparePriceCents - priceCents) / comparePriceCents) * 100);
+        
+        if (comparePriceElement) {
+          comparePriceElement.textContent = this.formatMoney(comparePriceCents);
+          comparePriceElement.style.display = 'inline';
+        } else {
+          const newComparePrice = document.createElement('span');
+          newComparePrice.className = 'product-card__compare-price';
+          newComparePrice.setAttribute('data-compare-price', '');
+          newComparePrice.textContent = this.formatMoney(comparePriceCents);
+          priceElement.after(newComparePrice);
+        }
+        
+        if (discountElement) {
+          discountElement.textContent = `${discountPercent}% off`;
+          discountElement.style.display = 'inline';
+        } else {
+          const newDiscount = document.createElement('span');
+          newDiscount.className = 'product-card__discount';
+          newDiscount.setAttribute('data-discount', '');
+          newDiscount.textContent = `${discountPercent}% off`;
+          priceElement.parentElement.appendChild(newDiscount);
+        }
+      } else {
+        if (comparePriceElement) comparePriceElement.style.display = 'none';
+        if (discountElement) discountElement.style.display = 'none';
+      }
+      
+      // Update add to cart button with new variant ID
+      const addBtn = cardElement.querySelector('.product-card__add-btn');
+      if (addBtn) {
+        addBtn.dataset.variantId = variantId;
+      }
+    }
+
+    async handleAddToCart(event, productTitle) {
+      const button = event.currentTarget;
+      if (button.disabled) return;
+      
+      const currentVariantId = button.dataset.variantId;
+      
+      button.disabled = true;
+      button.classList.add('adding');
+      
+      const originalHTML = button.innerHTML;
+      button.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-dasharray="60" stroke-dashoffset="60" style="animation: spin 1s linear infinite;"/></svg>';
+
+      try {
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ 
+            id: currentVariantId, 
+            quantity: 1 
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.description || 'Failed to add to cart');
+        }
+
+        const data = await response.json();
+        
+        button.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2"/></svg>';
+        this.showNotification(`${productTitle} added to cart!`, 'success');
+        document.dispatchEvent(new CustomEvent('cart:updated', { detail: data }));
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 600);
+
+      } catch (error) {
+        console.error('Add to cart error:', error);
+        
+        // Show error notification
+        this.showNotification(error.message || 'Failed to add to cart', 'error');
+        
+        // Reset button
+        button.innerHTML = originalHTML;
+        button.classList.remove('adding');
+        button.disabled = false;
+      }
+    }
+
+    updateOfferMessage() {
+      if (!this.settings.discountEnabled || !this.offerMessage || !this.activeTier) {
+        if (this.offerMessage) this.offerMessage.style.display = 'none';
+        return;
+      }
+      
+      const offerTextEl = this.offerMessage.querySelector('#offer-text-content');
+      if (!offerTextEl) return;
+      
+      let messageHTML = '';
+      
+      if (this.activeTier.itemsNeeded === 0 && !this.activeTier.upsell) {
+        this.offerMessage.style.display = 'none';
+        return;
+      }
+      
+      if (this.activeTier.itemsNeeded > 0 && !this.activeTier.upsell) {
+        const itemWord = this.activeTier.itemsNeeded === 1 ? 'Item' : 'Items';
+        const discountText = this.formatDiscountText(this.activeTier);
+        
+        messageHTML = `Add <strong>${this.activeTier.itemsNeeded}</strong> More ${itemWord} and <strong class="offer-amount">${discountText}</strong>`;
+        
+      } else if (this.activeTier.upsell && this.activeTier.itemsNeeded > 0) {
+        const targetQty = this.activeTier.minQuantity;
+        const discountText = this.formatDiscountText(this.activeTier);
+        
+        messageHTML = `Buy <strong>${targetQty}</strong> or more to <strong class="offer-amount">${discountText}</strong>`;
+      }
+      
+      if (messageHTML) {
+        offerTextEl.innerHTML = messageHTML;
+        this.offerMessage.style.display = 'flex';
+      } else {
+        this.offerMessage.style.display = 'none';
+      }
+    }
+
+    formatDiscountText(tier = this.activeTier) {
+      if (!tier) return '';
+      
+      if (tier.type === 'percentage') {
+        return `Get ${tier.value}% Off`;
+      } else {
+        return `Get ₹${tier.value} Off`;
+      }
+    }
+
+
+    showNotification(message, type = 'error') {
+      const div = document.createElement('div');
+      div.textContent = message;
+      div.style.cssText = `
+        position: fixed; top: 20px; right: 20px; z-index: 10000;
+        background: ${type === 'success' ? '#00A67E' : '#E53E3E'};
+        color: white; padding: 0.75rem 1.25rem; border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        font-size: 14px; font-weight: 500;
+        animation: slideIn 0.2s ease-out;
+      `;
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+      `;
+      if (!document.querySelector('#notification-styles')) {
+        style.id = 'notification-styles';
+        document.head.appendChild(style);
+      }
+      
+      document.body.appendChild(div);
+      
+      const dismissTime = type === 'success' ? 2000 : 3000;
+      setTimeout(() => {
+        div.style.animation = 'slideIn 0.2s ease-out reverse';
+        setTimeout(() => div.remove(), 200);
+      }, dismissTime);
+    }
+
+    getProductImage(product, firstVariant) {
+      const image =
+        product.featured_image?.src ||
+        product.featured_image ||
+        product.image?.src ||
+        product.image ||
+        product.images?.[0]?.src ||
+        product.images?.[0] ||
+        firstVariant?.featured_image?.src ||
+        firstVariant?.featured_image;
+
+      if (image && image !== 'undefined') {
+        return image;
+      }
+
+      return 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png';
+    }
+
+    normalizeMoneyValue(value) {
+      if (value === null || value === undefined || value === '') {
+        return null;
+      }
+
+      const numericValue = Number(value);
+      if (!Number.isFinite(numericValue)) {
+        return null;
+      }
+
+      if (typeof value === 'string' && value.includes('.')) {
+        return Math.round(numericValue * 100);
+      }
+
+      return Number.isInteger(numericValue) ? numericValue : Math.round(numericValue * 100);
+    }
+
+    formatMoney(value) {
+      const cents = this.normalizeMoneyValue(value);
+      if (cents === null) {
+        return '';
+      }
+
+      if (window.FoxTheme?.Currency?.formatMoney) {
+        return window.FoxTheme.Currency.formatMoney(cents, window.FoxTheme.settings.moneyFormat);
+      }
+
+      return `₹${(cents / 100).toFixed(2).replace(/\.00$/, '')}`;
+    }
+
+    escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+  }
+
+  function bootRecommendations() {
+    const section = document.querySelector('[data-section-type="cart-discount-recommendations"]');
+    if (!section) return;
+
+    // Place in mobile slot immediately before any async work
+    if (window.innerWidth <= 768) {
+      const slot = document.querySelector('[data-cart-mobile-recommendations-slot]');
+      if (slot && section.dataset.slotMoved !== '1') {
+        const wrapper = section.closest('[id^="shopify-section-"]') || section;
+        slot.insertAdjacentElement('afterend', wrapper);
+        section.dataset.slotMoved = '1';
+      }
+    }
+
+    const recommendations = new DiscountRecommendations(section);
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => recommendations.start(), { timeout: 0 });
+    } else {
+      window.setTimeout(() => recommendations.start(), 32);
+    }
+  }
+
+  if (window.location.pathname.includes('/cart')) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootRecommendations);
+    } else {
+      bootRecommendations();
+    }
+  }
+})();
+
+(function() {
+  if (window.cartDiscountRecommendationsInterceptorActive) {
+    return;
+  }
+  window.cartDiscountRecommendationsInterceptorActive = true;
+  
+  const originalFetch = window.fetch;
+  window.fetch = function(...args) {
+    const url = args[0];
+    
+    if (typeof url === 'string' && (url.includes('/cart/update') || url.includes('/cart/change') || url.includes('/cart/add'))) {
+      return originalFetch.apply(this, args).then(response => {
+        if (response.ok) {
+          setTimeout(() => {
+            if (window.CartDataManager) {
+              window.CartDataManager.invalidateCache();
+            }
+            document.dispatchEvent(new CustomEvent('cart:updated'));
+          }, 100);
+        }
+        return response;
+      });
+    }
+    return originalFetch.apply(this, args);
+  };
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Discount Recommendations",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["cart"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image",
+      "info": "Full-width background image for the section"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "More in Bag"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Less on Bill"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "image_picker",
+      "id": "underline_image",
+      "label": "Heading Underline Image",
+      "info": "Decorative image under heading (optional)"
+    },
+    {
+      "type": "text",
+      "id": "empty_message",
+      "label": "Empty Message",
+      "default": "No recommendations available."
+    },
+    {
+      "type": "image_picker",
+      "id": "offer_icon",
+      "label": "Offer Icon"
+    },
+    {
+      "type": "header",
+      "content": "Discount Configuration"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_discount",
+      "label": "Enable Discount Display",
+      "default": true,
+      "info": "Master switch for discount recommendations"
+    },
+    {
+      "type": "header",
+      "content": "Discount Tier 1 Settings"
+    },
+    {
+      "type": "number",
+      "id": "min_quantity_tier1",
+      "label": "Tier 1: Minimum Items Required",
+      "default": 2,
+      "info": "Items needed to qualify for this discount"
+    },
+    {
+      "type": "select",
+      "id": "discount_tier1_type",
+      "label": "Tier 1: Discount Type",
+      "options": [
+        { "value": "percentage", "label": "Percentage (%)" },
+        { "value": "fixed_amount", "label": "Fixed Amount (₹)" }
+      ],
+      "default": "fixed_amount"
+    },
+    {
+      "type": "number",
+      "id": "discount_tier1_value",
+      "label": "Tier 1: Discount Value",
+      "info": "Enter 10 for 10% OR 300 for ₹300",
+      "default": 300
+    },
+    {
+      "type": "text",
+      "id": "discount_tier1_code",
+      "label": "Tier 1: Discount Code",
+      "info": "Shopify discount code (optional)",
+      "placeholder": "SAVE300"
+    },
+    {
+      "type": "header",
+      "content": "Discount Tier 2 Settings (Optional)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_discount_tier2",
+      "label": "Enable Second Discount Tier",
+      "default": false,
+      "info": "Activate a higher discount for more items"
+    },
+    {
+      "type": "number",
+      "id": "min_quantity_tier2",
+      "label": "Tier 2: Minimum Items Required",
+      "default": 3,
+      "info": "Items needed to qualify for this discount"
+    },
+    {
+      "type": "select",
+      "id": "discount_tier2_type",
+      "label": "Tier 2: Discount Type",
+      "options": [
+        { "value": "percentage", "label": "Percentage (%)" },
+        { "value": "fixed_amount", "label": "Fixed Amount (₹)" }
+      ],
+      "default": "percentage"
+    },
+    {
+      "type": "number",
+      "id": "discount_tier2_value",
+      "label": "Tier 2: Discount Value",
+      "info": "Enter 30 for 30% OR 500 for ₹500",
+      "default": 30
+    },
+    {
+      "type": "text",
+      "id": "discount_tier2_code",
+      "label": "Tier 2: Discount Code",
+      "info": "Shopify discount code (optional)",
+      "placeholder": "SAVE30"
+    },
+    {
+      "type": "header",
+      "content": "Product Targeting"
+    },
+    {
+      "type": "text",
+      "id": "target_collections",
+      "label": "Target Collections",
+      "info": "Comma-separated (e.g., t-shirts,trousers)",
+      "placeholder": "t-shirts,trousers,mens-wear"
+    },
+    {
+      "type": "text",
+      "id": "target_product_types",
+      "label": "Target Product Types",
+      "info": "Comma-separated (e.g., T-Shirt,Trousers)",
+      "placeholder": "T-Shirt,Trousers"
+    },
+    {
+      "type": "header",
+      "content": "Product Grid"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "label": "Desktop columns"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "options": [
+        { "value": "1", "label": "1 column" },
+        { "value": "2", "label": "2 columns" }
+      ],
+      "default": "2",
+      "label": "Mobile columns"
+    },
+    {
+      "type": "select",
+      "id": "column_gap",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "extra-small", "label": "Extra small" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "medium",
+      "label": "Column gap"
+    },
+    {
+      "type": "select",
+      "id": "row_gap",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "medium",
+      "label": "Row gap"
+    },
+    {
+      "type": "header",
+      "content": "Carousel"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_slider",
+      "label": "Enable carousel",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "label": "Enable swipe on mobile",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "controls_position",
+      "label": "Controls position",
+      "options": [
+        { "value": "inside", "label": "Inside" },
+        { "value": "outside", "label": "Outside" }
+      ],
+      "default": "inside"
+    },
+    {
+      "type": "header",
+      "content": "Styling"
+    },
+    {
+      "type": "color",
+      "id": "primary_color",
+      "label": "Primary Color (Subtitle & Accents)",
+      "default": "#00A67E"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Heading Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "background_light",
+      "label": "Offer Badge Background",
+      "default": "#F5F9F8"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Discount Recommendations"
+    }
+  ]
+}
+{% endschema %}

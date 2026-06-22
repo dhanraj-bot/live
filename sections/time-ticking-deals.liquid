@@ -1,0 +1,707 @@
+{%- liquid
+  assign section_id = section.id
+  assign collection = collections[section.settings.collection]
+
+  assign columns_desktop = section.settings.columns
+  assign columns_mobile = section.settings.columns_mobile | plus: 0
+  assign products_to_display = section.settings.items_to_show | default: columns_desktop | plus: 0
+  if products_to_display < 1
+    assign products_to_display = columns_desktop
+  endif
+  if collection != blank and collection.all_products_count < products_to_display
+    assign products_to_display = collection.all_products_count
+  endif
+
+  assign columns_tablet = columns_desktop | minus: 1
+  if columns_desktop < 3 or request.design_mode
+    assign columns_tablet = columns_desktop 
+  endif
+  assign button_label = section.settings.button_label
+  assign button_link = collection.url
+  assign columns_mobile = section.settings.columns_mobile | plus: 0
+  assign header_layout = 'vertical'
+  assign controls_position = section.settings.controls_position | default: 'middle-center'
+  assign row_gap = section.settings.row_gap | default: 'inherit'
+  assign timer_hours = section.settings.timer_hours | default: 1 | plus: 0
+  assign timer_minutes = section.settings.timer_minutes | default: 24 | plus: 0
+  assign timer_seconds = section.settings.timer_seconds | default: 53 | plus: 0
+  assign timer_hours_display = timer_hours | prepend: '00' | slice: -2, 2
+  assign timer_minutes_display = timer_minutes | prepend: '00' | slice: -2, 2
+  assign timer_seconds_display = timer_seconds | prepend: '00' | slice: -2, 2
+
+  assign enable_swipe_mobile = false
+  if section.settings.swipe_on_mobile and products_to_display > columns_mobile
+    assign enable_swipe_mobile = true
+  endif
+
+  assign item_css_class = 'f-column'
+
+  assign enable_slider = false
+  if section.settings.enable_slider and products_to_display > columns_desktop
+    assign enable_slider = true
+    assign item_css_class = item_css_class | append: ' swiper-slide'
+  endif
+-%}
+{%- capture image_sizes -%}
+(max-width: 767px) calc((100vw - 30px) / {{ columns_mobile }}),
+(max-width: 1023px) calc((100vw - 30px) / {{ columns_tablet }}),
+{{ settings.page_width | divided_by: columns_desktop }}px
+{%- endcapture -%}
+
+<section
+  class="time-tacking-deals time-tacking-deals--{{ section_id }} section-{{ section.id }}"
+  data-timer-hours="{{ timer_hours }}"
+  data-timer-minutes="{{ timer_minutes }}"
+  data-timer-seconds="{{ timer_seconds }}"
+>
+  <div class="time-container">
+    <div class="horizontal-line1"></div>
+    <div class="time-taking-deals-heading">{{ section.settings.heading }}</div>
+    <div class="time-taking-deals-time" data-time-ticking-countdown>
+      <span class="time-taking-deals-time__value" data-ttd-hours>{{ timer_hours_display }}</span>
+      <span class="time-taking-deals-time__label">{{ section.settings.hours_label | default: 'H' }}</span>
+      <span class="time-taking-deals-time__value" data-ttd-minutes>{{ timer_minutes_display }}</span>
+      <span class="time-taking-deals-time__label">{{ section.settings.minutes_label | default: 'M' }}</span>
+      <span class="time-taking-deals-time__value" data-ttd-seconds>{{ timer_seconds_display }}</span>
+      <span class="time-taking-deals-time__label">{{ section.settings.seconds_label | default: 'S' }}</span>
+    </div>
+    <div class="horizontal-line2"></div>
+  </div>
+  <div class="time-tacking-deals__section-content">
+    <grid-list class="time-tacking-deals__grid-list block relative swiper-show-nav-on-hover">
+      <featured-collection
+        class="time-tacking-deals__carousel block{% if enable_slider %} swiper{% endif %}{% if enable_swipe_mobile %} swipe-mobile swipe-mobile--{{ section.settings.columns_mobile }}-cols{% endif %}"
+        data-section-id="{{ section.id }}"
+        {% if enable_slider %}
+          data-enable-slider="true"
+          data-items="{{ columns_desktop }}"
+          data-tablet-items="{{ columns_tablet }}"
+          data-slider-wrapper=".time-tacking-deals__items"
+          {% if header_layout == 'standing-column' %}
+            data-calc-heading-column-height="true"
+          {%- else -%}
+            data-calc-button-position="true"
+          {% endif %}
+        {% endif %}
+      >
+        <div
+          class="time-tacking-deals__items products-list f-grid f-grid-{{ columns_mobile }}-cols md:f-grid-{{ columns_tablet }}-cols lg:f-grid-{{ columns_desktop }}-cols time-tacking-deals__items--gap-{{ section.settings.column_gap | default: '16' }} time-tacking-deals__items--gap-mobile-{{ section.settings.column_gap_mobile | default: section.settings.column_gap | default: '16' }} f-grid--row-gap-{{ row_gap }}{% if enable_slider %} swiper-wrapper{% endif %}{% if enable_swipe_mobile %} swipe-mobile__inner{% endif %}"
+        >
+          {%- for product in collection.products limit: products_to_display -%}
+            <div class="{{ item_css_class }}">
+              {%- render 'card-product',
+                product: product,
+                image_sizes: image_sizes,
+                image_ratio: section.settings.pcard_image_ratio,
+                section_index: section.index,
+                index: forloop.index,
+                hide_similar_icon: true
+              -%}
+            </div>
+          {%- else -%}
+            {%- for i in (1..products_to_display) -%}
+              <div class="{{ item_css_class }}">
+                {% render 'card-product-placeholder', image_ratio: section.settings.pcard_image_ratio %}
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+        </div>
+      </featured-collection>
+      {%- if enable_slider and header_layout != 'standing-column' -%}
+        <div class="time-tacking-deals__swiper-controls swiper-controls swiper-controls--{{ controls_position }} hidden md:block">
+          <button
+            class="time-tacking-deals__swiper-button-prev swiper-button-prev btn"
+            name="previous"
+            aria-label="{{ 'general.slider.previous_slide' | t }}"
+          >
+            {% render 'icon-slider-prev' %}
+          </button>
+          <button
+            class="time-tacking-deals__swiper-button-next swiper-button-next btn"
+            name="next"
+            aria-label="{{ 'general.slider.next_slide' | t }}"
+          >
+            {% render 'icon-slider-next' %}
+          </button>
+        </div>
+      {%- endif -%}
+      {%- if button_label != blank -%}
+        <div class="section__footer flex items-center justify-center">
+          <a
+            class="
+              w-full  flex items-center justify-center view-more-button-featured-collection
+              {% comment %} {{ button_style }}  {% endcomment %}
+            "
+            {% if button_link != blank %}
+              href="{{ button_link }}"
+            {% else %}
+              aria-disabled="true"
+            {% endif %}
+          >
+            {{- button_label -}}
+            {% render 'icon-arrow-right' %}
+          </a>
+        </div>
+      {%- endif -%}
+    </grid-list>
+  </div>
+</section>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+
+  .time-tacking-deals--{{ section_id }} {
+    background: #fff;
+    position: relative;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  .time-container{
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    gap: 16px;
+    padding: 0 {{ section.settings.padding_horizontal_products }}px;
+  }
+  .horizontal-line1{
+    flex: 1;
+    border: 1px solid;
+    width: 100%;
+    border-image-source: linear-gradient(90deg, #453D2B 0%, rgba(69, 61, 43, 0) 100%);
+    border-image-slice: 1;
+    transform: rotate(180deg);
+  }
+  .horizontal-line2{
+    flex: 1;
+    width: 100%;
+    border: 1px solid;
+    border-image-source: linear-gradient(90deg, #453D2B 0%, rgba(69, 61, 43, 0) 100%);
+    border-image-slice: 1;
+  }
+  .time-taking-deals-heading{
+    font-family: 'Bebas Neue',sans-serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 34px;
+    text-transform: capitalize;
+    color: #453D2B;
+  }
+  .time-taking-deals-time{
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    color: #453D2B;
+  }
+  .time-taking-deals-time__value{
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    background-color:#F6F6F6;
+    padding: 6px;
+    color: #453D2B;
+  }
+  .time-taking-deals-time__label{
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    color: #95855E;
+  }
+  .time-taking-deals-time__label:not(:last-child) {
+    margin-right: 4px;
+  }
+  .time-tacking-deals__grid-list{
+    padding: {{ section.settings.padding_top_products }}px {{ section.settings.padding_horizontal_products }}px;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__items--gap-8 {
+    --column-gap: 8px;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__items--gap-12 {
+    --column-gap: 12px;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__items--gap-16 {
+    --column-gap: 16px;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__items--gap-20 {
+    --column-gap: 20px;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__items--gap-24 {
+    --column-gap: 24px;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__items--gap-mobile-8 {
+    --column-gap-mobile: 8px;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__items--gap-mobile-16 {
+    --column-gap-mobile: 16px;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__items--gap-mobile-20 {
+    --column-gap-mobile: 20px;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__items--gap-mobile-24 {
+    --column-gap-mobile: 24px;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__title {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 48px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    vertical-align: middle;
+    color: #FFFFFF;
+  }
+  .time-tacking-deals__badge-container{
+    margin:0 auto;
+    width:calc(100% - 2rem);
+    position:relative;
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__badge {
+    padding-top: 10px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    background:white;
+    margin:0px;
+    max-width:max-content;
+    margin:0 auto;
+    z-index:5;
+    position:relative;
+
+  }
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__badge_text {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 35px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    vertical-align: middle;
+    text-transform: uppercase;
+    color:#453D2B;
+    margin:0px;
+  }
+
+  .time-tacking-deals--{{ section_id }} .time-tacking-deals__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    background: transparent;
+    padding: 20px 64px;
+    position: absolute;
+    bottom: 0px;
+    left:0px;
+    right: 0px;
+  }
+  
+  @media (max-width: 767px) {
+     .time-tacking-deals--{{ section_id }} {
+      background: #fff;
+      position: relative;
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+    .time-taking-deals-heading{
+      font-size: 16px;
+      line-height: 130%;
+
+    }
+    .time-taking-deals-time__value{
+    font-size: 12px;
+      line-height: 15px;
+    }
+    .time-taking-deals-time__label{
+      font-size: 12px;
+      line-height: 15px;
+    }
+    .time-taking-deals-time__label:not(:last-child) {
+      margin-right: 4px;
+    }
+    .time-tacking-deals__grid-list{
+      padding: {{ section.settings.padding_top_products_mobile }}px {{ section.settings.padding_horizontal_products_mobile }}px;
+    }
+
+    .time-tacking-deals--{{ section_id }} .time-tacking-deals__badge {
+      font-size: 1.2rem;
+      padding: 0.45rem 0.8rem;
+    }
+     .time-container{
+      flex-direction:column;
+      align-items: center;
+      justify-content:center;
+      gap: 8px;
+      padding: 0 {{ section.settings.padding_horizontal_products }}px;
+    }
+    .horizontal-line1{
+      display: none;
+    }
+    .horizontal-line2{
+     display: none;
+    }
+    .time-tacking-deals--{{ section_id }} .time-tacking-deals__grid {
+      padding:16px;
+      gap:12px;
+    }
+
+    .time-tacking-deals--{{ section_id }} .time-tacking-deals__card,
+    .time-tacking-deals--{{ section_id }} .time-tacking-deals__card-image,
+    .time-tacking-deals--{{ section_id }} .time-tacking-deals__card-placeholder {
+      min-height: 14rem;
+      object-fit: cover;
+    }
+    .time-tacking-deals--{{ section_id }} .time-tacking-deals__card-label {
+      font-size: 1.3rem;
+      bottom: 1rem;
+    }
+    .subtext{
+      font-size:1rem;
+    }
+  }
+</style>
+<script src="{{ 'featured-collection.js' | asset_url }}" defer="defer"></script>
+<script>
+  (function () {
+    var sectionEl = document.querySelector('.time-tacking-deals--{{ section_id }}');
+    if (!sectionEl) return;
+
+    var countdownEl = sectionEl.querySelector('[data-time-ticking-countdown]');
+    if (!countdownEl) return;
+
+    var hoursEl = countdownEl.querySelector('[data-ttd-hours]');
+    var minutesEl = countdownEl.querySelector('[data-ttd-minutes]');
+    var secondsEl = countdownEl.querySelector('[data-ttd-seconds]');
+    if (!hoursEl || !minutesEl || !secondsEl) return;
+
+    var hours = parseInt(sectionEl.dataset.timerHours, 10) || 0;
+    var minutes = parseInt(sectionEl.dataset.timerMinutes, 10) || 0;
+    var seconds = parseInt(sectionEl.dataset.timerSeconds, 10) || 0;
+    var totalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+    var formatTwoDigits = function (value) {
+      return String(Math.max(0, value)).padStart(2, '0');
+    };
+
+    var updateCountdown = function () {
+      var remainingHours = Math.floor(totalSeconds / 3600);
+      var remainingMinutes = Math.floor((totalSeconds % 3600) / 60);
+      var remainingSeconds = totalSeconds % 60;
+
+      hoursEl.textContent = formatTwoDigits(remainingHours);
+      minutesEl.textContent = formatTwoDigits(remainingMinutes);
+      secondsEl.textContent = formatTwoDigits(remainingSeconds);
+    };
+
+    if (sectionEl._timeTickingDealsInterval) {
+      window.clearInterval(sectionEl._timeTickingDealsInterval);
+    }
+
+    updateCountdown();
+    if (totalSeconds <= 0) return;
+
+    sectionEl._timeTickingDealsInterval = window.setInterval(function () {
+      totalSeconds -= 1;
+      if (totalSeconds < 0) {
+        totalSeconds = 0;
+        updateCountdown();
+        window.clearInterval(sectionEl._timeTickingDealsInterval);
+        return;
+      }
+      updateCountdown();
+    }, 1000);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Time ticking deals",
+  "settings": [
+ 
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "NEW ARRIVALS"
+    },
+    {
+      "type": "header",
+      "content": "Timer"
+    },
+    {
+      "type": "range",
+      "id": "timer_hours",
+      "label": "Starting hours",
+      "default": 1,
+      "min": 0,
+      "max": 99,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "timer_minutes",
+      "label": "Starting minutes",
+      "default": 24,
+      "min": 0,
+      "max": 59,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "timer_seconds",
+      "label": "Starting seconds",
+      "default": 53,
+      "min": 0,
+      "max": 59,
+      "step": 1
+    },
+    {
+      "type": "text",
+      "id": "hours_label",
+      "label": "Hours label",
+      "default": "H"
+    },
+    {
+      "type": "text",
+      "id": "minutes_label",
+      "label": "Minutes label",
+      "default": "M"
+    },
+    {
+      "type": "text",
+      "id": "seconds_label",
+      "label": "Seconds label",
+      "default": "S"
+    },
+   
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:sections.all.collection.label"
+    },
+    {
+      "type": "number",
+      "id": "items_to_show",
+      "label": "items to show desktop"
+    },
+    {
+      "type": "number",
+      "id": "items_to_show_mobile",
+      "label": "items to show mobile"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:sections.all.grid.columns_desktop.label",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Columns mobile",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "column_gap",
+      "options": [
+        {
+          "value": "8",
+          "label": "8px"
+        },
+        {
+          "value": "12",
+          "label": "12px"
+        },
+        {
+          "value": "16",
+          "label": "16px"
+        },
+        {
+          "value": "20",
+          "label": "20px"
+        },
+        {
+          "value": "24",
+          "label": "24px"
+        }
+      ],
+      "default": "16",
+      "label": "Column gap (desktop)"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:sections.all.button.button_label.label",
+      "info": "t:sections.all.button.button_label.info"
+    },
+    {
+      "type": "select",
+      "id": "row_gap",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "t:sections.all.grid.row_gap.options__inherit.label"
+        },
+        {
+          "value": "none",
+          "label": "t:sections.all.grid.row_gap.options__none.label"
+        },
+        {
+          "value": "extra-small",
+          "label": "t:sections.all.grid.row_gap.options__xs.label"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.all.grid.row_gap.options__sm.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.all.grid.row_gap.options__md.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.all.grid.row_gap.options__lg.label"
+        },
+        {
+          "value": "extra-large",
+          "label": "t:sections.all.grid.row_gap.options__xl.label"
+        }
+      ],
+      "default": "inherit",
+      "label": "t:sections.all.grid.row_gap.label"
+    },
+    {
+      "type": "select",
+      "id": "column_gap_mobile",
+      "options": [
+        {
+          "value": "8",
+          "label": "8px"
+        },
+        {
+          "value": "12",
+          "label": "12px"
+        },
+        {
+          "value": "16",
+          "label": "16px"
+        },
+        {
+          "value": "20",
+          "label": "20px"
+        },
+        {
+          "value": "24",
+          "label": "24px"
+        }
+      ],
+      "default": "16",
+      "label": "Column gap (mobile)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_slider",
+      "label": "t:sections.all.carousel.enable_carousel",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": true,
+      "label": "t:sections.all.mobile.swipe_on_mobile.label"
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_products",
+      "label": "Padding horizontal products",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_products_mobile",
+      "label": "Padding horizontal products mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_products",
+      "label": "Padding top products",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_products_mobile",
+      "label": "Padding top products mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Time ticking deals"
+    }
+  ]
+}
+{% endschema %}

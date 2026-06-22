@@ -1,0 +1,32 @@
+{%- comment -%}
+  Product listing similar styles.
+  Renders product-reference metafield items as full product cards for the PLP sidebar.
+{%- endcomment -%}
+
+{%- liquid
+  assign similar_products = product.metafields.custom.product_variant.value
+  assign columns_mobile = columns_mobile | default: 2
+  assign columns_tablet = columns_tablet | default: 2
+  assign columns_desktop = columns_desktop | default: 2
+  assign image_ratio = image_ratio | default: settings.pcard_image_ratio
+  assign image_sizes = image_sizes | default: '(max-width: 767px) calc((100vw - 30px) / 2), 210px'
+-%}
+
+{%- if similar_products != blank -%}
+  <div class="products-grid-wrap similar-styles-plp">
+    <div class="products-grid f-grid f-grid-{{ columns_mobile }}-cols md:f-grid-{{ columns_tablet }}-cols lg:f-grid-{{ columns_desktop }}-cols">
+      {%- for related_product in similar_products -%}
+        <div class="f-column">
+          {% render 'card-product',
+            product: related_product,
+            image_sizes: image_sizes,
+            image_ratio: image_ratio,
+            section_index: section.index,
+            index: forloop.index,
+            hide_similar_icon: true
+          %}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}

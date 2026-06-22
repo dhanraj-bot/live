@@ -1,0 +1,331 @@
+{%- comment -%}
+  Clickpost EDD Configuration
+  Pass cutoff settings from theme customizer to JavaScript
+{%- endcomment -%}
+<script>
+  window.CLICKPOST_EDD_CONFIG = {
+    cutoffEnabled: {{ settings.edd_enable_cutoff | default: true }},
+    cutoffTime: {{ settings.edd_cut_off_time | default: '15:00' | json }}
+  };
+</script>
+
+<style>
+  .clickpost-edd {
+    --edd-heading-color: #1a1a1a;
+    --edd-text-color: #4a4a4a;
+    --edd-text-muted: #6b6b6b;
+    --edd-accent: #d63242;
+    --edd-success: #22c55e;
+    --edd-border: #e5e5e5;
+    --edd-bg: #FBFAF9;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .clickpost-edd__heading {
+    color: #1A1A1A;
+    margin: 0 0 12px;
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 100%;
+  }
+
+  .clickpost-edd__pincode-row {
+    display: flex;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .clickpost-edd__input {
+  flex: 1;
+  max-width: 100%;
+  padding: 16px;
+  border: none;
+  background: var(--edd-bg);
+  color: #090909;
+  font-size: 16px;
+  height: 52px;
+  line-height: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+.clickpost-edd__input::placeholder {
+  font-weight: 400;
+  font-size: 14px;
+  color: #5E606C;
+}
+
+  .clickpost-edd__input:focus-visible {
+    outline: none;
+  }
+
+  .clickpost-edd__input::placeholder {
+    color: var(--edd-text-muted);
+  }
+
+  .clickpost-edd__check-btn {
+    position: absolute;
+    right: 0;
+    top:0px;
+    background: none;
+    border: none;
+    color: #453D2B;
+    font-weight:700;
+    font-family: 'Montserrat',sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 1rem 24px 1rem 0rem;
+    text-transform: uppercase;
+    
+  }
+  .check-text{
+    border-left: 1.2px solid #00000014;
+    padding-left: 24px;
+  }
+  .clickpost-edd__option-detail{
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 500;
+  }
+  .clickpost-edd__option-detail-prefix{
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 500;
+  }
+  .clickpost-edd__location-row {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0rem;
+  }
+
+  /* Hidden until JS runs – prevents glitch on load; JS sets display when needed */
+  .clickpost-edd [data-js-standard-option],
+  .clickpost-edd [data-js-express-option],
+  .clickpost-edd [data-js-delivery-divider] {
+    display: none;
+  }
+
+  .clickpost-edd__location-text {
+    color: #111827;
+    font-size: 14px;
+    font-family: 'Montserrat',sans-serif;
+  }
+
+  .clickpost-edd__divider {
+    margin: 5px 0;
+    height: .5px;
+    background-color: #d2d2d266;
+  }
+
+  .clickpost-edd__option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 1rem 0;
+  }
+
+  .clickpost-edd__option:first-of-type {
+    padding-top: 0;
+  }
+
+  .clickpost-edd__option-heading {
+    color: #111827;
+    font-size: 14px;
+    margin: 0;
+    font-family: 'Montserrat',sans-serif;
+  }
+
+  .clickpost-edd__option-heading--express {
+    color: var(--edd-accent);
+    font-family: 'Montserrat',sans-serif;
+  }
+
+  .clickpost-edd__option-heading-suffix {
+    color: var(--edd-heading-color);
+    font-weight: 400;
+  }
+
+  .clickpost-edd__option-detail {
+    font-size: 12px;
+    color: var(--edd-text-muted);
+    margin: 0;
+  }
+
+  .clickpost-edd__option-detail strong {
+    color: var(--edd-heading-color);
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  .clickpost-edd__option-detail--available {
+    color: #009662;
+    font-weight: 400;
+  }
+
+  .clickpost-edd__option-detail--unavailable {
+    color: var(--edd-text-muted);
+    font-weight: 400;
+  }
+
+  .clickpost-edd__express-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .clickpost-edd__timer {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 0.0625rem solid var(--edd-border);
+    background: #FAFAFA;
+    color: var(--edd-accent);
+    font-size: 14px;
+    font-weight: 500;
+    width: 150px;
+    text-align: center;
+  }
+  @media (max-width:767.9px){
+    .clickpost-edd__heading {
+      margin: 0 0 18px;
+    }
+    .clickpost-edd__input {
+      flex: 1;
+      border-radius: 2px;
+      max-width: 100%;
+      padding: 10px 16px;
+      border: 0.8px solid #6B7280;
+      background: white;
+      color: #090909;
+      font-size: 16px;
+      height: 44px;
+      line-height: 30px;
+      font-family: 'Montserrat',sans-serif;
+      font-weight:500;
+    }
+    .check-text{
+      border-left: none !important;
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color : #111827;
+      padding-left: 1.2rem !important;
+    }
+    .clickpost-edd__check-btn {
+        padding: 1rem 1.2rem 1rem 0rem;
+    }
+  }
+  @media only screen and (min-width: 768px) {
+    .clickpost-edd__option-heading {
+    font-size: 16px;
+    line-height: normal;
+    font-family: 'Montserrat',sans-serif;
+    font-weight:500;
+  }
+  .clickpost-edd__option-detail {
+    font-size: 14px;
+  }
+  }
+
+  @media only screen and (max-width: 768px) {
+  .clickpost-edd__heading {
+      font-size: 16px;
+      font-weight: 600;
+  }
+  .clickpost-edd__option {
+    gap: 5px;
+  }
+  .clickpost-edd__timer {
+    padding: 4px 5px;
+    font-size: 13px;
+    width: 130px;
+}
+.clickpost-edd-mobile.clickpost-edd__option.clickpost-edd-mobile--visible span.clickpost-edd__timer {
+    width: 140px;
+}
+  }
+</style>
+
+<section class="clickpost-edd" aria-labelledby="clickpost-edd-heading-{{ block.id }}"{% if section_id %} data-clickpost-section-id="{{ section_id }}"{% endif %}>
+  <h4 id="clickpost-edd-heading-{{ block.id }}" class="clickpost-edd__heading">
+    {{ block.settings.heading | default: 'Check Delivery' }}
+  </h4>
+
+  <div class="clickpost-edd__pincode-row">
+    <input
+      type="text"
+      class="clickpost-edd__input"
+      placeholder="Enter Pincode"
+      maxlength="6"
+      inputmode="numeric"
+      pattern="[0-9]*"
+    >
+    <button type="button" class="clickpost-edd__check-btn" aria-label="Check delivery">
+      <span class="check-text">{{ block.settings.check_button_text | default: 'CHECK' }}</span>
+    </button>
+  </div>
+
+  <div class="clickpost-edd__location-row">
+    <svg class="clickpost-edd__location-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+     <path d="M7 1.3125C5.87512 1.3125 4.7755 1.64607 3.8402 2.27102C2.90489 2.89597 2.17591 3.78423 1.74544 4.82349C1.31496 5.86274 1.20233 7.00631 1.42179 8.10958C1.64124 9.21284 2.18292 10.2263 2.97833 11.0217C3.77374 11.8171 4.78716 12.3588 5.89043 12.5782C6.99369 12.7977 8.13726 12.685 9.17651 12.2546C10.2158 11.8241 11.104 11.0951 11.729 10.1598C12.3539 9.2245 12.6875 8.12488 12.6875 7C12.6859 5.49207 12.0862 4.04636 11.0199 2.98009C9.95365 1.91382 8.50793 1.31409 7 1.3125ZM9.49703 5.99703L6.43453 9.05953C6.3939 9.10021 6.34565 9.13248 6.29254 9.1545C6.23943 9.17651 6.1825 9.18784 6.125 9.18784C6.06751 9.18784 6.01058 9.17651 5.95747 9.1545C5.90435 9.13248 5.8561 9.10021 5.81547 9.05953L4.50297 7.74703C4.42088 7.66494 4.37476 7.5536 4.37476 7.4375C4.37476 7.3214 4.42088 7.21006 4.50297 7.12797C4.58506 7.04588 4.69641 6.99976 4.8125 6.99976C4.9286 6.99976 5.03994 7.04588 5.12203 7.12797L6.125 8.13148L8.87797 5.37797C8.91862 5.33732 8.96688 5.30508 9.01999 5.28308C9.07309 5.26108 9.13002 5.24976 9.1875 5.24976C9.24499 5.24976 9.30191 5.26108 9.35502 5.28308C9.40813 5.30508 9.45639 5.33732 9.49703 5.37797C9.53768 5.41862 9.56993 5.46687 9.59192 5.51998C9.61392 5.57309 9.62525 5.63001 9.62525 5.6875C9.62525 5.74499 9.61392 5.80191 9.59192 5.85502C9.56993 5.90813 9.53768 5.95638 9.49703 5.99703Z" fill="#439C39"/>
+    </svg>
+
+    <div class="clickpost-edd__location-text" id="clickpost-edd-location-{{ block.id }}" data-js-location aria-live="polite">
+      {%- comment -%} Populated by JavaScript (e.g. "Gurugram , India") {%- endcomment -%}
+    </div>
+  </div>
+ 
+  <div class="clickpost-edd__option" data-js-standard-option>
+    {%- if block.settings.standard_delivery_icon != blank -%}
+      <img
+        class="clickpost-edd__option-icon"
+        src="{{ block.settings.standard_delivery_icon | image_url: width: 48 }}"
+        alt=""
+        width="24"
+        height="24"
+        loading="lazy"
+      >
+    {%- endif -%}
+    <div class="clickpost-edd__option-body flex gap-2">
+      <p class="clickpost-edd__option-heading">
+        {{ block.settings.standard_delivery_heading | default: 'Standard Delivery' }}
+      </p>
+      <p class="clickpost-edd__option-detail">
+        <span class="clickpost-edd__option-detail-prefix">Get it by </span>
+        <strong id="clickpost-edd-standard-date-{{ block.id }}" data-js-standard-date aria-live="polite">
+          {%- comment -%} Populated by JavaScript (e.g. "13th and 14th Jan") {%- endcomment -%}
+        </strong>
+      </p>
+    </div>
+  </div>
+
+  <hr class="clickpost-edd__divider" data-js-delivery-divider>
+
+  <div class="clickpost-edd__option" data-js-express-option>
+    {%- if block.settings.express_delivery_icon != blank -%}
+      <img
+        class="clickpost-edd__option-icon"
+        src="{{ block.settings.express_delivery_icon | image_url: width: 48 }}"
+        alt=""
+        width="24"
+        height="24"
+        loading="lazy"
+      >
+    {%- endif -%}
+    <div class="clickpost-edd__option-body">
+      <div class="clickpost-edd__express-row">
+        <p class="clickpost-edd__option-heading clickpost-edd__option-heading--express">
+          {{ block.settings.express_delivery_heading | default: 'Express Delivery | Order in' }}
+        </p>
+        <span class="clickpost-edd__timer" data-js-timer aria-live="polite">—</span>
+      </div>
+      <p class="clickpost-edd__option-detail">
+        <span class="clickpost-edd__option-detail-prefix">Get it by </span>
+        <strong data-js-express-date>—</strong>
+      </p>
+    </div>
+  </div>
+</section>

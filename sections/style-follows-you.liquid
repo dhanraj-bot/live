@@ -1,0 +1,388 @@
+{% style %}
+  .style-follows-you-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    padding-left: {{ section.settings.padding_left_mobile }}px;
+    padding-right: {{ section.settings.padding_right_mobile }}px;
+    background-color: {{ section.settings.background_color }};
+  }
+
+  .style-follows-you__heading-{{ section.id }} {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    line-height: 21px;
+    letter-spacing: 0.04em;
+    text-align: center;
+    color: #453D2B;
+    margin: 0 0 24px;
+  }
+
+  .style-follows-you__grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 10px;
+  }
+
+  .style-follows-you__card-{{ section.id }} {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 2px;
+    text-decoration: none;
+    background: #fff;
+    min-height: 116px;
+  }
+
+  .style-follows-you__card--full-mobile-{{ section.id }} {
+    grid-column: 1 / -1;
+    min-height: 140px;
+  }
+
+  .style-follows-you__image-wrapper-{{ section.id }} {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .style-follows-you__image-{{ section.id }},
+  .style-follows-you__image-mobile-{{ section.id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: absolute;
+    inset: 0;
+    transition: transform 0.4s ease;
+  }
+
+  .style-follows-you__image-{{ section.id }} {
+    display: none;
+  }
+
+  .style-follows-you__image-mobile-{{ section.id }} {
+    display: block;
+  }
+
+  .style-follows-you__placeholder-{{ section.id }} {
+    width: 100%;
+    height: 100%;
+    min-height: 116px;
+    background: #d9d9d9;
+    display: block;
+  }
+
+  .style-follows-you__overlay-{{ section.id }} {
+    position: absolute;
+    inset: 0;
+    /* background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 45%,
+      rgba(0, 0, 0, 0.18) 72%,
+      rgba(69, 61, 43, 0.55) 100%
+    ); */
+    z-index: 1;
+  }
+
+  .style-follows-you__title-{{ section.id }} {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 130%;
+    text-transform: uppercase;
+    color: #ffffff;
+    padding: 0 10px;
+  }
+
+  .style-follows-you__card-{{ section.id }}:hover .style-follows-you__image-{{ section.id }},
+  .style-follows-you__card-{{ section.id }}:hover .style-follows-you__image-mobile-{{ section.id }} {
+    transform: scale(1.03);
+  }
+
+  @media screen and (min-width: 750px) {
+    .style-follows-you-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      padding-left: {{ section.settings.padding_left }}px;
+      padding-right: {{ section.settings.padding_right }}px;
+    }
+
+    .style-follows-you__heading-{{ section.id }} {
+      font-size: 28px;
+      line-height: 36px;
+      margin-bottom: 24px;
+    }
+
+    .style-follows-you__grid-{{ section.id }} {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+
+    .style-follows-you__card-{{ section.id }} {
+      min-height: 280px;
+    }
+
+    .style-follows-you__card--small-{{ section.id }} {
+      grid-column: span 2;
+    }
+
+    .style-follows-you__card--large-{{ section.id }} {
+      grid-column: span 3;
+    }
+
+    .style-follows-you__card--full-mobile-{{ section.id }} {
+      /* grid-column: auto; */
+      min-height: 280px;
+    }
+
+    .style-follows-you__image-{{ section.id }} {
+      display: block;
+    }
+
+    .style-follows-you__image-mobile-{{ section.id }} {
+      display: none;
+    }
+
+    .style-follows-you__title-{{ section.id }} {
+      font-size: 20px;
+      bottom: 16px;
+    }
+  }
+{% endstyle %}
+
+<div class="style-follows-you-{{ section.id }}">
+  {% if section.settings.heading != blank %}
+    <h2 class="style-follows-you__heading-{{ section.id }}">
+      {{ section.settings.heading }}
+    </h2>
+  {% endif %}
+
+  <div class="style-follows-you__grid-{{ section.id }}">
+    {% for block in section.blocks %}
+      {% assign desktop_card_class = 'style-follows-you__card--small-' | append: section.id %}
+      {% if forloop.index > 3 %}
+        {% assign desktop_card_class = 'style-follows-you__card--large-' | append: section.id %}
+      {% endif %}
+
+      {% assign mobile_card_class = '' %}
+      {% if forloop.index == 3 %}
+        {% assign mobile_card_class = 'style-follows-you__card--full-mobile-' | append: section.id %}
+      {% endif %}
+
+      {% assign desktop_image_class = 'style-follows-you__image-' | append: section.id %}
+      {% assign mobile_image_class = 'style-follows-you__image-mobile-' | append: section.id %}
+      {% assign image_alt = block.settings.title | default: 'Style image' %}
+
+      <a
+        href="{{ block.settings.link | default: '#' }}"
+        class="style-follows-you__card-{{ section.id }} {{ desktop_card_class }} {{ mobile_card_class }}"
+        {{ block.shopify_attributes }}
+      >
+        <div class="style-follows-you__image-wrapper-{{ section.id }}">
+          {% if block.settings.image != blank %}
+            {{
+              block.settings.image
+              | image_url: width: 1200
+              | image_tag: class: desktop_image_class, loading: 'lazy', alt: image_alt
+            }}
+          {% endif %}
+
+          {% if block.settings.mobile_image != blank %}
+            {{
+              block.settings.mobile_image
+              | image_url: width: 800
+              | image_tag: class: mobile_image_class, loading: 'lazy', alt: image_alt
+            }}
+          {% elsif block.settings.image != blank %}
+            {{
+              block.settings.image
+              | image_url: width: 800
+              | image_tag: class: mobile_image_class, loading: 'lazy', alt: image_alt
+            }}
+          {% else %}
+            <div class="style-follows-you__placeholder-{{ section.id }}"></div>
+          {% endif %}
+
+          <div class="style-follows-you__overlay-{{ section.id }}"></div>
+
+          {% if block.settings.title != blank %}
+            <h3 class="style-follows-you__title-{{ section.id }}">
+              {{ block.settings.title }}
+            </h3>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Style Follows You",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "STYLE THAT FOLLOWS YOU"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F5F3F0"
+    },
+
+    {
+      "type": "header",
+      "content": "Desktop Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Padding left (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Padding right (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+
+    {
+      "type": "header",
+      "content": "Mobile Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_left_mobile",
+      "label": "Padding left (mobile)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_right_mobile",
+      "label": "Padding right (mobile)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "blocks": [
+    {
+      "type": "style_card",
+      "name": "Style Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Desktop image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "OLD MONEY"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "Style Follows You",
+      "blocks": [
+        {
+          "type": "style_card"
+        },
+        {
+          "type": "style_card"
+        },
+        {
+          "type": "style_card"
+        },
+        {
+          "type": "style_card"
+        },
+        {
+          "type": "style_card"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

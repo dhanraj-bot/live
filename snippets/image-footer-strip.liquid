@@ -1,0 +1,246 @@
+{% comment %}
+  Renders a customizable footer strip for product images
+
+  Accepts:
+  - enabled: {Boolean} Whether to show the footer strip (default: true)
+  - footer_bg_color: {String} Background color for the footer strip
+  - footer_text_color: {String} Text color for the footer strip
+  - footer_bg_opacity: {Number} Background opacity (0-100, default: 100)
+
+  Usage:
+  {% render 'image-footer-strip',
+    enabled: settings.image_footer_enabled,
+    footer_bg_color: settings.image_footer_background_color,
+    footer_text_color: settings.image_footer_text_color,
+    footer_bg_opacity: settings.image_footer_background_opacity
+  %}
+{% endcomment %}
+
+{%- liquid
+  if enabled == false
+    assign footer_enabled = false
+  elsif enabled == true
+    assign footer_enabled = true
+  elsif settings.image_footer_enabled == false
+    assign footer_enabled = false
+  elsif settings.image_footer_enabled == true
+    assign footer_enabled = true
+  else
+    assign footer_enabled = false
+  endif
+
+  assign footer_bg_color = footer_bg_color | default: settings.image_footer_background_color | default: '#000000'
+  assign footer_text_color = footer_text_color | default: settings.image_footer_text_color | default: '#FFFFFF'
+  assign highlight_color = settings.image_footer_highlight_color | default: '#efaf2b'
+  
+  assign footer_bg_opacity = footer_bg_opacity | default: settings.image_footer_background_opacity | default: 100
+  assign opacity_value = footer_bg_opacity | divided_by: 100.0
+
+  assign rotation_seconds = settings.image_footer_rotation_interval | default: 4
+  assign rotation_interval = rotation_seconds | times: 1000
+  
+  assign messages_text = settings.image_footer_messages | default: ''
+  assign highlights_text = settings.image_footer_highlights | default: ''
+  
+  assign messages_br = messages_text | newline_to_br
+  assign highlights_br = highlights_text | newline_to_br
+  
+  assign messages = messages_br | split: '<br />'
+  assign highlights = highlights_br | split: '<br />'
+-%}
+
+<script>
+  {% comment %} console.log('Footer Messages Array:', {{ messages | json }});
+  console.log('Footer Highlights Array:', {{ highlights | json }}); {% endcomment %}
+</script>
+
+{%- liquid
+  assign message_index = 0
+  assign valid_messages = 0
+-%}
+
+{%- capture footer_messages_markup -%}
+  {%- for message in messages -%}
+    {%- assign message = message | strip -%}
+    {%- if message == blank -%}
+      {%- continue -%}
+    {%- endif -%}
+
+    {%- assign highlight = highlights[forloop.index0] | strip -%}
+    {%- assign highlighted_message = message -%}
+    {%- if highlight != blank -%}
+      {%- assign highlight_markup = '<span class="product-image-footer-strip__highlight" style="color:' | append: highlight_color | append: ';">' | append: highlight | append: '</span>' -%}
+      {%- assign highlighted_message = message | replace_first: highlight, highlight_markup -%}
+    {%- endif -%}
+
+    <span
+      class="product-image-footer-strip__message"
+      style="animation-delay: calc(var(--footer-rotation-interval, {{ rotation_interval }}ms) * {{ message_index }});"
+    >
+      {{ highlighted_message }}
+    </span>
+    {%- assign message_index = message_index | plus: 1 -%}
+    {%- assign valid_messages = valid_messages | plus: 1 -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- assign message_count = valid_messages -%}
+
+{%- if footer_enabled and message_count > 0 -%}
+  {%- assign rotation_cycle = rotation_interval | times: message_count -%}
+  <div
+    class="product-image-footer-strip{% if message_count > 1 %} product-image-footer-strip--rotating{% endif %}"
+    style="color: {{ footer_text_color }}; --footer-rotation-interval: {{ rotation_interval }}ms; --footer-rotation-cycle: {{ rotation_cycle }}ms; --footer-message-count: {{ message_count }}; --footer-bg-color: {{ footer_bg_color }}; --footer-bg-opacity: {{ opacity_value }};"
+    data-message-count="{{ message_count }}"
+    data-bg-color="{{ footer_bg_color }}"
+    data-bg-opacity="{{ opacity_value }}"
+  >
+    <span class="product-image-footer-strip__text" aria-live="polite">
+      <span class="product-image-footer-strip__messages">
+        {{ footer_messages_markup }}
+      </span>
+    </span>
+  </div>
+
+  <script>
+    (function() {
+      // Convert hex color to rgba with opacity
+      function hexToRgba(hex, opacity) {
+        // Remove # if present
+        hex = hex.replace('#', '');
+        
+        // Handle 3-digit hex
+        if (hex.length === 3) {
+          hex = hex.split('').map(function(char) {
+            return char + char;
+          }).join('');
+        }
+        
+        // Parse hex to RGB
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        
+        return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + opacity + ')';
+      }
+      
+      // Apply background color with opacity to footer strips
+      function applyBackgroundOpacity() {
+        document.querySelectorAll('.product-image-footer-strip').forEach(function(strip) {
+          const bgColor = strip.dataset.bgColor || strip.style.getPropertyValue('--footer-bg-color') || '#000000';
+          const opacity = parseFloat(strip.dataset.bgOpacity || strip.style.getPropertyValue('--footer-bg-opacity') || '1');
+          
+          // Handle different color formats
+          let rgbaColor;
+          if (bgColor.startsWith('#')) {
+            rgbaColor = hexToRgba(bgColor, opacity);
+          } else if (bgColor.startsWith('rgb(')) {
+            rgbaColor = bgColor.replace('rgb(', 'rgba(').replace(')', ', ' + opacity + ')');
+          } else if (bgColor.startsWith('rgba(')) {
+            // Extract rgb values and replace alpha
+            const rgbaMatch = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (rgbaMatch) {
+              rgbaColor = 'rgba(' + rgbaMatch[1] + ', ' + rgbaMatch[2] + ', ' + rgbaMatch[3] + ', ' + opacity + ')';
+            } else {
+              rgbaColor = bgColor;
+            }
+          } else {
+            rgbaColor = bgColor;
+          }
+          
+          strip.style.backgroundColor = rgbaColor;
+        });
+      }
+      
+      function initFooterStripAnimation(footerStrip) {
+        if (!footerStrip) return;
+        
+        const messageCount = parseInt(footerStrip.dataset.messageCount) || 2;
+        if (messageCount <= 1) return;
+        
+        // Calculate visible window: each message gets (100/N - 2)% visible time
+        // This ensures smooth transitions without overlap
+        const visiblePercent = (100 / messageCount) - 2;
+        const fadeInPercent = 1;
+        const fadeOutPercent = visiblePercent + 1;
+        
+        // Generate unique keyframe name for this message count
+        const keyframeName = `product-image-footer-rotate-${messageCount}`;
+        
+        // Check if keyframes already exist for this message count
+        const styleId = `product-image-footer-strip-keyframes-${messageCount}`;
+        if (!document.getElementById(styleId)) {
+          // Generate dynamic keyframes
+          const keyframes = `
+            @keyframes ${keyframeName} {
+              0% {
+                opacity: 0;
+                transform: translateY(30%);
+                visibility: hidden;
+                z-index: 1;
+                pointer-events: none;
+              }
+              ${fadeInPercent}% {
+                opacity: 1;
+                transform: translateY(0);
+                visibility: visible;
+                z-index: 2;
+                pointer-events: auto;
+              }
+              ${visiblePercent}% {
+                opacity: 1;
+                transform: translateY(0);
+                visibility: visible;
+                z-index: 2;
+                pointer-events: auto;
+              }
+              ${fadeOutPercent}% {
+                opacity: 0;
+                transform: translateY(-30%);
+                visibility: hidden;
+                z-index: 1;
+                pointer-events: none;
+              }
+              100% {
+                opacity: 0;
+                transform: translateY(-30%);
+                visibility: hidden;
+                z-index: 1;
+                pointer-events: none;
+              }
+            }
+          `;
+          
+          // Inject dynamic keyframes
+          const styleElement = document.createElement('style');
+          styleElement.id = styleId;
+          styleElement.textContent = keyframes;
+          document.head.appendChild(styleElement);
+        }
+        
+        // Apply dynamic animation to messages
+        const messages = footerStrip.querySelectorAll('.product-image-footer-strip__message');
+        messages.forEach(function(msg) {
+          msg.style.animationName = keyframeName;
+        });
+      }
+      
+      // Initialize all footer strips (handles multiple product cards)
+      function initAllFooterStrips() {
+        // Apply background opacity first
+        applyBackgroundOpacity();
+        
+        // Then initialize animations for rotating strips (only if more than 1 message)
+        document.querySelectorAll('.product-image-footer-strip--rotating').forEach(initFooterStripAnimation);
+      }
+      
+      // Run initialization
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAllFooterStrips);
+      } else {
+        initAllFooterStrips();
+      }
+    })();
+  </script>
+{%- endif -%}
+

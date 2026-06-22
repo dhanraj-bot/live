@@ -1,0 +1,553 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {
+        "text_alignment": "start"
+      }
+    },
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "product_badge": {
+          "type": "product_badge",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h1"
+          }
+        },
+        "sku_PXaUmt": {
+          "type": "sku",
+          "settings": {
+            "text_style": "body",
+            "show_sku": true
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "clickpost_edd_mobile_dAEtxV": {
+          "type": "clickpost_edd_mobile",
+          "settings": {
+            "express_delivery_icon": "shopify://shop_images/Lightning.svg",
+            "express_delivery_heading": "Express Delivery | Order in"
+          }
+        },
+        "seprator_Cp3c84": {
+          "type": "seprator",
+          "settings": {}
+        },
+        "similar_styles_TYMiRQ": {
+          "type": "similar-styles",
+          "settings": {}
+        },
+        "dis_code_xKyGiD": {
+          "type": "dis_code",
+          "name": "Product offer",
+          "settings": {
+            "mainheading": "Best Offers for you:",
+            "collection1": "not-for-sale",
+            "c1_discount_highlight_heading": "",
+            "c1_discount_heading": "Get this for",
+            "c1_discount_offer": "Buy 2 Get ₹250 Off*",
+            "c1_discount_code": "B2G250",
+            "c1_discount_type": "fixed",
+            "c1_discount_value": 125,
+            "c1_discount_highlight_heading1": "",
+            "c1_discount_heading1": "Get this for",
+            "c1_discount_offer1": "Buy 3 & Get ₹500 Off*",
+            "c1_discount_code1": "B3G500",
+            "c1_discount_type1": "fixed",
+            "c1_discount_value1": 167,
+            "collection2": "not-for-sale",
+            "c2_discount_highlight_heading": "",
+            "c2_discount_heading": "Get this for",
+            "c2_discount_offer": "Flat 10% Off on Orders Above ₹1,499",
+            "c2_discount_code": "FIRST10",
+            "c2_discount_type": "percentage",
+            "c2_discount_value": 10,
+            "c2_discount_highlight_heading1": "",
+            "c2_discount_heading1": "Get this for",
+            "c2_discount_offer1": "",
+            "c2_discount_code1": "",
+            "c2_discount_type1": "fixed"
+          }
+        },
+        "seprator_TediM6": {
+          "type": "seprator",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_type": "variant_image",
+            "button_style": "standard",
+            "button_size": 40,
+            "size_title": "Size Chart",
+            "size_chart_from_page": ""
+          }
+        },
+        "information_note_Jcj3xg": {
+          "type": "information_note",
+          "settings": {
+            "notecontent": "Please select a size."
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_quantity_selector": true,
+            "show_dynamic_checkout": false,
+            "show_gift_card_recipient": false
+          }
+        },
+        "notify_me_PV9K8x": {
+          "type": "notify_me",
+          "settings": {}
+        },
+        "return_exchange_note_3NCR6e": {
+          "type": "return-exchange-note",
+          "settings": {
+            "note_text": "<p>Easy 10-day return and exchange on this product. No questions asked.</p>",
+            "custom_class": "return_exchange_note"
+          }
+        },
+        "custom_liquid_Erw7Rd": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'no-return-and-exchange' %}"
+          }
+        },
+        "seprator_Rcbija": {
+          "type": "seprator",
+          "settings": {}
+        },
+        "clickpost_edd_QVk9W7": {
+          "type": "clickpost_edd",
+          "settings": {
+            "heading": "Check Delivery:",
+            "check_button_text": "CHECK",
+            "standard_delivery_icon": "shopify://shop_images/Truck.svg",
+            "standard_delivery_heading": "Standard Delivery",
+            "express_delivery_icon": "shopify://shop_images/Lightning.svg",
+            "express_delivery_heading": "Express Delivery | Order in",
+            "timer_text": "1 hr 52 mins"
+          }
+        },
+        "custom_liquid_nHXF9C": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<form><div class=\"ZipCodeRestrict zipcode_product_page\"></div></form>"
+          }
+        },
+        "icon_with_text": {
+          "type": "icon-with-text",
+          "settings": {
+            "layout": "horizontal",
+            "title_font": "body",
+            "title_size": "text-base",
+            "icon_1": "none",
+            "image_1": "shopify://shop_images/store_1.png",
+            "heading_1": "12+ Stores Pan India",
+            "icon_2": "package",
+            "image_2": "shopify://shop_images/customer.png",
+            "heading_2": "Trusted by 2.5M+ happy customers",
+            "image_3": "shopify://shop_images/arrow_Pl.png",
+            "heading_3": "Easy Return & Exchange"
+          }
+        },
+        "pickup_availability": {
+          "type": "pickup_availability",
+          "disabled": true,
+          "settings": {}
+        },
+        "spec_collapsible_tab_C7pE4J": {
+          "type": "spec_collapsible_tab",
+          "settings": {
+            "heading": "Key Highlights",
+            "content": "",
+            "custom_liquid": "",
+            "page": ""
+          }
+        },
+        "text_6MKmxY": {
+          "type": "text",
+          "settings": {
+            "customClass": "pdp_product_desc",
+            "text": "Product Description",
+            "text_style": "body"
+          }
+        },
+        "collapsible-row-2": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Product Details",
+            "subheading": "Detail and Highlight",
+            "show_description": true,
+            "show_specifications_metafield": false,
+            "icon": "T-shirt",
+            "content": "",
+            "custom_liquid": "",
+            "page": "",
+            "default_open": false
+          }
+        },
+        "collapsible_tab_MDLPYX": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Product Disclaimer",
+            "subheading": "Minor variations in size (±5%) and color may occur.",
+            "show_description": false,
+            "show_specifications_metafield": false,
+            "icon": "disclaimer",
+            "content": "",
+            "custom_liquid": "{% if product.metafields.custom.product_disclaimer != blank %}\n{{ product.metafields.custom.product_disclaimer | metafield_tag}}\n{% else %}\n<h2 style=\"\n    font-size: 14px;\n    font-weight: 400;\n    font-family: 'Montserrat',sans-serif;\n\">1. Actual product measurement may vary +/-5%</br>\n2. Colors may slightly vary depending on your screen brightness.\n</h2>\n{% endif %}",
+            "page": "",
+            "default_open": false
+          }
+        },
+        "collapsible_tab_JKPqeY": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Wash Care",
+            "subheading": "Guidelines for washing and maintaining the product.",
+            "show_description": false,
+            "show_specifications_metafield": false,
+            "icon": "wash",
+            "content": "",
+            "custom_liquid": "{% if product.metafields.custom.wash_care != blank %}\n{{ product.metafields.custom.wash_care| metafield_tag}}\n{% else %}\n<h2 style=\"\n    font-size: 14px;\n    font-weight: 400;\n    font-family: 'Montserrat',sans-serif;\n\">Machine wash cold with similar colors. Only non-chlorine. Tumble dry low. Warm Iron if needed.</h2>\n{% endif %}",
+            "page": "",
+            "default_open": false
+          }
+        },
+        "retuns_refund_tab_PDdi97": {
+          "type": "retuns_refund_tab",
+          "settings": {
+            "heading": "Return & Refund Policy",
+            "subheading": "Know about our policy",
+            "icon": "arrow-up-left",
+            "content": "<p>Returns and exchanges are available within 10 days from the delivery date. For more details, please visit our <a href=\"/pages/returns-exchange-refund\" title=\"Returns, Exchange & Refund\">Returns, Exchange & Refund Policy</a> page.</p>",
+            "default_open": false
+          }
+        },
+        "collapsible_tab_3LWhGr": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Manufacturing Details",
+            "subheading": "Marketed and manufactured by",
+            "show_description": false,
+            "show_specifications_metafield": false,
+            "icon": "Manufacturing",
+            "content": "<p><strong>Country of origin: </strong>India</p><p><strong>Manufacture detail: </strong>Powerlook Apparels Pvt Ltd Lotus Corporate Park Wing G02 - 1502, Ram Mandir Lane, off Western Express Highway, Goregaon, Mumbai, 400063</p>",
+            "custom_liquid": "",
+            "page": "",
+            "default_open": false
+          }
+        },
+        "collapsible_tab_UCTCYg": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Save extra with Offers",
+            "subheading": "",
+            "show_description": false,
+            "show_specifications_metafield": false,
+            "icon": "gift",
+            "content": "<p>Enjoy special discounts or choose easy EMI options with our exclusive payment offers.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "default_open": false
+          }
+        }
+      },
+      "block_order": [
+        "product_badge",
+        "title",
+        "sku_PXaUmt",
+        "price",
+        "clickpost_edd_mobile_dAEtxV",
+        "seprator_Cp3c84",
+        "similar_styles_TYMiRQ",
+        "dis_code_xKyGiD",
+        "seprator_TediM6",
+        "variant_picker",
+        "information_note_Jcj3xg",
+        "buy_buttons",
+        "notify_me_PV9K8x",
+        "return_exchange_note_3NCR6e",
+        "custom_liquid_Erw7Rd",
+        "seprator_Rcbija",
+        "clickpost_edd_QVk9W7",
+        "custom_liquid_nHXF9C",
+        "icon_with_text",
+        "pickup_availability",
+        "spec_collapsible_tab_C7pE4J",
+        "text_6MKmxY",
+        "collapsible-row-2",
+        "collapsible_tab_MDLPYX",
+        "collapsible_tab_JKPqeY",
+        "retuns_refund_tab_PDdi97",
+        "collapsible_tab_3LWhGr",
+        "collapsible_tab_UCTCYg"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "enable_sticky_info": true,
+        "product_info_block_spacing": 24,
+        "product_info_block_spacing_mobile": 24,
+        "product_info_separator_spacing": 4,
+        "product_info_separator_spacing_mobile": 4,
+        "media_size": "large",
+        "gallery_layout": "vertical-carousel",
+        "mobile_thumbnails": "hide",
+        "enable_image_zoom": true,
+        "enable_video_looping": true,
+        "showtimer": false,
+        "timer_collections": [
+          "not-for-sale"
+        ],
+        "saletext": "<p>Sale ends in :</p>",
+        "type": "fixed_time",
+        "style": "number",
+        "duration": "every_month",
+        "time": "2026/06/08 11:59 AM",
+        "padding_top": 0,
+        "padding_bottom": 20
+      }
+    },
+    "sticky_atc_bar_yrbXiU": {
+      "type": "sticky-atc-bar",
+      "name": "t:sections.sticky-atc-bar.name",
+      "settings": {
+        "container": "full",
+        "visibility": "mobile",
+        "show_atc_button": true,
+        "show_dynamic_checkout_buttons": false,
+        "show_quantity": true,
+        "showextra_text_sticky": false,
+        "extra_text_sticky": "Get this at 400 off*"
+      }
+    },
+    "collapsible_tabs_qMwbjX": {
+      "type": "collapsible-tabs",
+      "blocks": {
+        "collapsible_item_AQPXwa": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "More About The “{{ product.title }}\"",
+            "subheading": "",
+            "content": "",
+            "custom_liquid": "{{ product.metafields.custom.new_more_about_the | metafield_tag  }}",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_NV7CDf": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "FAQ",
+            "subheading": "",
+            "content": "",
+            "custom_liquid": "{{ product.metafields.custom.new_product_faq | metafield_tag }}",
+            "page": "",
+            "open": false
+          }
+        }
+      },
+      "block_order": [
+        "collapsible_item_AQPXwa",
+        "collapsible_item_NV7CDf"
+      ],
+      "name": "t:sections.collapsible-tabs.presets.name",
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "",
+        "header_layout": "vertical",
+        "heading": "",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "text_size": "text-base",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "btn--primary",
+        "column_gap": "large",
+        "row_gap": "inherit",
+        "item_style": "standard",
+        "item_color_scheme": "",
+        "item_heading_font": "heading",
+        "item_heading_size": "h4",
+        "item_icon_size": "extra-large",
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "section_seprator_JtqicQ": {
+      "type": "section-seprator",
+      "name": "section seprator",
+      "settings": {}
+    },
+    "shop_the_look_pdp_t8UHzB": {
+      "type": "shop-the-look-pdp",
+      "disabled": true,
+      "name": "Shop the Look PDP",
+      "settings": {
+        "color_scheme": "",
+        "heading": "FIND THE PERFECT MATCH",
+        "buy_button_label": "",
+        "enable_size_selection": true,
+        "hotspot_top_desktop": "28, 49",
+        "hotspot_left_desktop": "52,50",
+        "hotspot_top_mobile": "25,52",
+        "hotspot_left_mobile": "45,56",
+        "padding_top": 50,
+        "padding_bottom": 50,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "1761130705cb929f80": {
+      "type": "apps",
+      "blocks": {
+        "loox_reviews_loox_dynamic_section_kNENFz": {
+          "type": "shopify://apps/loox-reviews/blocks/loox-dynamic-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
+          "settings": {
+            "reviews_to_display": "",
+            "default_tab": "automatic",
+            "only_photos": false,
+            "aggregated": false,
+            "limit": 2,
+            "hide_thumbnails": false,
+            "maxwidth": 1400,
+            "is_sample": false
+          }
+        }
+      },
+      "block_order": [
+        "loox_reviews_loox_dynamic_section_kNENFz"
+      ],
+      "settings": {
+        "include_margins": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "custom_liquid_KYpgXX": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<div id=\"looxReviews\" data-product-id=\"{{product.id}}\" class=\"loox-reviews-default\" data-limit-mobile=\"2\">{{ product.metafields.loox.reviews }}</div>",
+        "color_scheme": "",
+        "padding_top": 20,
+        "padding_bottom": 0
+      }
+    },
+    "related_products_pdp_QVMcTH": {
+      "type": "related-products-pdp",
+      "name": "Related Products PDP",
+      "settings": {
+        "color_scheme": "",
+        "heading": "Complete The Look",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "limit": 8,
+        "columns": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "enable_slider": true,
+        "controls_position": "inside",
+        "pcard_image_ratio": "",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 50,
+        "padding_bottom": 50,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "heading": "Frequently Bought Together",
+        "heading_size": "h3",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "limit": 12,
+        "columns": 4,
+        "column_gap": "extra-small",
+        "row_gap": "inherit",
+        "enable_slider": false,
+        "controls_position": "inside",
+        "pcard_image_ratio": "",
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 40,
+        "padding_bottom": 20,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "recently_viewed_products_q9x77W": {
+      "type": "recently-viewed-products",
+      "disabled": true,
+      "name": "t:sections.recently-viewed-products.name",
+      "settings": {
+        "color_scheme": "",
+        "heading": "Recently viewed products",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "limit": 8,
+        "columns": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "enable_slider": true,
+        "controls_position": "inside",
+        "pcard_image_ratio": "",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 60,
+        "padding_bottom": 50,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main",
+    "sticky_atc_bar_yrbXiU",
+    "collapsible_tabs_qMwbjX",
+    "section_seprator_JtqicQ",
+    "shop_the_look_pdp_t8UHzB",
+    "1761130705cb929f80",
+    "custom_liquid_KYpgXX",
+    "related_products_pdp_QVMcTH",
+    "related-products",
+    "recently_viewed_products_q9x77W"
+  ]
+}

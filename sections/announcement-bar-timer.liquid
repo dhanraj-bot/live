@@ -1,0 +1,539 @@
+{% comment %}
+  Announcement Bar Timer Section
+  Sticky countdown timer bar with dynamic settings
+{% endcomment %}
+
+{%- if section.settings.enable_bar -%}
+<div 
+  class="announcement-bar-timer" 
+  id="announcement-bar-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+  data-end-date="{{ section.settings.end_date }}"
+  data-end-time="{{ section.settings.end_time }}"
+  data-start-date="{{ section.settings.start_date }}"
+  data-start-time="{{ section.settings.start_time }}"
+  style="
+    --ab-bg-color: {{ section.settings.background_color }};
+    --ab-text-color: {{ section.settings.text_color }};
+    --ab-button-bg: {{ section.settings.button_background }};
+    --ab-button-text: {{ section.settings.button_text_color }};
+  "
+>
+  <div class="announcement-bar-timer__container">
+    <div class="announcement-bar-timer__content">
+      {%- if section.settings.label_text != blank -%}
+        <span class="announcement-bar-timer__label">{{ section.settings.label_text }}</span>
+      {%- endif -%}
+      
+      <div class="announcement-bar-timer__countdown" id="countdown-{{ section.id }}">
+        <span class="countdown-unit">
+          <span class="countdown-value" data-days>00</span>
+          {%- if section.settings.show_labels -%}
+            <span class="countdown-label">{{ section.settings.days_label }}</span>
+          {%- endif -%}
+        </span>
+        <span class="countdown-separator">:</span>
+        <span class="countdown-unit">
+          <span class="countdown-value" data-hours>00</span>
+          {%- if section.settings.show_labels -%}
+            <span class="countdown-label">{{ section.settings.hours_label }}</span>
+          {%- endif -%}
+        </span>
+        <span class="countdown-separator">:</span>
+        <span class="countdown-unit">
+          <span class="countdown-value" data-minutes>00</span>
+          {%- if section.settings.show_labels -%}
+            <span class="countdown-label">{{ section.settings.minutes_label }}</span>
+          {%- endif -%}
+        </span>
+        <span class="countdown-separator">:</span>
+        <span class="countdown-unit">
+          <span class="countdown-value" data-seconds>00</span>
+          {%- if section.settings.show_labels -%}
+            <span class="countdown-label">{{ section.settings.seconds_label }}</span>
+          {%- endif -%}
+        </span>
+      </div>
+
+      {%- if section.settings.button_text != blank and section.settings.button_url != blank -%}
+        <a 
+          href="{{ section.settings.button_url }}" 
+          class="announcement-bar-timer__button"
+          {% if section.settings.button_new_tab %}target="_blank" rel="noopener"{% endif %}
+        >
+          {{ section.settings.button_text }}
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_close_button -%}
+      <button 
+        type="button" 
+        class="announcement-bar-timer__close" 
+        aria-label="Close announcement"
+        onclick="closeAnnouncementBar('{{ section.id }}')"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    {%- endif -%}
+  </div>
+</div>
+
+<style>
+  .announcement-bar-timer {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--ab-bg-color);
+    color: var(--ab-text-color);
+    z-index: 21;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .announcement-bar-timer.is-hidden {
+    display: none;
+  }
+
+  /* Adjust header position when announcement bar is visible */
+  .header-sticky {
+    transition: top 0.3s ease;
+  }
+
+  body:has(.announcement-bar-timer:not(.is-hidden)) .header-sticky {
+    top: var(--announcement-bar-height, 0);
+  }
+
+  .announcement-bar-timer__container {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    position: relative;
+  }
+
+  .announcement-bar-timer__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    font-size: var(--font-body-size);
+  }
+
+  .announcement-bar-timer__countdown {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .countdown-value {
+    font-size: var(--font-body-size);
+    line-height: 1;
+    min-width: 1.5rem;
+    text-align: center;
+  }
+
+  .countdown-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    margin-top: 0.125rem;
+  }
+
+  .countdown-separator {
+    font-size: 1.125rem;
+    font-weight: 700;
+    opacity: 0.6;
+    padding: 0 0.125rem;
+  }
+
+  .announcement-bar-timer__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--ab-button-bg);
+    color: var(--ab-button-text);
+    padding: 0.4rem 1rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+  .announcement-bar-timer__close {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--ab-text-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  .announcement-bar-timer__close:hover {
+    opacity: 1;
+  }
+  .header-pinned .announcement-bar-timer {
+    position: fixed;
+}
+  /* Mobile Responsive */
+  @media screen and (max-width: 768px) {
+    .announcement-bar-timer {
+      padding: 0.625rem 0.75rem;
+    }
+
+    .announcement-bar-timer__content {
+      font-size: 11px;
+      gap: 1rem;
+    }
+
+    .countdown-value {
+        font-size: 10px;
+    }
+
+    .countdown-separator {
+      font-size: 0.875rem;
+    }
+
+    .countdown-label {
+      font-size: 8px;
+    }
+
+    .announcement-bar-timer__button {
+      font-size: 10px;
+    }
+
+    .announcement-bar-timer__close {
+      padding: 0.375rem;
+    }
+  }
+
+</style>
+
+<script>
+  (function() {
+    // Update CSS variable for announcement bar height
+    function updateAnnouncementBarHeight() {
+      requestAnimationFrame(function() {
+        const bars = document.querySelectorAll('.announcement-bar-timer:not(.is-hidden)');
+        if (bars.length > 0) {
+          const bar = bars[0];
+          const height = bar.offsetHeight;
+          document.documentElement.style.setProperty('--announcement-bar-height', height + 'px');
+        } else {
+          document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+        }
+      });
+    }
+
+    // Initialize height immediately for visible bars
+    updateAnnouncementBarHeight();
+
+    function initCountdown(sectionId, startDate, startTime, endDate, endTime) {
+      const bar = document.getElementById('announcement-bar-' + sectionId);
+      const countdown = document.getElementById('countdown-' + sectionId);
+      if (!bar || !countdown) return;
+
+      const daysEl = countdown.querySelector('[data-days]');
+      const hoursEl = countdown.querySelector('[data-hours]');
+      const minutesEl = countdown.querySelector('[data-minutes]');
+      const secondsEl = countdown.querySelector('[data-seconds]');
+
+      // Check if bar was manually closed
+      const storageKey = 'announcement-bar-closed-' + sectionId;
+      if (localStorage.getItem(storageKey) === 'true') {
+        bar.classList.add('is-hidden');
+        updateAnnouncementBarHeight();
+        return;
+      }
+
+      // Parse dates
+      const startDateTime = startDate && startTime ? new Date(startDate + 'T' + startTime) : null;
+      const endDateTime = new Date(endDate + 'T' + endTime);
+
+      function padZero(num) {
+        return num < 10 ? '0' + num : num.toString();
+      }
+
+      function updateCountdown() {
+        const now = new Date();
+
+        // Check if we should show the bar based on start date
+        if (startDateTime && now < startDateTime) {
+          bar.classList.add('is-hidden');
+          updateAnnouncementBarHeight();
+          return;
+        }
+
+        const distance = endDateTime - now;
+
+        if (distance < 0) {
+          bar.classList.add('is-hidden');
+          updateAnnouncementBarHeight();
+          clearInterval(timer);
+          return;
+        }
+
+        // Show bar if it was hidden due to start time
+        if (bar.classList.contains('is-hidden') && !localStorage.getItem(storageKey)) {
+          bar.classList.remove('is-hidden');
+          updateAnnouncementBarHeight();
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if (daysEl) daysEl.textContent = padZero(days);
+        if (hoursEl) hoursEl.textContent = padZero(hours);
+        if (minutesEl) minutesEl.textContent = padZero(minutes);
+        if (secondsEl) secondsEl.textContent = padZero(seconds);
+      }
+
+      updateCountdown();
+      const timer = setInterval(updateCountdown, 1000);
+    }
+
+    // Close functionality
+    window.closeAnnouncementBar = function(sectionId) {
+      const bar = document.getElementById('announcement-bar-' + sectionId);
+      if (bar) {
+        bar.classList.add('is-hidden');
+        localStorage.setItem('announcement-bar-closed-' + sectionId, 'true');
+        updateAnnouncementBarHeight();
+      }
+    };
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const bars = document.querySelectorAll('[data-section-id]');
+      bars.forEach(function(bar) {
+        const sectionId = bar.getAttribute('data-section-id');
+        const startDate = bar.getAttribute('data-start-date');
+        const startTime = bar.getAttribute('data-start-time');
+        const endDate = bar.getAttribute('data-end-date');
+        const endTime = bar.getAttribute('data-end-time');
+        
+        if (endDate && endTime) {
+          initCountdown(sectionId, startDate, startTime, endDate, endTime);
+        }
+      });
+
+      // Update height after initialization
+      setTimeout(updateAnnouncementBarHeight, 100);
+    });
+
+    // Update height on window resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(updateAnnouncementBarHeight, 100);
+    });
+
+    // Reinitialize on Shopify theme editor events
+    if (Shopify && Shopify.designMode) {
+      document.addEventListener('shopify:section:load', function(event) {
+        const bar = event.target.querySelector('[data-section-id]');
+        if (bar) {
+          const sectionId = bar.getAttribute('data-section-id');
+          const startDate = bar.getAttribute('data-start-date');
+          const startTime = bar.getAttribute('data-start-time');
+          const endDate = bar.getAttribute('data-end-date');
+          const endTime = bar.getAttribute('data-end-time');
+          
+          // Clear any stored close state in theme editor
+          localStorage.removeItem('announcement-bar-closed-' + sectionId);
+          
+          if (endDate && endTime) {
+            initCountdown(sectionId, startDate, startTime, endDate, endTime);
+          }
+
+          setTimeout(updateAnnouncementBarHeight, 100);
+        }
+      });
+
+      document.addEventListener('shopify:section:unload', function() {
+        setTimeout(updateAnnouncementBarHeight, 100);
+      });
+    }
+  })();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement Bar Timer",
+  "tag": "section",
+  "class": "section-announcement-bar-timer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Visibility Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_bar",
+      "label": "Enable announcement bar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_close_button",
+      "label": "Show close button",
+      "default": true,
+      "info": "Allow visitors to manually close the bar"
+    },
+    {
+      "type": "header",
+      "content": "Timer Settings"
+    },
+    {
+      "type": "text",
+      "id": "start_date",
+      "label": "Start Date (Optional)",
+      "info": "Format: YYYY-MM-DD (e.g., 2025-11-20). Leave empty to show immediately.",
+      "placeholder": "2025-11-20"
+    },
+    {
+      "type": "text",
+      "id": "start_time",
+      "label": "Start Time (Optional)",
+      "info": "Format: HH:MM (24-hour, e.g., 14:30). Leave empty to show immediately.",
+      "placeholder": "00:00",
+      "default": "00:00"
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "End Date",
+      "info": "Format: YYYY-MM-DD (e.g., 2025-11-30)",
+      "default": "2025-12-31"
+    },
+    {
+      "type": "text",
+      "id": "end_time",
+      "label": "End Time",
+      "info": "Format: HH:MM (24-hour, e.g., 23:59)",
+      "default": "23:59"
+    },
+    {
+      "type": "header",
+      "content": "Content Settings"
+    },
+    {
+      "type": "text",
+      "id": "label_text",
+      "label": "Pre-timer label",
+      "default": "Black Friday Ends In:"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_labels",
+      "label": "Show time unit labels",
+      "default": false,
+      "info": "Display labels like 'Days', 'Hours', etc. below numbers"
+    },
+    {
+      "type": "text",
+      "id": "days_label",
+      "label": "Days label",
+      "default": "Days"
+    },
+    {
+      "type": "text",
+      "id": "hours_label",
+      "label": "Hours label",
+      "default": "Hrs"
+    },
+    {
+      "type": "text",
+      "id": "minutes_label",
+      "label": "Minutes label",
+      "default": "Min"
+    },
+    {
+      "type": "text",
+      "id": "seconds_label",
+      "label": "Seconds label",
+      "default": "Sec"
+    },
+    {
+      "type": "header",
+      "content": "Call-to-Action Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Now!"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL",
+      "default": "/collections/all"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_new_tab",
+      "label": "Open link in new tab",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Color Settings"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar Timer",
+      "category": "Promotional"
+    }
+  ]
+}
+{% endschema %}
+

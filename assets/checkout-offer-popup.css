@@ -1,0 +1,188 @@
+/* Checkout Offer Popup Styles */
+
+.checkout-offer-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.checkout-offer-popup__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.checkout-offer-popup__container {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  max-width: 375px;
+  height: 340px;
+  width: 100%;
+  padding: 35px 35px;
+  box-shadow: 0 20px 40px #0003;
+  animation: checkoutPopupSlideIn .3s ease-out;
+  text-align: center;
+  background-image: url(/cdn/shop/files/Frame_2147225228.png?v=1773400411);
+  background-repeat: no-repeat;
+  background-position: top center;
+}
+
+@keyframes checkoutPopupSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.checkout-offer-popup__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  padding: 0;
+}
+
+.checkout-offer-popup__close:hover {
+  background: #e5e5e5;
+}
+
+.checkout-offer-popup__close:focus {
+  outline: 2px solid #009662;
+  outline-offset: 2px;
+}
+
+.checkout-offer-popup__close svg {
+  color: #333;
+}
+
+.checkout-offer-popup__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.checkout-offer-popup__icon {
+  position: absolute;
+  top: -87px;
+  left: 0;
+  right: 0;
+}
+
+.checkout-offer-popup__icon svg {
+  display: block;
+}
+
+.checkout-offer-popup__title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #212224;
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.checkout-offer-popup__message {
+  font-size: 20px;
+  color: #439C39;
+  font-weight: 600;
+  margin: 0;
+  line-height: normal;
+}
+
+.checkout-offer-popup__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 32px;
+}
+
+.checkout-offer-popup__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s ease;
+  text-decoration: none;
+  border: none;
+  line-height: normal;
+}
+
+.checkout-offer-popup__btn--primary {
+  background: #3B3B3B;
+  color: #ffffff;
+}
+
+.checkout-offer-popup__btn--secondary {
+  background: #fff;
+  color: #545252;
+  border: 1px solid #DBDBDB;
+  text-transform: capitalize;
+}
+
+.checkout-offer-popup__btn--secondary:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 576px) {
+  .checkout-offer-popup__container {
+    max-width: 100%;
+  }
+
+  .checkout-offer-popup__message {
+    font-size: 18px;
+  }
+
+  .checkout-offer-popup__close {
+    width: 32px;
+    height: 32px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .checkout-offer-popup__close svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Prevent body scroll when popup is open */
+body.checkout-popup-open {
+  overflow: hidden;
+}

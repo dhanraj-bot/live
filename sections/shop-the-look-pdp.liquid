@@ -1,0 +1,720 @@
+{{ 'component-lookbook-card.css' | asset_url | stylesheet_tag }}
+{{ 'section-shop-the-look.css' | asset_url | stylesheet_tag }}
+{{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'lookbook-icon.js' | asset_url }}" defer="defer"></script>
+{%- liquid
+  assign card_image = product.metafields.custom.shop_the_look_image.value
+  if card_image == blank
+    assign card_image = product.metafields.custom.shop_the_look_image
+  endif
+  assign card_image_mobile = product.metafields.custom.shop_the_look_image_mobile.value
+  if card_image_mobile == blank
+    assign card_image_mobile = product.metafields.custom.shop_the_look_image_mobile
+  endif
+  if card_image_mobile == blank
+    assign card_image_mobile = card_image
+  endif
+  assign card_image_ratio = '3/4'
+  if card_image != blank
+    assign card_image_ratio = card_image.aspect_ratio
+  endif
+
+  assign look_products = product.metafields.custom.shop_the_look_products.value
+  assign total_products = 0
+  assign total_price = 0
+  assign cart_items_json = ''
+
+  if look_products != blank
+    assign total_products = look_products.size
+    for prod in look_products
+      if prod != blank and prod.selected_or_first_available_variant != blank
+        assign selected_variant = prod.selected_or_first_available_variant
+        assign total_price = total_price | plus: selected_variant.price
+
+        if cart_items_json != blank
+          assign cart_items_json = cart_items_json | append: ','
+        endif
+        assign cart_items_json = cart_items_json | append: '{"id":' | append: selected_variant.id | append: ',"quantity":1}'
+      endif
+    endfor
+  endif
+
+  if cart_items_json != blank
+    assign cart_items_json = '[' | append: cart_items_json | append: ']'
+  else
+    assign cart_items_json = '[]'
+  endif
+
+  assign hotspot_top_desktop_raw = section.settings.hotspot_top_desktop
+  if hotspot_top_desktop_raw == blank
+    assign hotspot_top_desktop_raw = '18,35,52,70,28,44,62,80'
+  endif
+
+  assign hotspot_left_desktop_raw = section.settings.hotspot_left_desktop
+  if hotspot_left_desktop_raw == blank
+    assign hotspot_left_desktop_raw = '22,58,34,66,78,26,48,72'
+  endif
+
+  assign hotspot_top_mobile_raw = section.settings.hotspot_top_mobile
+  if hotspot_top_mobile_raw == blank
+    assign hotspot_top_mobile_raw = '20,38,56,72,30,46,64,82'
+  endif
+
+  assign hotspot_left_mobile_raw = section.settings.hotspot_left_mobile
+  if hotspot_left_mobile_raw == blank
+    assign hotspot_left_mobile_raw = '20,56,32,64,76,24,46,70'
+  endif
+
+  assign hotspot_top_desktop = hotspot_top_desktop_raw | replace: ' ', '' | replace: '%', '' | split: ','
+  assign hotspot_left_desktop = hotspot_left_desktop_raw | replace: ' ', '' | replace: '%', '' | split: ','
+  assign hotspot_top_mobile = hotspot_top_mobile_raw | replace: ' ', '' | replace: '%', '' | split: ','
+  assign hotspot_left_mobile = hotspot_left_mobile_raw | replace: ' ', '' | replace: '%', '' | split: ','
+-%}
+
+{% if look_products != blank and look_products.size > 0 %}
+  {% render 'divider',
+    show_divider: section.settings.show_section_divider,
+    divider_width: section.settings.divider_width
+  %}
+
+  <div
+    class="section section-{{ section.id }} section--padding section--shop-the-look color-{{ section.settings.color_scheme }}"
+    style="--section-padding-top: {{ section.settings.padding_top }}px;--section-padding-bottom: {{ section.settings.padding_bottom }}px;"
+    data-id="{{ section.id }}"
+  >
+    {% if section.settings.heading != blank %}
+      <div class="shop-the-look-heading">{{ section.settings.heading }}</div>
+    {% endif %}
+
+    <div class="shop-the-look">
+      <div class="shop-the-look__image-wrapper relative">
+        {%- if card_image != blank -%}
+          {%- liquid
+            assign alt = card_image.alt | default: product.title | escape
+            assign loading = 'lazy'
+            assign fetchpriority = 'low'
+            if section.index < 2
+              assign loading = 'eager'
+              assign fetchpriority = 'high'
+            endif
+          -%}
+          <div
+            class="media-wrapper blocks-radius"
+            style="--aspect-ratio:{{ card_image_ratio }};{% if card_image_mobile != blank %}--aspect-ratio-mobile:{{ card_image_mobile.aspect_ratio }}{% endif %};"
+          >
+            <picture class="block">
+              {%- if card_image_mobile != blank -%}
+                <source
+                  media="(max-width: 767px)"
+                  srcset="{{ card_image_mobile | image_url: width: '400x' }} 400w, {{ card_image_mobile | image_url: width: '600x' }} 600w, {{ card_image_mobile | image_url: width: '800x' }} 800w, {{ card_image_mobile | image_url: width: '1000x' }} 1000w"
+                  width="{{ card_image_mobile.width }}"
+                  height="{{ card_image_mobile.height }}"
+                >
+              {%- endif -%}
+              {{
+                card_image
+                | image_url: width: 1500
+                | image_tag:
+                  loading: loading,
+                  fetchpriority: fetchpriority,
+                  class: 'motion-reduce w-full',
+                  widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+                  is: 'image-lazy',
+                  alt: alt
+              }}
+            </picture>
+          </div>
+        {%- else -%}
+          <div class="media-wrapper blocks-radius bg-none" style="--aspect-ratio:3/4;">
+            {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {%- endif -%}
+
+        {%- liquid
+          assign lookbook_icon_index = 0
+        -%}
+        {%- for prod in look_products -%}
+          {%- liquid
+            assign position_index = forloop.index0 | modulo: hotspot_top_desktop.size
+            assign top_desktop = hotspot_top_desktop[position_index]
+            assign left_desktop = hotspot_left_desktop[position_index]
+            assign top_mobile = hotspot_top_mobile[position_index]
+            assign left_mobile = hotspot_left_mobile[position_index]
+          -%}
+          {%- capture hotspot_style -%}
+            --top: {{ top_desktop }}%; --left: {{ left_desktop }}%;
+            --top-mobile: {{ top_mobile }}%; --left-mobile: {{ left_mobile }}%;
+          {%- endcapture -%}
+          <lookbook-icon
+            class="absolute lookbook-card__annotation"
+            style="{{ hotspot_style }}"
+            data-id="{{ section.id }}-{{ forloop.index }}"
+            data-index="{{ lookbook_icon_index }}"
+          >
+            <motion-element
+              class="lookbook-card__pin"
+              data-motion="zoom-in-lg"
+              data-motion-delay="{{ 150 | times: forloop.index }}"
+            >
+              <span class="look-card__pin-icon">{% render 'icon-plus-pink' %}</span>
+            </motion-element>
+            <div
+              class="lookbook-card__product absolute flex items-start color-scheme-1"
+              data-id="{{ section.id }}-{{ forloop.index }}-content"
+            >
+              <div class="shop-the-look-card__product-image relative media-wrapper blocks-radius-sm{% if prod.featured_media == blank %} bg-none{% endif %}">
+                <a class="full-width-link" href="{{ prod.url }}"><span class="visually-hidden">{{ prod.title }}</span></a>
+                {%- if prod.featured_media != blank -%}
+                  {%- liquid
+                    assign alt = prod.featured_media.alt | default: prod.title | escape
+                  -%}
+                  {{
+                    prod
+                    | image_url: width: 150
+                    | image_tag:
+                      loading: 'lazy',
+                      fetchpriority: 'low',
+                      class: 'motion-reduce',
+                      widths: '60, 75, 120, 150',
+                      is: 'image-lazy',
+                      alt: alt
+                  }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+              <div class="lookbook-card__product-info flex-1 self-center">
+                {%- if prod != blank -%}
+                  <h3 class="lookbook-card__product-title text-pcard-title text-limit-2-lines m-0">
+                    <a href="{{ prod.url }}" class="reversed-link">{{- prod.title -}}</a>
+                  </h3>
+                  <div class="shop-the-look__product-price">{% render 'price', product: prod %}</div>
+                {%- else -%}
+                  <h3 class="lookbook-card__product-title text-pcard-title text-limit-2-lines m-0">{{- 'onboarding.product_title' | t -}}</h3>
+                  <div class="shop-the-look__product-price">{% render 'price' %}</div>
+                {%- endif -%}
+              </div>
+            </div>
+          </lookbook-icon>
+          {% assign lookbook_icon_index = lookbook_icon_index | plus: 1 %}
+        {%- endfor -%}
+      </div>
+
+      <div class="shop-the-look__product-bar">
+        <div class="shop-the-look__product-bar-inner">
+          <div class="shop-the-look__products-list">
+            {%- for prod in look_products -%}
+              {%- liquid
+                assign default_variant = blank
+                assign size_option_index = 0
+                if prod != blank
+                  assign default_variant = prod.selected_or_first_available_variant
+                  for option in prod.options_with_values
+                    assign option_name_downcase = option.name | downcase
+                    if option_name_downcase contains 'size'
+                      assign size_option_index = forloop.index
+                      break
+                    endif
+                  endfor
+                endif
+              -%}
+              <div
+                class="shop-the-look__product-item"
+                {% if default_variant != blank %}
+                  data-default-variant-id="{{ default_variant.id }}"
+                {% endif %}
+              >
+                <div class="shop-the-look__product-thumb">
+                  {%- if prod != blank and prod.featured_media != blank -%}
+                    {%- liquid
+                      assign alt = prod.featured_media.alt | default: prod.title | escape
+                    -%}
+                    <a href="{{ prod.url }}" class="full-width-link" aria-label="{{ prod.title }}">
+                      {{
+                        prod
+                        | image_url: width: 150
+                        | image_tag:
+                          loading: 'lazy',
+                          fetchpriority: 'low',
+                          class: 'motion-reduce',
+                          widths: '60, 75, 120, 150',
+                          is: 'image-lazy',
+                          alt: alt
+                      }}
+                    </a>
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {%- endif -%}
+                </div>
+                <div class="shop-the-look__product-info">
+                  {%- if prod != blank -%}
+                    <p class="shop-the-look__product-title">
+                      <a href="{{ prod.url }}">{{ prod.title }}</a>
+                    </p>
+                    <div class="shop-the-look__product-price">
+                      {% render 'price', product: prod %}
+                    </div>
+                    {%- if section.settings.enable_size_selection and size_option_index > 0 -%}
+                      {%- liquid
+                        assign size_option = blank
+                        assign has_any_size = false
+
+                        for option in prod.options_with_values
+                          if forloop.index == size_option_index
+                            assign size_option = option
+                            break
+                          endif
+                        endfor
+
+                        if size_option != blank and size_option.values != blank
+                          assign has_any_size = true
+                        endif
+                      -%}
+                      {%- if has_any_size -%}
+                        <fieldset class="shop-the-look__size-selector-wrap shop-the-look__size-selector-wrap--desktop product-form__input product-form__input--button product-form__input--button-standard js flex flex-wrap gap-3">
+                          <div class="shop-the-look__size-options flex flex-wrap gap-3">
+                            {%- assign size_checked_assigned = false -%}
+                            {%- assign preselected_size_value = blank -%}
+                            {%- for size_value in size_option.values -%}
+                              {%- liquid
+                                assign available_variant_for_size = blank
+                                assign any_variant_for_size = blank
+
+                                for variant in prod.variants
+                                  assign variant_size_value = blank
+                                  case size_option_index
+                                    when 1
+                                      assign variant_size_value = variant.option1
+                                    when 2
+                                      assign variant_size_value = variant.option2
+                                    when 3
+                                      assign variant_size_value = variant.option3
+                                  endcase
+
+                                  if variant_size_value == size_value
+                                    if any_variant_for_size == blank
+                                      assign any_variant_for_size = variant
+                                    endif
+
+                                    if variant.available and available_variant_for_size == blank
+                                      assign available_variant_for_size = variant
+                                    endif
+                                  endif
+                                endfor
+
+                                assign size_disabled = false
+                                if available_variant_for_size == blank
+                                  assign size_disabled = true
+                                endif
+
+                                assign variant_for_size = available_variant_for_size | default: any_variant_for_size
+                                assign size_input_id = 'shop-the-look-size-' | append: section.id | append: '-' | append: forloop.parentloop.index | append: '-' | append: forloop.index
+
+                                assign size_display_label = size_value
+                                if size_value == 'XXL'
+                                  assign size_display_label = '2XL'
+                                elsif size_value == 'XXXL'
+                                  assign size_display_label = '3XL'
+                                elsif size_value == 'XXXXL'
+                                  assign size_display_label = '4XL'
+                                elsif size_value == 'XXXXXL'
+                                  assign size_display_label = '5XL'
+                                endif
+
+                                assign size_checked = false
+                                if default_variant != blank and variant_for_size != blank and default_variant.id == variant_for_size.id and size_disabled == false
+                                  assign size_checked = true
+                                elsif size_disabled == false and size_checked_assigned == false
+                                  assign size_checked = true
+                                endif
+
+                                if size_checked
+                                  assign size_checked_assigned = true
+                                  assign preselected_size_value = size_value
+                                endif
+                              -%}
+                              <input
+                                type="radio"
+                                id="{{ size_input_id }}"
+                                class="shop-the-look__size-radio{% if size_disabled %} disabled{% endif %}"
+                                name="shop-the-look-size-{{ section.id }}-{{ forloop.parentloop.index }}"
+                                value="{{ size_value | escape }}"
+                                {% if variant_for_size != blank %}
+                                  data-variant-id="{{ variant_for_size.id }}"
+                                {% endif %}
+                                {% if size_checked %}
+                                  checked
+                                {% endif %}
+                                {% if size_disabled %}
+                                  disabled
+                                {% endif %}
+                              >
+                              <label for="{{ size_input_id }}">{{ size_display_label }}</label>
+                            {%- endfor -%}
+                          </div>
+                        </fieldset>
+                        <div class="shop-the-look__size-selector-wrap shop-the-look__size-selector-wrap--mobile flex items-center gap-2">
+                          <label class="shop-the-look__size-label" for="shop-the-look-size-mobile-{{ section.id }}-{{ forloop.index }}">
+                            Size
+                          </label>
+                          <div class="select shop-the-look-mobile-select-wrapper">
+                            <select
+                              id="shop-the-look-size-mobile-{{ section.id }}-{{ forloop.index }}"
+                              class="shop-the-look__size-select-mobile"
+                            >
+                              {%- for size_value in size_option.values -%}
+                                {%- liquid
+                                  assign available_variant_for_size = blank
+
+                                  for variant in prod.variants
+                                    assign variant_size_value = blank
+                                    case size_option_index
+                                      when 1
+                                        assign variant_size_value = variant.option1
+                                      when 2
+                                        assign variant_size_value = variant.option2
+                                      when 3
+                                        assign variant_size_value = variant.option3
+                                    endcase
+
+                                    if variant_size_value == size_value and variant.available and available_variant_for_size == blank
+                                      assign available_variant_for_size = variant
+                                    endif
+                                  endfor
+
+                                  assign size_display_label = size_value
+                                  if size_value == 'XXL'
+                                    assign size_display_label = '2XL'
+                                  elsif size_value == 'XXXL'
+                                    assign size_display_label = '3XL'
+                                  elsif size_value == 'XXXXL'
+                                    assign size_display_label = '4XL'
+                                  elsif size_value == 'XXXXXL'
+                                    assign size_display_label = '5XL'
+                                  endif
+                                -%}
+                                <option
+                                  value="{% if available_variant_for_size %}{{ available_variant_for_size.id }}{% endif %}"
+                                  {% if available_variant_for_size == blank %}
+                                    disabled
+                                  {% endif %}
+                                  {% if preselected_size_value == size_value %}
+                                    selected
+                                  {% endif %}
+                                >
+                                  {{ size_display_label }}{% if available_variant_for_size == blank %} - Out of stock{% endif %}
+                                </option>
+                              {%- endfor -%}
+                            </select>
+                            {%- render 'icon-caret-down' -%}
+                          </div>
+                        </div>
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- else -%}
+                    <p class="shop-the-look__product-title">{{ 'onboarding.product_title' | t }}</p>
+                    <div class="shop-the-look__product-price">{% render 'price' %}</div>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+
+          <div class="shop-the-look-cta-container">
+            <div class="shop-the-look__total-price">{{ total_price | money }}</div>
+            <div class="shop-the-look__cta">
+              {%- assign buy_label = section.settings.buy_button_label -%}
+              {%- if buy_label == blank -%}
+                {%- assign buy_label = 'BUY ' | append: total_products | append: ' PRODUCTS' -%}
+              {%- endif -%}
+              <button
+                type="button"
+                class="shop-the-look__buy-btn"
+                data-items="{{ cart_items_json | escape }}"
+                data-size-selection-enabled="{{ section.settings.enable_size_selection }}"
+                {% if cart_items_json == '[]' %}
+                  disabled
+                {% endif %}
+              >
+                <span class="shop-the-look__buy-btn-label">{{ buy_label }}</span>
+                {% render 'icon-arrow-right' %}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const sectionEl = document.querySelector('.section--shop-the-look[data-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+
+      const buyBtn = sectionEl.querySelector('.shop-the-look__buy-btn');
+      if (!buyBtn) return;
+
+      const labelEl = buyBtn.querySelector('.shop-the-look__buy-btn-label');
+      const defaultLabel = labelEl ? labelEl.textContent.trim() : '';
+
+      const defaultItems = (() => {
+        try {
+          return JSON.parse(buyBtn.getAttribute('data-items') || '[]');
+        } catch (error) {
+          console.error('Invalid shop-the-look cart payload', error);
+          return [];
+        }
+      })();
+
+      const isSizeSelectionEnabled = buyBtn.getAttribute('data-size-selection-enabled') === 'true';
+      const productItems = Array.from(sectionEl.querySelectorAll('.shop-the-look__product-item'));
+
+      const buildItemsFromCurrentSelection = () => {
+        if (!isSizeSelectionEnabled) return defaultItems;
+
+        const isMobile = window.matchMedia('(max-width: 767.98px)').matches;
+        const selectedItems = [];
+        for (const productItem of productItems) {
+          const mobileSizeSelect = productItem.querySelector('.shop-the-look__size-select-mobile');
+          const selectedSizeInput = productItem.querySelector('.shop-the-look__size-radio:checked');
+          const hasSizeRadios = !!productItem.querySelector('.shop-the-look__size-radio');
+          const defaultVariantId = productItem.getAttribute('data-default-variant-id');
+
+          if (isMobile && mobileSizeSelect) {
+            const variantId = mobileSizeSelect.value;
+            if (!variantId) return [];
+            selectedItems.push({ id: Number(variantId), quantity: 1 });
+            continue;
+          }
+
+          if (selectedSizeInput) {
+            const variantId = selectedSizeInput.getAttribute('data-variant-id');
+            if (!variantId) return [];
+            selectedItems.push({ id: Number(variantId), quantity: 1 });
+            continue;
+          }
+
+          if (hasSizeRadios) return [];
+
+          if (defaultVariantId) {
+            selectedItems.push({ id: Number(defaultVariantId), quantity: 1 });
+          }
+        }
+
+        return selectedItems;
+      };
+
+      const updateButtonAvailability = () => {
+        const currentItems = buildItemsFromCurrentSelection();
+        buyBtn.disabled = !Array.isArray(currentItems) || currentItems.length === 0;
+        return currentItems;
+      };
+
+      sectionEl.querySelectorAll('.shop-the-look__size-radio').forEach((inputEl) => {
+        inputEl.addEventListener('change', updateButtonAvailability);
+      });
+      sectionEl.querySelectorAll('.shop-the-look__size-select-mobile').forEach((selectEl) => {
+        selectEl.addEventListener('change', updateButtonAvailability);
+      });
+
+      if (updateButtonAvailability().length === 0) {
+        return;
+      }
+
+      const updateLabel = (text) => {
+        if (labelEl) labelEl.textContent = text;
+      };
+
+      buyBtn.addEventListener('click', async () => {
+        if (buyBtn.disabled) return;
+
+        buyBtn.disabled = true;
+        buyBtn.setAttribute('aria-busy', 'true');
+        updateLabel('ADDING...');
+        const items = buildItemsFromCurrentSelection();
+
+        if (!Array.isArray(items) || items.length === 0) {
+          buyBtn.removeAttribute('aria-busy');
+          updateLabel('TRY AGAIN');
+          setTimeout(() => {
+            updateLabel(defaultLabel);
+            updateButtonAvailability();
+          }, 1200);
+          return;
+        }
+
+        try {
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items })
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.description || 'Failed to add products to cart');
+          }
+
+          const cartResponse = await fetch('/cart.js', {
+            headers: { Accept: 'application/json' }
+          });
+          if (cartResponse.ok) {
+            const cartData = await cartResponse.json();
+            if (window.FoxTheme?.pubsub) {
+              FoxTheme.pubsub.publish(FoxTheme.pubsub.PUB_SUB_EVENTS.cartUpdate, { cart: cartData });
+            }
+            document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cartData } }));
+          }
+
+          updateLabel('ADDED');
+          document.dispatchEvent(
+            new CustomEvent('cart:refresh', {
+              bubbles: true,
+              detail: { open: true }
+            })
+          );
+        } catch (error) {
+          console.error(error);
+          updateLabel('TRY AGAIN');
+        } finally {
+          buyBtn.removeAttribute('aria-busy');
+          setTimeout(() => {
+            updateLabel(defaultLabel);
+            updateButtonAvailability();
+          }, 1200);
+        }
+      });
+    })();
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Shop the Look PDP",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.general.name"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section_header.content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.all.heading.label",
+      "default": "Shop the Look"
+    },
+    {
+      "type": "text",
+      "id": "buy_button_label",
+      "label": "Buy Button Label",
+      "info": "Leave blank to auto-generate e.g. 'BUY 2 PRODUCTS'"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_size_selection",
+      "label": "Enable size selection",
+      "default": false,
+      "info": "When enabled, customers can choose from in-stock sizes in each product."
+    },
+    {
+      "type": "header",
+      "content": "Hotspot Positions"
+    },
+    {
+      "type": "textarea",
+      "id": "hotspot_top_desktop",
+      "label": "Desktop Top (%)",
+      "default": "18,35,52,70,28,44,62,80",
+      "info": "Comma-separated values mapped to each Shop the Look product by order."
+    },
+    {
+      "type": "textarea",
+      "id": "hotspot_left_desktop",
+      "label": "Desktop Left (%)",
+      "default": "22,58,34,66,78,26,48,72",
+      "info": "Comma-separated values mapped to each Shop the Look product by order."
+    },
+    {
+      "type": "textarea",
+      "id": "hotspot_top_mobile",
+      "label": "Mobile Top (%)",
+      "default": "20,38,56,72,30,46,64,82",
+      "info": "Comma-separated values mapped to each Shop the Look product by order."
+    },
+    {
+      "type": "textarea",
+      "id": "hotspot_left_mobile",
+      "label": "Mobile Left (%)",
+      "default": "20,56,32,64,76,24,46,70",
+      "info": "Comma-separated values mapped to each Shop the Look product by order."
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.divider.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section_divider",
+      "default": false,
+      "label": "t:sections.all.divider.settings.show_divider.label"
+    },
+    {
+      "type": "select",
+      "id": "divider_width",
+      "options": [
+        {
+          "value": "fixed",
+          "label": "t:sections.all.container.options__fixed.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.all.container.options__full.label"
+        }
+      ],
+      "default": "fixed",
+      "label": "t:sections.all.divider.settings.divider_width.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop the Look PDP"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,291 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "mobile_app_banner_hUeMca": {
+      "type": "mobile-app-banner",
+      "name": "Mobile App Banner",
+      "settings": {
+        "enable_banner": false,
+        "banner_title": "Download App  & Get 10%  OFF* Code: APP10",
+        "banner_subtitle": "",
+        "button_text": "OPEN APP",
+        "banner_bg_color": "#e74c3c",
+        "banner_bg_color_secondary": "#c0392b",
+        "appurl": "https://appbrew.link/5Pe5nd3R"
+      }
+    },
+    "scrolling_promotion_KhdTdc": {
+      "type": "scrolling-promotion",
+      "blocks": {
+        "text_khPTGA": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "text": "PAY DAY SALE LIVE | 25% Off: SALARY25 & Flat 15% Off: SALARY15",
+            "text_link": "shopify://collections/all-products",
+            "text_size": "text-base",
+            "font_weight": "font-heading",
+            "font_style": "normal",
+            "letter_spacing": 0,
+            "text_opacity": 100,
+            "text_style": "normal",
+            "use_custom_color": true,
+            "custom_color": "#ffffff"
+          }
+        },
+        "text_NbVM8w": {
+          "type": "text",
+          "settings": {
+            "text": "Buy 2 Get ₹250 OFF | Buy 3 Get ₹500 OFF + Extra ₹50 OFF on Prepaid",
+            "text_link": "shopify://collections/all-products",
+            "text_size": "text-base",
+            "font_weight": "font-body",
+            "font_style": "normal",
+            "letter_spacing": 0,
+            "text_opacity": 100,
+            "text_style": "normal",
+            "use_custom_color": false,
+            "custom_color": "#000000"
+          }
+        },
+        "text_QiVY7H": {
+          "type": "text",
+          "settings": {
+            "text": "Get Flat 10% off On Your First Order",
+            "text_link": "shopify://collections/all-products",
+            "text_size": "text-base",
+            "font_weight": "font-body",
+            "font_style": "normal",
+            "letter_spacing": 0,
+            "text_opacity": 100,
+            "text_style": "normal",
+            "use_custom_color": false,
+            "custom_color": "#000000"
+          }
+        }
+      },
+      "block_order": [
+        "text_khPTGA",
+        "text_NbVM8w",
+        "text_QiVY7H"
+      ],
+      "settings": {
+        "checked": false,
+        "color_scheme": "scheme-inverse",
+        "vertical_alignment": "center",
+        "direction": "left",
+        "pause_on_hover": false,
+        "speed": 0.6,
+        "h_spacing": 200,
+        "v_spacing": 2,
+        "padding_top": 12,
+        "padding_bottom": 12,
+        "show_divider": false,
+        "divider_layout": "vertical"
+      }
+    },
+    "top_bar_jgBcqX": {
+      "type": "top-bar",
+      "name": "Top Bar",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "menu": "notification-menu",
+        "padding_top": 12,
+        "padding_bottom": 12
+      }
+    },
+    "header": {
+      "type": "header",
+      "blocks": {
+        "product_list_e6QKAj": {
+          "type": "product_list",
+          "settings": {
+            "menu_title": "New Arrivals",
+            "collections": [],
+            "menu_columns": 2,
+            "show_menu_column_divider": false,
+            "dropdown_layout": "top_searches_products",
+            "left_menu_heading": "Top Searches",
+            "promotions_width": 54,
+            "number_of_columns": 3,
+            "product_list": [
+              "airforce-blue-linen-blend-shirt",
+              "aqua-blue-sprayed-polo-t-shirt",
+              "beige-contrast-belt-linen-trouser",
+              "brown-cotton-cargo-trouser",
+              "basic-black-baggy-fit-trackpant"
+            ],
+            "heading": "Trending Products"
+          }
+        },
+        "product_list_F9NzXf": {
+          "type": "product_list",
+          "disabled": true,
+          "settings": {
+            "menu_title": "T-Shirts",
+            "collections": [],
+            "menu_columns": 2,
+            "show_menu_column_divider": false,
+            "dropdown_layout": "default",
+            "left_menu_heading": "Top Searches",
+            "promotions_width": 54,
+            "number_of_columns": 3,
+            "product_list": [
+              "cocoa-brown-crinkled-shirt",
+              "mustard-printed-stripe-t-shirt",
+              "teal-crinkled-lightweight-shirt",
+              "white-cotton-regular-fit-full-sleeves-shirt",
+              "dark-sky-knitted-cord-shirt",
+              "wine-crinkled-shirt"
+            ],
+            "heading": ""
+          }
+        },
+        "promotion_banner_YcUhkD": {
+          "type": "promotion_banner",
+          "disabled": true,
+          "settings": {
+            "menu_title": "Shirts",
+            "menu_columns": 2,
+            "promotions_width": 60,
+            "promotion_columns": 3,
+            "color_scheme_1": "",
+            "promo_image_1": "shopify://shop_images/1_40__2.png",
+            "subheading_1": "",
+            "heading_1": "Plain Shirts",
+            "heading_size_1": "h5",
+            "description_1": "",
+            "button_label_1": "Shop Now",
+            "button_style_1": "btn--underline",
+            "content_position_1": "below",
+            "content_alignment_1": "left",
+            "promotion_link_1": "shopify://collections/shirts-plain-shirts",
+            "color_scheme_2": "",
+            "promo_image_2": "shopify://shop_images/2_28__2.png",
+            "subheading_2": "",
+            "heading_2": "Striped Shirts",
+            "heading_size_2": "h5",
+            "description_2": "",
+            "button_label_2": "Shop Now",
+            "button_style_2": "btn--underline",
+            "content_position_2": "below",
+            "content_alignment_2": "left",
+            "promotion_link_2": "shopify://collections/shirts-striped-shirts",
+            "color_scheme_3": "",
+            "promo_image_3": "shopify://shop_images/2_29.png",
+            "subheading_3": "",
+            "heading_3": "Printed Shirts",
+            "heading_size_3": "h5",
+            "description_3": "",
+            "button_label_3": "Shop Now",
+            "button_style_3": "btn--underline",
+            "content_position_3": "below",
+            "content_alignment_3": "left",
+            "promotion_link_3": "shopify://collections/shirts-printed-shirts",
+            "color_scheme_4": "",
+            "subheading_4": "",
+            "heading_4": "",
+            "heading_size_4": "h5",
+            "description_4": "",
+            "button_label_4": "",
+            "button_style_4": "btn--primary",
+            "content_position_4": "below",
+            "content_alignment_4": "left",
+            "promotion_link_4": "",
+            "color_scheme_5": "",
+            "heading_5": "",
+            "subheading_5": "",
+            "heading_size_5": "h5",
+            "description_5": "",
+            "button_label_5": "",
+            "button_style_5": "btn--primary",
+            "content_position_5": "below",
+            "content_alignment_5": "left",
+            "promotion_link_5": ""
+          }
+        },
+        "product_list_rkAUWC": {
+          "type": "product_list",
+          "disabled": true,
+          "settings": {
+            "menu_title": "Bottoms",
+            "collections": [],
+            "menu_columns": 2,
+            "show_menu_column_divider": false,
+            "dropdown_layout": "default",
+            "left_menu_heading": "Top Searches",
+            "promotions_width": 54,
+            "number_of_columns": 3,
+            "product_list": [
+              "beige-baggy-fit-denim-cargo-with-pockets",
+              "beige-color-baggy-fit-track-pant",
+              "brown-cotton-cargo-trouser",
+              "beige-regular-fit-corduroy-pant",
+              "beige-regular-fit-pant"
+            ],
+            "heading": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_list_e6QKAj",
+        "product_list_F9NzXf",
+        "promotion_banner_YcUhkD",
+        "product_list_rkAUWC"
+      ],
+      "settings": {
+        "enable_timer": false,
+        "show_close_button": false,
+        "start_date": "2026-06-01",
+        "start_time": "12:00",
+        "end_date": "2026-06-08",
+        "end_time": "11:59",
+        "label_text": "END OF SEASON SALE:",
+        "show_labels": false,
+        "days_label": "Days",
+        "hours_label": "Hrs",
+        "minutes_label": "Min",
+        "seconds_label": "Sec",
+        "button_text": "Shop Now!",
+        "button_url": "shopify://collections/all-products",
+        "button_new_tab": false,
+        "background_color": "#d64501",
+        "text_color": "#ffffff",
+        "button_background": "#ffffff",
+        "button_text_color": "#040404",
+        "container": "fixed",
+        "color_scheme": "scheme-1",
+        "menu": "main-menu",
+        "menu_mobile": "mobile-menu",
+        "header_layout": "left-center",
+        "sticky_header": "always",
+        "menu_trigger": "hover",
+        "show_sperator_line": true,
+        "enable_transparent_header": false,
+        "transparent_header_color": "#ffffff",
+        "logo_mobile_position": "center",
+        "show_social_media_icons": true,
+        "enable_language_selector": true,
+        "enable_country_selector": true,
+        "padding_top": 12,
+        "padding_bottom": 10
+      }
+    }
+  },
+  "order": [
+    "mobile_app_banner_hUeMca",
+    "scrolling_promotion_KhdTdc",
+    "top_bar_jgBcqX",
+    "header"
+  ]
+}

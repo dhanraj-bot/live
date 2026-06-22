@@ -1,0 +1,3457 @@
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --mobile-cart-checkout-offset: 0px;
+  }
+{%- endstyle -%}
+{{ 'cart.css' | asset_url | stylesheet_tag }}
+{{ 'component-custom-card.css' | asset_url | stylesheet_tag }}
+{{ 'checkout-offer-popup.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'checkout-offer-popup.js' | asset_url }}" defer="defer"></script>
+{{ 'wishlist-feature.css' | asset_url | stylesheet_tag }}
+
+{%- if linklists['gift-wrapping'].links != blank and linklists['gift-wrapping'].links.first.type == 'product_link' -%}
+  <script src="{{ 'gift-wrapping.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+<div class="cart section--padding{% if cart == empty %} is-empty{% endif %} {% unless cart == empty %} cart-background{% endunless %}">
+  <div class="page-width">
+    {% if section.settings.show_title %}
+      <div class="cart__header text-center">
+        <h1 class="cart__title hd2">
+          <motion-element data-motion="fade-up" class="inline-flex">{{ 'sections.cart.title' | t }}</motion-element>
+        </h1>
+      </div>
+    {% endif %}
+    <div class="cart__empty text-center grid gap-5">
+      <div class="flex items-center justify-center">
+        {% if section.settings.empty_cart_web != blank %}
+          {% assign img = section.settings.empty_cart_web %}
+          <img
+            src="{{ img | image_url: width: 600 }}"
+            width="{{ img.width }}"
+            height="{{ img.height }}"
+            alt="Empty cart"
+            class="hidden md:block"
+            loading="lazy"
+          >
+        {% endif %}
+
+        {% if section.settings.empty_cart_mweb != blank %}
+          {% assign img_m = section.settings.empty_cart_mweb %}
+          <img
+            src="{{ img_m | image_url: width: 400 }}"
+            width="{{ img_m.width }}"
+            height="{{ img_m.height }}"
+            alt="Empty cart"
+            class="block md:hidden"
+            loading="lazy"
+          >
+        {% endif %}
+      </div>
+      <div class="flex gap-5 items-center justify-center flex-col cart__empty-header">
+        <h2 class="empty-cart-heading">{{ 'sections.cart.empty' | t }}</h2>
+        <a href="/" class="shop-now">Start Shopping</a>
+        {%- if settings.cart_empty_message != blank -%}
+          <div class="rte text-lg hidden">{{ settings.cart_empty_message }}</div>
+        {%- endif -%}
+      </div>
+      {%- if settings.collection_list != blank -%}
+        <div class="try-these">Try These Collections</div>
+        <div class="swipe-mobile">
+          <div class="f-grid f-grid-4-cols f-grid--gap-medium f-grid--row-gap-large swipe-mobile__inner-cart">
+            {%- for collection in settings.collection_list -%}
+              {%- liquid
+                assign first_product_in_collection = collection.products[0]
+                assign collection_image = first_product_in_collection.featured_image
+
+                if first_product_in_collection.featured_image == blank
+                  assign collection_image = collection.featured_image
+                endif
+              -%}
+              <div class="f-column">
+                <div class="blocks-radius custom-card">
+                  <a href="{{ collection.url }}" class="flex flex-col">
+                    <div class="custom-card__media media-wrapper">
+                      {%- if collection_image != blank -%}
+                        {{
+                          collection_image
+                          | image_url: width: 1100
+                          | image_tag:
+                            loading: 'lazy',
+                            class: 'motion-reduce',
+                            widths: '165, 360, 535, 750, 940, 1100',
+                            is: 'image-lazy'
+                        }}
+                      {%- else -%}
+                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                      {%- endif -%}
+                    </div>
+                    <div class="custom-card__info blocks-radius-bottom-left-right flex items-center gap-2 z-1">
+                      <h3 class="h4 flex flex-grow cart-collection-title">{{ collection.title | capitalize }}</h3>
+                      <button
+                        class="flex"
+                        style="border:none; padding: 0; height: 24px;"
+                        aria-label="{{ collection.title }}"
+                      >
+                        {% render 'icon-arrow-right' %}
+                        {% comment %}
+                          <svg
+                            class="icon icon--medium"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M5 15L15 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6.875 5H15V13.125" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        {% endcomment %}
+                      </button>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- else -%}
+        <a class="btn btn--primary cart__empty-header" href="{{ routes.all_products_collection_url }}">
+          {{- 'general.cart.continue_shopping' | t -}}
+        </a>
+      {%- endif -%}
+    </div>
+    {% if cart.item_count > 0 %}
+      <div class="shopping-cart-title" colspan="1" scope="col">Shopping Cart ({{ cart.item_count }})</div>
+    {% endif %}
+    {%- if cart.item_count > 0 -%}
+      <main-cart id="MainCart-{{ section.id }}" class="block">
+        <form class="cart__form" action="{{ routes.cart_url }}" method="POST" id="cart">
+          {% render 'cart-milestone-progress' %}
+          {%- liquid
+            for block in section.blocks
+              if block.type == 'free_shipping_goal'
+                if settings.free_shipping_minimum_amount != blank
+                  assign minimum_amount = settings.free_shipping_minimum_amount | remove: ' '
+                  render 'free-shipping-goal', minimum_amount: minimum_amount
+                endif
+              endif
+            endfor
+          -%}
+
+          {%- liquid
+            for block in section.blocks
+              if block.type == 'estimate_delivery'
+                render 'estimate-delivery', block: block
+              endif
+            endfor
+          -%}
+
+          {%- liquid
+            if linklists['gift-wrapping'].links != blank and linklists['gift-wrapping'].links.first.type == 'product_link'
+              assign gift_wrapping = linklists['gift-wrapping'].links.first
+              assign gift_wrap_id = gift_wrapping.object.variants.first.id
+              assign gift_wraps_in_cart = 0
+              for item in cart.items
+                if item.id == gift_wrap_id
+                  assign gift_wraps_in_cart = item.quantity
+                  break
+                endif
+              endfor
+              assign items_in_cart = cart.item_count | minus: gift_wraps_in_cart
+            endif
+          -%}
+
+          {% if section.settings.showoffertext %}
+            <div class="offer_cart_title_main">{{ section.settings.offer_texts }}</div>
+          {% endif %}
+          {% comment %} <div class="shopping-cart-title" colspan="1" scope="col">Shopping Cart ({{ cart.item_count }} Items)</div> {% endcomment %}
+
+          <cart-items>
+            <div role="table" class="w-full" style="background-color:#FFF;padding:16px;">
+              {%- liquid
+                comment
+                  Use cart.total_discount (official Liquid). cart.discount_total_price is not a documented
+                  cart property and can be nil on SSR — then cap never activates after refresh.
+                endcomment
+                assign cart_discount_cap_active = false
+                assign cap_dn = section.settings.cap_discount_name
+                assign cap_dn2 = section.settings.cap_discount_name_2
+                assign cap_da = section.settings.cap_discount_amount
+                assign cap_da2 = section.settings.cap_discount_amount_2
+                assign cap_dn_up = cap_dn | upcase
+                assign cap_dn_up2 = cap_dn2 | upcase
+                assign cart_cap_cents = 0
+                for da in cart.discount_applications
+                  assign da_title_up = da.title | upcase
+                  assign da_code_up = da.code | default: '' | upcase
+                  if cap_dn != blank and cap_da > 0 and cart_cap_cents == 0
+                    if da_title_up == cap_dn_up or da_code_up == cap_dn_up
+                      assign cart_cap_cents = cap_da | times: 100
+                    endif
+                  endif
+                  if cap_dn2 != blank and cap_da2 > 0 and cart_cap_cents == 0
+                    if da_title_up == cap_dn_up2 or da_code_up == cap_dn_up2
+                      assign cart_cap_cents = cap_da2 | times: 100
+                    endif
+                  endif
+                endfor
+                if cart_cap_cents > 0 and cart.total_discount > cart_cap_cents
+                  assign cart_discount_cap_active = true
+                endif
+              -%}
+              <div>
+                {%- for item in cart.items -%}
+                  {%- liquid
+                    assign is_gift_wrap_item = false
+                    if gift_wrap_id != null and item.id == gift_wrap_id
+                      assign is_gift_wrap_item = true
+                    endif
+
+                    assign has_qty_rules = false
+                    if item.variant.quantity_rule.increment > 1 or item.variant.quantity_rule.min > 1 or item.variant.quantity_rule.max != null
+                      assign has_qty_rules = true
+                    endif
+
+                    assign has_vol_pricing = false
+                    if item.variant.quantity_price_breaks.size > 0
+                      assign has_vol_pricing = true
+                    endif
+                  -%}
+
+                  {%- if has_qty_rules or has_vol_pricing -%}
+                    {%- capture qty_rules_vol_pricing -%}
+                        {%- if has_qty_rules -%}
+                          <div
+                            class="quantity__rules text-sm"
+                          >
+                            {%- if item.variant.quantity_rule.increment > 1 -%}
+                              <span class="divider">
+                                {{-
+                                  'products.product.quantity.multiples_of'
+                                  | t: quantity: item.variant.quantity_rule.increment
+                                -}}
+                              </span>
+                            {%- endif -%}
+                            {%- if item.variant.quantity_rule.min > 1 -%}
+                              <span class="divider">
+                                {{-
+                                  'products.product.quantity.minimum_of'
+                                  | t: quantity: item.variant.quantity_rule.min
+                                -}}
+                              </span>
+                            {%- endif -%}
+                            {%- if item.variant.quantity_rule.max != null -%}
+                              <span class="divider font-body-bold">
+                                {{-
+                                  'products.product.quantity.maximum_of'
+                                  | t: quantity: item.variant.quantity_rule.max
+                                -}}
+                              </span>
+                            {%- endif -%}
+                          </div>
+                        {%- endif -%}
+                        {%- if has_vol_pricing -%}
+                          {{ 'component-volume-pricing.css' | asset_url | stylesheet_tag }}
+                          <volume-pricing class="block parent-display blocks-radius-md" id="Volume-{{ section.id }}">
+                            <span class="caption block">{{ 'products.product.volume_pricing.title' | t }}</span>
+                            <ul class="list-unstyled">
+                              <li class="blocks-radius-md">
+                                <span>{{ item.variant.quantity_rule.min }}+</span>
+                                {%- liquid
+                                  if settings.currency_code_enabled
+                                    assign price = item.variant.price | money_with_currency
+                                  else
+                                    assign price = item.variant.price | money
+                                  endif
+                                -%}
+                                <span> {{ 'sections.quick_order_list.each_html' | t: money: price }}</span>
+                              </li>
+                              {%- for price_break in item.variant.quantity_price_breaks -%}
+                                <li class="blocks-radius-md">
+                                  <span>
+                                    {{- price_break.minimum_quantity -}}
+                                    <span aria-hidden="true">+</span>
+                                  </span>
+                                  {%- liquid
+                                    if settings.currency_code_enabled
+                                      assign price_break_price = price_break.price | money_with_currency
+                                    else
+                                      assign price_break_price = price_break.price | money
+                                    endif
+                                  -%}
+                                  <span>{{ 'sections.quick_order_list.each_html' | t: money: price_break_price }}</span>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          </volume-pricing>
+                        {%- endif -%}
+                      {%- endcapture -%}
+                  {%- endif -%}
+
+                  {%- capture cart_item -%}
+                      <div class="cart-item" id="CartItem-{{ item.index | plus: 1 }}" data-index="{{ item.index | plus: 1 }}">
+                        <div class="cart-item__product">
+                          <div class="flex items-start ">
+                            {%- if item.image -%}
+                              <div style="position:relative;">
+                                  <a class="cart-item__media blocks-radius-sm media-wrapper" href="{{ item.url }}" tabindex="-1">
+                                    {{- item.image | image_url: width: item.image.width | image_tag: loading: 'lazy', widths: '180,360,540', is: 'image-lazy' -}}
+                                  </a>
+                                  {% assign inventory = item.variant.inventory_quantity %}
+                                  <div class="cart-product-urgency">
+                                    
+                                    {% if inventory > 0 and inventory <= 5 %}
+                                      <span class="cart-badge low-stock">
+                                        <span class="cart-badge__battery">
+                                          <span class="cart-badge__battery-level"></span>
+                                        </span>
+
+                                        {{ inventory }} LEFT
+                                      </span>
+                                    {% endif %}
+                                  </div> 
+                              </div>
+                            {%- endif -%}
+                            <div class="cart-item__product--info flex flex-col items-start gap-3 flex-grow">
+                              <div class="flex flex-col gap-2 w-full">
+                                <div class="flex flex-col gap-1 ">
+                                  <div class="flex lg:items-center justify-between w-full gap-1 ">
+                                    <div class="cart-item-price-mobile-wrapper">
+                                      <div class="flex flex-col gap-2 selling-fast-wrapper">
+                                        {% assign inventory = item.variant.inventory_quantity %}
+                                          {% if inventory>5 and inventory <=10 %}
+                                          <div class="cart-product-selling-fast">
+                                            {% if inventory > 5 and inventory <= 10 %}
+                                              <span class="selling-fast">
+                                                Selling Fast
+                                              </span>
+                                            {% endif %}
+                                          </div>
+                                          {%  endif %}
+                                          <a href="{{ item.url }}" class="cart-item__title text-pcard-title reversed-link">{{- item.product.title | escape -}}</a>
+                                      </div>
+
+                                      
+                                      <div class="cart-item__total lg:table-cell hidden lg:block" style="max-height:20px;">
+                                        <span class="font-body-bolder cart-item-total-price-desktop">
+                                        {%- liquid
+                                          if cart_discount_cap_active
+                                            if settings.currency_code_enabled
+                                              echo item.original_line_price | money_with_currency
+                                            else
+                                              echo item.original_line_price | money
+                                            endif
+                                          else
+                                            if settings.currency_code_enabled
+                                              echo item.final_line_price | money_with_currency
+                                            else
+                                              echo item.final_line_price | money
+                                            endif
+                                          endif
+                                        -%}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <a id="Loader-{{ section.id }}-{{ item.index | plus: 1 }}"{% unless is_gift_wrap_item %} is="cart-remove-item"{% else %} is="gift-wrap-remove-item"{% endunless %} class="btn--link items-center cart-remove-mobile justify-center relative " data-index="{{ item.index | plus: 1 }}" style="width:16px; height: 16px !important; display:none;">
+                                      <span>{% render 'icon-remove' %}</span>
+                                      {% render 'loading-spinner' %}
+                                    </a>
+                                <button
+                                  type="button"
+                                  class="remove-cart-item-modal-btn remove-mobile"
+                                  {% comment %} flits support added code from here {% endcomment %}
+                                   data-index="{{ item.index | plus: 1 }}"
+                                    data-product-id="{{ item.product.id }}"
+                                    data-product-handle="{{ item.product.handle }}"
+                                    data-product-title="{{ item.product.title | escape }}"
+                                    data-product-image="{{ item.image | image_url: width: 300 }}"
+                                    data-product-wsl-count="{{ item.product.metafields.Flits.wsl-count }}"
+                                  data-index="{{ item.index | plus: 1 }}"
+                                  {% comment %} till here {% endcomment %}
+                                  >
+                                  {% render 'icon-remove' %}
+                                </button>
+                                  </div>
+                                    <div class="cart-item__prices ">
+                                    {%- liquid
+                                      assign money_price = item.original_price | money
+                                      if settings.currency_code_enabled
+                                        assign money_price = item.original_price | money_with_currency
+                                      endif
+                                      assign compare_price = item.variant.compare_at_price
+                                      assign original_price = item.variant.price
+                                    -%}
+                                    {%- if cart_discount_cap_active -%}
+                                      {%- liquid
+                                        assign price = item.original_price
+                                      -%}
+                                      <div class="price text-right flex flex-wrap items-center gap-x-2  ">
+                                        {{- money_price -}}
+                                      </div>
+                                    {%- elsif item.original_price != item.final_price -%}
+                                      {%- liquid
+                                        assign price = item.final_line_price | divided_by: item.quantity
+                                      -%}
+                                      <div class="price text-right flex flex-wrap items-center gap-x-2  price--on-sale">
+                                        <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+                                        <span class="price__regular">
+                                          {%- liquid 
+                                            if settings.currency_code_enabled
+                                              echo item.final_price | money_with_currency
+                                            else
+                                              echo item.final_price | money
+                                            endif  
+                                          -%}
+                                        </span>
+                                        <s class="price__sale font-body text-subtext cart-price-sale">{{ money_price }}</s>
+                                        <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
+                                      </div>
+                                    {%- else -%}
+                                      {%- liquid
+                                        assign price = item.final_line_price | divided_by: item.quantity
+                                      -%}
+                                      <div class="price text-right flex flex-wrap items-center gap-x-2">
+                                        {{- money_price -}}
+                                      </div>
+                                    {%- endif -%}
+                                {% if compare_price > original_price %}
+                                  <span class="compare-price" style="text-decoration: line-through; font-size:12px; color: #252931; opacity: .8; font-family:'Montserrat';">
+                                    {{ compare_price | money }}
+                                  </span>
+
+                                  {% assign discount = compare_price | minus: original_price | times: 100 | divided_by: compare_price %}
+                                  <span class="cart__discount" style="color: #3DA577; font-size:12px; font-weight: 500; font-family: 'Montserrat';">
+                                    ({{ discount | round }}% OFF)
+                                  </span>
+                                {% endif %}
+                                      {%- if item.variant.available and item.unit_price_measurement -%}
+                                        <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
+                                        <span class="unit-price flex items-center font-body text-sm text-subtext">
+                                          {%- liquid
+                                            capture unit_price_base_unit
+                                              if item.variant.unit_price_measurement
+                                                if item.variant.unit_price_measurement.reference_value != 1
+                                                  echo item.variant.unit_price_measurement.reference_value
+                                                endif
+                                                echo item.variant.unit_price_measurement.reference_unit
+                                              endif
+                                            endcapture
+                                          -%}
+                                          ({{ item.variant.unit_price | money }}
+                                          <span aria-hidden="true">/</span>
+                                          <span class="visually-hidden">&nbsp;{{ 'accessibility.unit_price_separator' | t }}&nbsp;</span>
+                                          {{ unit_price_base_unit }})
+                                          </span>
+                                      {%- endif -%}
+                                    </div>
+                                  </div>
+                                   
+                                </div>
+                                {%- if item.product.has_only_default_variant == false or item.properties.size != 0 or item.selling_plan_allocation != null -%}
+                                  <div class="cart-item__options">
+                                
+                                 {%- if item.product.has_only_default_variant == false -%}
+                                      {% assign current_variant_id = item.variant.id %}
+
+                                      {%- comment -%}
+                                        Build a list of variant IDs for the same product that are already
+                                        present in the cart (excluding the current line item).
+                                      {%- endcomment -%}
+                                      {% assign taken_variant_ids = '' %}
+                                      {% for ci in cart.items %}
+                                        {% if ci.product_id == item.product.id and ci.variant_id != current_variant_id %}
+                                          {% assign taken_variant_ids = taken_variant_ids | append: ci.variant_id | append: ',' %}
+                                        {% endif %}
+                                      {% endfor %}
+                                      {% assign taken_ids_array = taken_variant_ids | split: ',' %}
+
+                                      <select name="variant-dropdown" class="variant-selector" data-line="{{ forloop.index }}" data-current-id="{{ current_variant_id }}">
+                                        {% assign size_list = 'XS,S,M,L,XL,2XL,3XL,4XL,5XL,XXL,XXXL,XXXXL,XXXXXL,28,30,32,34,36,38,40,42,44,46,48,50,28-30,30-32,32-34,34-36,36-38,38-40,40-42,42-44' | split: ',' %}
+                                        {% for variant in item.product.variants %}
+                                          {% if variant.available %}
+                                            {%- comment -%} skip sizes already chosen on other lines of this same product {%- endcomment -%}
+                                            {% assign v_id_str = variant.id | append: '' %}
+                                            {% if taken_ids_array contains v_id_str %}
+                                              {% continue %}
+                                            {% endif %}
+
+                                            {% assign label_parts = variant.title | split: ' / ' %}
+                                            {% assign display_label = '' %}
+                                            {%- for part in label_parts -%}
+                                              {% assign clean_part = part | strip | upcase %}
+                                              {% if size_list contains clean_part %}
+                                                {% assign display_label = clean_part %}
+                                              {% endif %}
+                                            {%- endfor -%}
+
+                                            {% if display_label != '' %}
+                                              {% case display_label %}
+                                                {% when 'XXL' %}{% assign display_label = '2XL' %}
+                                                {% when 'XXXL' %}{% assign display_label = '3XL' %}
+                                                {% when 'XXXXL' %}{% assign display_label = '4XL' %}
+                                                {% when 'XXXXXL' %}{% assign display_label = '5XL' %}
+                                              {% endcase %}
+
+                                              {%- comment -%} keep your low-inventory disable logic {%- endcomment -%}
+                                              {% assign disable_option = false %}
+                                              {% if variant.inventory_quantity == 1 %}
+                                                {% for cart_item in cart.items %}
+                                                  {% if cart_item.variant_id == variant.id %}
+                                                    {% assign disable_option = true %}
+                                                  {% endif %}
+                                                {% endfor %}
+                                              {% endif %}
+
+                                              <option value="{{ variant.id }}"
+                                                {% if variant.id == current_variant_id %}selected{% endif %}
+                                                {% if disable_option %}disabled{% endif %}>
+                                                <span style="color:#4B5563 !important; font-size:11px;">Size:</span>{{ display_label }}
+                                              </option>
+                                            {% endif %}
+                                          {% endif %}
+                                        {% endfor %}
+                                      </select>
+                                    {%- endif -%}
+
+
+
+                                    {%- for property in item.properties -%}
+                                      {%- assign property_first_char = property.first | slice: 0 -%}
+                                      {%- if property.last != blank and property_first_char != '_' -%}
+                                        <div class="flex gap-1 text-sm text-subtext">
+                                          <dt>{{ property.first }}:&nbsp;</dt>
+                                          <dd class="m-0">
+                                            {%- if property.last contains '/uploads/' -%}
+                                              <a href="{{ property.last }}" class="link" target="_blank" aria-describedby="a11y-new-window-message">
+                                                {{- property.last | split: '/' | last -}}
+                                              </a>
+                                            {%- else -%}
+                                              {{- property.last -}}
+                                            {%- endif -%}
+                                          </dd>
+                                        </div>
+                                      {%- endif -%}
+                                    {%- endfor -%}
+                                    {%- if item.selling_plan_allocation != null -%}
+                                      <p class="text-sm text-subtext">{{ item.selling_plan_allocation.selling_plan.name }}</p>
+                                    {%- endif -%}
+                                  <div class="flex items-center gap-3 mobile_qty">
+                                    {%- unless is_gift_wrap_item -%}
+                                      <quantity-input class="cart-quantity quantity">
+                                        <label class="visually-hidden" for="Quantity-{{ section.id }}-{{ item.index | plus: 1 }}"></label>
+                                        <button type="button" name="minus" class="quantity__button {% if item.quantity <= 1 %}disabled_minus{% endif %}" aria-label="{{ 'products.product.quantity.decrease' | t: product: item.product.title | escape }}">
+                                          <svg width="16" height="16" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M2.6875 7H12.3125" stroke="#B60013" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                          </svg>
+                                        </button>
+                                        <input class="quantity__input"
+                                          type="number"
+                                          name="updates[]"
+                                          value="{{ item.quantity }}"
+                                          aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
+                                          id="Quantity-{{ section.id }}-{{ item.index | plus: 1 }}"
+                                          data-index="{{ item.index | plus: 1 }}"
+                                          size="2"
+                                          inputmode="numeric"
+                                          autocomplete="off"
+                                          data-quantity-variant-id="{{ item.variant.id }}"
+                                          data-cart-quantity="{{ cart | item_count_for_variant: item.variant.id }}"
+                                          min="0"
+                                          data-min="{{ item.variant.quantity_rule.min }}"
+                                          {% if item.variant.quantity_rule.max != null %}
+                                            max="{{ item.variant.quantity_rule.max }}"
+                                          {% endif %}
+                                          step="{{ item.variant.quantity_rule.increment }}"
+                                        />
+                                        <button type="button" name="plus" class="quantity__button" aria-label="{{ 'products.product.quantity.increase' | t: product: item.product.title | escape }}">
+                                          <svg width="16" height="16" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M2.6875 7H12.3125" stroke="#B60013" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M7.5 2.1875V11.8125" stroke="#B60013" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                          </svg>
+                                        </button>
+                                      </quantity-input>
+                                    {%- else -%}
+                                      <div class="cart-quantity quantity cart-quantity-gift-wrap">
+                                        <label class="visually-hidden" for="Quantity-{{ section.id }}-{{ item.index | plus: 1 }}"></label>
+                                        <button type="button" name="minus" class="quantity__button hidden" disabled aria-label="{{ 'products.product.quantity.decrease' | t: product: item.product.title | escape }}">
+                                          <svg width="16" height="16" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M2.6875 7H12.3125" stroke="#B60013" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                          </svg>
+                                        </button>
+                                        <input 
+                                          class="quantity__input"
+                                          disabled
+                                          type="number"
+                                          name="updates[]"
+                                          value="{{ item.quantity }}"
+                                          aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
+                                          id="Quantity-{{ section.id }}-{{ item.index | plus: 1 }}"
+                                          data-index="{{ item.index | plus: 1 }}"
+                                          size="2"
+                                          inputmode="numeric"
+                                          autocomplete="off"
+                                          data-quantity-variant-id="{{ item.variant.id }}"
+                                          data-cart-quantity="{{ cart | item_count_for_variant: item.variant.id }}"
+                                          min="0"
+                                          data-min="{{ item.variant.quantity_rule.min }}"
+                                          {% if item.variant.quantity_rule.max != null %}
+                                            max="{{ item.variant.quantity_rule.max }}"
+                                          {% endif %}
+                                          step="{{ item.variant.quantity_rule.increment }}"
+                                        />
+                                        <button type="button" name="plus" disabled class="quantity__button hidden" aria-label="{{ 'products.product.quantity.increase' | t: product: item.product.title | escape }}">
+                                          <svg width="16" height="16" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M2.6875 7H12.3125" stroke="#B60013" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M7.5 2.1875V11.8125" stroke="#B60013" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                          </svg>
+                                        </button>
+                                      </div>
+                                    {%- endunless -%}
+                                    {%- if has_qty_rules or has_vol_pricing -%}
+                                      <button class="btn btn--plain no-js-hidden" aria-controls="VolumnPricing-{{ section.id }}-{{ item.key }}">
+                                        <svg class="icon icon-info icon--medium" viewBox="0 0 25 24" stroke="currentColor" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                          <path stroke-linecap="round" stroke-linejoin="round" d="M12.5 16V11M13 8C13 8.27614 12.7761 8.5 12.5 8.5C12.2239 8.5 12 8.27614 12 8M13 8C13 7.72386 12.7761 7.5 12.5 7.5C12.2239 7.5 12 7.72386 12 8M13 8H12M22.5 12C22.5 17.5228 18.0228 22 12.5 22C6.97715 22 2.5 17.5228 2.5 12C2.5 6.47715 6.97715 2 12.5 2C18.0228 2 22.5 6.47715 22.5 12Z"></path>
+                                        </svg>
+                                      </button>
+                                      <basic-modal class="drawer drawer--right" id="VolumnPricing-{{ section.id }}-{{ item.key }}" hidden>
+                                        <div
+                                          class="fixed-overlay absolute"
+                                          aria-controls="VolumnPricing-{{ section.id }}-{{ item.key }}"
+                                        ></div>
+                                        <div class="drawer__inner v-scrollable">
+                                          <button
+                                            aria-controls="VolumnPricing-{{ section.id }}-{{ item.key }}"
+                                            class="drawer__close-btn z-1"
+                                          >
+                                            {%- render 'icon-close' -%}
+                                          </button>
+                                          <div class="drawer__content cart-addons-drawer__content grid gap-5">
+                                            <div>
+                                              <h4>{{ item.product.title | escape }}</h4>
+                                              {% if item.product.has_only_default_variant == false %}
+                                                {%- assign last_index = item.options_with_values.size | minus: 1 -%}
+                                                <div class="flex gap-1">
+                                                  {% for option in item.options_with_values %}
+                                                    <span class="text-sm text-subtext">
+                                                      {{- option.value -}}
+                                                      {%- unless forloop.index0 == last_index %},{% endunless -%}
+                                                    </span>
+                                                  {% endfor %}
+                                                </div>
+                                              {% endif %}
+                                            </div>
+                                            <div class="grid gap-3">
+                                              {{ qty_rules_vol_pricing }}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </basic-modal>
+                                    {%- endif -%}
+                                  </div>
+                                  </div>
+                                {%- endif -%} 
+
+                                <div class="cart-item__total lg:hidden">
+                                  <span class="font-body-bolder cart-item-total-price-mobile">
+                                  {%- liquid
+                                    if cart_discount_cap_active
+                                      if settings.currency_code_enabled
+                                        echo item.original_line_price | money_with_currency
+                                      else
+                                        echo item.original_line_price | money
+                                      endif
+                                    else
+                                      if settings.currency_code_enabled
+                                        echo item.final_line_price | money_with_currency
+                                      else
+                                        echo item.final_line_price | money
+                                      endif
+                                    endif
+                                  -%}
+                                  </span>
+                                </div> 
+                              
+                              <div class="wk-flex">
+                               
+                                <div class="save-for-later-container content-center">
+                                  {% comment %} {% if customer %}
+                                  <button type="button" 
+                                    aria-label="Add to Wishlist" 
+                                    class="button--wishlist wkh-button wkh-save-for-later wkh-align-center wkh-align-content-center"
+                                    data-product-handle="{{ item.product.handle}}">
+                          
+                                    <span class="wkh-text">Move to wishlist</span>
+                                  </button>
+                                  {% else %}
+                                    {% # Kwikpass changes - [Starts] %}
+                                    {% comment %} <a href="{{ routes.account_login_url }}"
+                                      class="guest-wishlist-login-btn"
+                                      data-product-handle="{{ item.product.handle}}" data-return-url="cart">
+                                      <span class="guest-wishlist-text">Move to wishlist</span>
+                                    </a> {% endcomment %}
+                                    <a href="javascript:void(0);" onclick="handleKpAndShopifyLogin(window.location.pathname);"
+                                      class="guest-wishlist-login-btn"
+                                      data-product-handle="{{ item.product.handle}}" data-return-url="cart">
+                                      <span class="guest-wishlist-text">Move to wishlist</span>
+                                    </a>
+                                    {% # Kwikpass changes - [Ends] %}
+                                  {% endif %} {% endcomment %}
+                                  {% comment %} Flits Wishlist added by team start {% endcomment %}
+                                    {% comment %} <div class="flits-collection-page-wishlist-button" data-flits-product-handle="{{ item.product.handle }}" data-flits-product-id="{{ item.product.id }}" data-flits-product-title="{{ item.product.title }}" data-flits-product-image="{{ item.product.featured_image | image_url }}" data-flits-product-wsl-count="{{ item.product.metafields.Flits.wsl-count }}"></div> {% endcomment %}
+                                  {% comment %} Flits Wishlist added by team end {% endcomment %}
+                                </div>
+                                {% comment %} <a id="Loader-{{ section.id }}-{{ item.index | plus: 1 }}"{% unless is_gift_wrap_item %} is="cart-remove-item"{% else %} is="gift-wrap-remove-item"{% endunless %} class="btn--link items-center justify-center relative hidden lg:flex" data-index="{{ item.index | plus: 1 }}">
+                                  <span>{{ 'general.cart.remove' | t }}</span>
+                                  {% render 'loading-spinner' %}
+                                </a> {% endcomment %}
+
+                                {% comment %} Support flits added below code to handle Move to wishlist popup functionality {% endcomment %}
+                                  <button
+                                    type="button"
+                                    class="remove-cart-item-modal-btn remove-desktop"
+                                    data-index="{{ item.index | plus: 1 }}"
+                                    data-product-id="{{ item.product.id }}"
+                                    data-product-handle="{{ item.product.handle }}"
+                                    data-product-title="{{ item.product.title | escape }}"
+                                    data-product-image="{{ item.image | image_url: width: 300 }}"
+                                    data-product-wsl-count="{{ item.product.metafields.Flits.wsl-count }}"
+                                  >
+                                    Remove
+                                  </button>
+                                  {% comment %} Support Code Ends here {% endcomment %}
+                              </div>
+                              </div>
+                              <template>
+                                <div class="cart-item__action flex items-center justify-between gap-3 lg:hidden w-full">
+      
+                                  <div class="wk-flex-mobile">
+                                    
+                                    <div class="save-for-later-container content-center">
+                                      {% comment %} {% if customer %}
+                                      <button type="button" 
+                                        aria-label="Add to Wishlist" 
+                                        class="button--wishlist wkh-button wkh-save-for-later wkh-align-center wkh-align-content-center"
+                                        data-product-handle="{{ item.product.handle}}">
+                              
+                                        <span class="wkh-text">Move to wishlist</span>
+                                      </button>
+                                      {% else %}
+                                        {% # Kwikpass changes - [Starts] %}
+                                          {% comment %} <a href="{{ routes.account_login_url }}"
+                                            class="guest-wishlist-login-btn"
+                                            data-product-handle="{{ item.product.handle}}" data-return-url="cart">
+                                            <span class="guest-wishlist-text">Move to wishlist</span>
+                                          </a> {% endcomment %}
+                                          <a href="javascript:void(0);" onclick="handleKpAndShopifyLogin(window.location.pathname);"
+                                            class="guest-wishlist-login-btn"
+                                            data-product-handle="{{ item.product.handle}}" data-return-url="cart">
+                                            <span class="guest-wishlist-text">Move to wishlist</span>
+                                          </a>
+                                          {% # Kwikpass changes - [Ends] %}
+                                        {% endif %} {% endcomment %}
+                                         {% comment %} Flits Wishlist added by team start {% endcomment %}
+                                            <div class="flits-collection-page-wishlist-button" data-flits-product-handle="{{ item.product.handle }}" data-flits-product-id="{{ item.product.id }}" data-flits-product-title="{{ item.product.title }}" data-flits-product-image="{{ item.product.featured_image | image_url }}" data-flits-product-wsl-count="{{ item.product.metafields.Flits.wsl-count }}"></div>
+                                          {% comment %} Flits Wishlist added by team end {% endcomment %}
+                                    </div>
+                                    {% comment %} <a id="Loader-{{ section.id }}-{{ item.index | plus: 1 }}"{% unless is_gift_wrap_item %} is="cart-remove-item"{% else %} is="gift-wrap-remove-item"{% endunless %} class="cart-item__remove btn--link flex items-center justify-center relative" data-index="{{ item.index | plus: 1 }}">
+                                      <span>{{ 'general.cart.remove' | t }}</span>
+                                      {% render 'loading-spinner' %}
+                                    </a> {% endcomment %}
+                                </div>
+                                </div>
+                              </template>
+                            </div>
+                        
+                          {% if item.properties._no_return_exchange == 'true' %}
+                            <div class="sale_item_noticetext">
+                            <p class="cart-item-sale-notice">
+                              Sale items are not eligible for additional discounts.
+                            </p>
+                             </div>
+                          {% endif %}
+                        </div>
+                        
+                      </div>
+                    {%- endcapture -%}
+
+                  {%- liquid
+                    unless is_gift_wrap_item
+                      echo cart_item
+                    else
+                      assign cart_gift_wrap_item = cart_item
+                    endunless
+                  -%}
+                {%- endfor -%}
+                {%- liquid
+                  if cart_gift_wrap_item
+                    echo cart_gift_wrap_item
+                  endif
+                -%}
+              </div>
+            </div>
+          </cart-items>
+        </form>
+
+        <div class="cart__footer flex items-center md:justify-end">
+          <div class="cart__footer-wrapper grid gap-5">
+            {% render 'buy-more-lesser-price', class: 'desktop_view_only' %}
+            {% render 'cart-discount',
+              cap_discount_name: section.settings.cap_discount_name,
+              cap_discount_amount: section.settings.cap_discount_amount,
+              cap_discount_name_2: section.settings.cap_discount_name_2,
+              cap_discount_amount_2: section.settings.cap_discount_amount_2
+            %}
+            <div class="cart__mobile-recommendations-slot" data-cart-mobile-recommendations-slot></div>
+            {% render 'order-summary',
+              cap_discount_name: section.settings.cap_discount_name,
+              cap_discount_amount: section.settings.cap_discount_amount,
+              cap_discount_name_2: section.settings.cap_discount_name_2,
+              cap_discount_amount_2: section.settings.cap_discount_amount_2
+            %}
+            <div class="checkout-button-place"></div>
+            {% render 'buy-more-lesser-price', class: 'mobile_view_only' %}
+
+            {%- render 'gift-wrapping',
+              section_id: section.id,
+              gift_wrapping: gift_wrapping,
+              gift_wrap_id: gift_wrap_id,
+              gift_wraps_in_cart: gift_wraps_in_cart,
+              items_in_cart: items_in_cart
+            -%}
+            {%- for block in section.blocks -%}
+              {%- case block.type -%}
+                {%- when '@app' -%}
+                  {%- render block -%}
+                {%- when 'free_shipping_goal' -%}
+                  <div class="cart__footer--subtotal" data-cart-subtotal {{ block.shopify_attributes }}>
+                    <div class="grid gap-2">
+                      <div class="totals flex justify-between items-center">
+                        <span class="totals__subtotal h4">
+                          {{- 'sections.cart.estimated_total' | t -}}
+                        </span>
+                        <span class="totals__subtotal-value h4 font-body-bolder">
+                          {{- cart.total_price | money_with_currency -}}
+                        </span>
+                      </div>
+                      <div class="tax-note">
+                        {%- liquid
+                          if cart.taxes_included and shop.shipping_policy.body != blank
+                            echo 'sections.cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url
+                          elsif cart.taxes_included
+                            echo 'sections.cart.taxes_included_but_shipping_at_checkout' | t
+                          elsif shop.shipping_policy.body != blank
+                            echo 'sections.cart.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url
+                          else
+                            echo 'sections.cart.taxes_and_shipping_at_checkout' | t
+                          endif
+                        -%}
+                      </div>
+                    </div>
+                  </div>
+                {%- when 'buttons' -%}
+                  <div class="cart__footer--buttons grid gap-3" {{ block.shopify_attributes }}>
+                    <noscript>
+                      <button class="btn btn--primary w-full no-js-hidden" type="submit" name="update" form="cart">
+                        {{- 'sections.cart.update' | t -}}
+                      </button>
+                    </noscript>
+                    <div class="cart__gokwik-sticky-mobile">
+                      {% render 'gokwik-checkout' %}
+                    </div>
+
+                    {% unless settings.goEnable %}
+                      <button
+                        class="btn btn--primary w-full"
+                        type="submit"
+                        form="cart"
+                        name="checkout"
+                        id="cart-checkout-btn"
+                      >
+                        Checkout
+                      </button>
+                    {% endunless %}
+
+                    {% comment %} Minimum Order Value Message {% endcomment %}
+                    {% render 'mov-restriction' %}
+
+                    {% if additional_checkout_buttons %}
+                      <div class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</div>
+                    {% endif %}
+                    {% comment %}
+                      <div class="order-summary_policy-link-checkout__Szy6z ">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="800px"
+                          height="800px"
+                          viewBox="0 0 16 16"
+                          fill="#000000"
+                          class="bi bi-info-circle"
+                        >
+                          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                          <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                        </svg>
+                        &nbsp;
+                        <div class="order-summary_tooltip-htm__nGiX2 tooltip-htm ship">
+                          <b>Shipping</b
+                          ><span class="tooltiptext-htm"
+                            >Your order will be dispatched within 24-48 hours, for more details please check the shipping
+                            policy.</span
+                          >
+                        </div>
+                        <div class="order-summary_tooltip-htm__nGiX2 tooltip-htm refnd">
+                          <b>&nbsp;&amp; Refund</b
+                          ><span class="tooltiptext-htm"
+                            >You can return or exchange your product within 7 days of delivery, for more details please
+                            check the&nbsp;return&nbsp;policy.</span
+                          >
+                        </div>
+                        <span>&nbsp;Policy.</span>
+                      </div>
+                    {% endcomment %}
+                  </div>
+                  {% if section.settings.cart_icon_strip_heading_1 != blank
+                    or section.settings.cart_icon_strip_heading_2 != blank
+                    or section.settings.cart_icon_strip_heading_3 != blank
+                  %}
+                    <div class="cart__footer--icon-strip mt-4">
+                      {% render 'pdp-icon-with-text-strip',
+                        heading_1: section.settings.cart_icon_strip_heading_1,
+                        image_1: section.settings.cart_icon_strip_image_1,
+                        icon_1: 'truck',
+                        heading_2: section.settings.cart_icon_strip_heading_2,
+                        image_2: section.settings.cart_icon_strip_image_2,
+                        icon_2: 'arrow-up-left',
+                        heading_3: section.settings.cart_icon_strip_heading_3,
+                        image_3: section.settings.cart_icon_strip_image_3,
+                        icon_3: 'seal-check'
+                      %}
+                    </div>
+                  {% endif %}
+                {%- when 'cart_note' -%}
+                  <div class="cart__addon cart__footer--cart-note no-js-hidden" {{ block.shopify_attributes }}>
+                    <details is="accordion-details" class="accordion-details cart-accordion-details">
+                      <summary class="accordion-details__summary flex items-center justify-between font-body-bolder h6">
+                        <div class="flex gap-2 items-center">
+                          {%- render 'icon-pencil' -%}
+                          {{ 'general.cart.note.title' | t }}
+                        </div>
+                        {%- render 'icon-caret-down' -%}
+                      </summary>
+                      <cart-note class="flex flex-col items-start gap-5 accordion-details__content">
+                        <div class="form-field w-full">
+                          <textarea
+                            name="note"
+                            class="form-control form-control--textarea"
+                            rows="5"
+                            form="cart"
+                            placeholder="{{ 'general.cart.note.caption' | t }}"
+                            id="CartNoteForm-{{ section.id }}"
+                          >{{ cart.note }}</textarea>
+                          <label class="visually-hidden" for="CartNoteForm-{{ section.id }}">
+                            {{- 'general.cart.note.title' | t -}}
+                          </label>
+                        </div>
+                        <button
+                          class="btn btn--primary"
+                          type="button"
+                        >
+                          <span>{{ 'general.cart.note.button' | t }}</span>
+                        </button>
+                      </cart-note>
+                    </details>
+                  </div>
+                {%- when 'cart_shipping_rate' -%}
+                  <div
+                    class="cart__addon cart__footer--shipping-rate no-js-hidden"
+                    class="{{ block.shopify_attributes }}"
+                  >
+                    <details is="accordion-details" class="accordion-details cart-accordion-details">
+                      <summary class="accordion-details__summary flex items-center justify-between font-body-bolder h6">
+                        <div class="flex gap-2 items-center">
+                          {%- render 'icon-clock' -%}
+                          {{ 'general.cart.shipping_calculator.title' | t }}
+                        </div>
+                        {%- render 'icon-caret-down' -%}
+                      </summary>
+                      <form
+                        class="grid gap-4 accordion-details__content"
+                        action="{{ routes.cart_url }}"
+                        method="POST"
+                        novalidate
+                        is="shipping-calculator"
+                      >
+                        <country-province
+                          class="grid gap-4"
+                          {% if shop.customer_accounts_enabled and customer %}
+                            data-country="{{ customer.default_address.country }}"
+                            {%- if customer.default_address.province != '' %}
+                              data-province="{{ customer.default_address.province }}"
+                            {%- endif -%}
+                          {% endif %}
+                          data-template="{{ template }}"
+                        >
+                          <div class="form-field reset-spacing">
+                            <label class="form-label" for="ShippingCalculatorCountry-{{ section.id }}">
+                              {{- 'customer.addresses.country' | t -}}
+                            </label>
+                            <div class="select">
+                              <select
+                                name="address[country]"
+                                class="form-control form-control--select"
+                                autocomplete="country"
+                                id="ShippingCalculatorCountry-{{ section.id }}"
+                              >
+                                {{- all_country_option_tags -}}
+                              </select>
+                              {%- render 'icon-caret-down' -%}
+                            </div>
+                          </div>
+                          <div class="form-field reset-spacing" hidden>
+                            <label class="form-label" for="ShippingCalculatorProvince-{{ section.id }}">
+                              {{- 'customer.addresses.province' | t -}}
+                            </label>
+                            <div class="select">
+                              <select
+                                name="address[province]"
+                                class="form-control form-control--select"
+                                autocomplete="address-level1"
+                                id="ShippingCalculatorProvince-{{ section.id }}"
+                              ></select>
+                              {%- render 'icon-caret-down' -%}
+                            </div>
+                          </div>
+                        </country-province>
+                        <div class="form-field">
+                          <label class="form-label" for="ShippingCalculatorZip-{{ section.id }}">
+                            {{- 'customer.addresses.zip' | t -}}
+                          </label>
+                          <input
+                            name="address[zip]"
+                            class="form-control form-control--input"
+                            type="text"
+                            autocapitalize="characters"
+                            autocomplete="postal-code"
+                            placeholder=" "
+                            id="ShippingCalculatorZip-{{ section.id }}"
+                            {% if shop.customer_accounts_enabled and customer %}
+                              value="{{ customer.default_address.zip }}"
+                            {% endif %}
+                          >
+                        </div>
+                        <div class="">
+                          <button class="btn btn--primary" type="submit">
+                            <span>{{ 'general.cart.shipping_calculator.button' | t }}</span>
+                            {%- render 'loading-spinner' -%}
+                          </button>
+                        </div>
+                        <div class="grid gap-3"></div>
+                      </form>
+                    </details>
+                  </div>
+              {%- endcase -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </main-cart>
+
+      {% comment %} Checkout Offer Popup {% endcomment %}
+      {% render 'checkout-offer-popup' %}
+      {% render 'remove-item' %}
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+  // ===== CENTRALIZED CART DATA MANAGER =====
+  // This caches cart data and prevents multiple simultaneous fetches
+  (function() {
+    'use strict';
+
+    if (window.CartDataManager) {
+      return; // Already initialized
+    }
+
+    window.CartDataManager = {
+      cache: null,
+      cacheTimestamp: null,
+      cacheDuration: 2000, // Cache for 2 seconds
+      pendingFetch: null,
+      fetchInProgress: false,
+      listeners: new Set(),
+      lastFetchTime: 0,
+      minFetchInterval: 300, // Minimum 300ms between fetches
+      
+      // Get cart data with caching
+      getCart: async function(forceRefresh = false) {
+        const now = Date.now();
+        
+        // Return cached data if valid
+        if (!forceRefresh && this.cache && this.cacheTimestamp && (now - this.cacheTimestamp) < this.cacheDuration) {
+          console.log('🎯 Returning cached cart data (age: ' + (now - this.cacheTimestamp) + 'ms)');
+          return this.cache;
+        }
+        
+        // Prevent too frequent fetches
+        if (!forceRefresh && (now - this.lastFetchTime) < this.minFetchInterval) {
+          console.log('⏸️ Fetch throttled, using existing cache');
+          return this.cache || this.pendingFetch;
+        }
+        
+        // If fetch is in progress, wait for it
+        if (this.pendingFetch) {
+          console.log('⏳ Fetch in progress, waiting...');
+          return this.pendingFetch;
+        }
+        
+        // Start new fetch
+        console.log('🔄 Fetching fresh cart data...');
+        this.fetchInProgress = true;
+        this.lastFetchTime = now;
+        
+        this.pendingFetch = fetch('/cart.js')
+          .then(response => response.json())
+          .then(cartData => {
+            this.updateCache(cartData);
+            this.fetchInProgress = false;
+            this.pendingFetch = null;
+            console.log('✅ Cart data fetched and cached');
+            return cartData;
+          })
+          .catch(error => {
+            console.error('❌ Error fetching cart:', error);
+            this.fetchInProgress = false;
+            this.pendingFetch = null;
+            throw error;
+          });
+        
+        return this.pendingFetch;
+      },
+      
+      // Update cache with new data
+      updateCache: function(cartData) {
+        this.cache = cartData;
+        this.cacheTimestamp = Date.now();
+        this.notifyListeners(cartData);
+      },
+      
+      // Invalidate cache
+      invalidateCache: function() {
+        console.log('🗑️ Cache invalidated');
+        this.cache = null;
+        this.cacheTimestamp = null;
+      },
+      
+      // Add listener for cart updates
+      addListener: function(callback) {
+        this.listeners.add(callback);
+      },
+      
+      // Remove listener
+      removeListener: function(callback) {
+        this.listeners.delete(callback);
+      },
+      
+      // Notify all listeners
+      notifyListeners: function(cartData) {
+        this.listeners.forEach(callback => {
+          try {
+            callback(cartData);
+          } catch (error) {
+            console.error('Error in cart listener:', error);
+          }
+        });
+      },
+      
+      // Get cached data synchronously (returns null if not cached)
+      getCached: function() {
+        const now = Date.now();
+        if (this.cache && this.cacheTimestamp && (now - this.cacheTimestamp) < this.cacheDuration) {
+          return this.cache;
+        }
+        return null;
+      }
+    };
+    
+    console.log('✅ CartDataManager initialized');
+  })();
+  
+  // ===== CENTRALIZED CART REFRESH MANAGER =====
+  // This prevents multiple initializations and manages all cart refresh operations
+  if (window.cartRefreshManager) {
+    //console.log('Cart refresh manager already exists, skipping initialization...');
+  } else {
+    window.cartRefreshManager = {
+      initialized: false,
+      systems: new Set(),
+      
+      // Register a system
+      registerSystem: function(systemName) {
+        if (this.systems.has(systemName)) {
+          //console.log(`System ${systemName} already registered, skipping...`);
+          return false;
+        }
+        this.systems.add(systemName);
+       // console.log(`System ${systemName} registered successfully`);
+        return true;
+      },
+      
+      // Initialize the manager
+      initialize: function() {
+        if (this.initialized) {
+        //  console.log('Cart refresh manager already initialized, skipping...');
+          return;
+        }
+        this.initialized = true;
+      //  console.log('Cart refresh manager initialized successfully');
+      }
+    };
+    
+    // Initialize the manager
+    window.cartRefreshManager.initialize();
+  }
+
+  // ===== MAIN CART FUNCTIONS =====
+
+  function initVariantSelectors() {
+    // Check if already initialized
+    if (window.variantSelectorsInitialized) {
+     // console.log('Variant selectors already initialized, skipping...');
+      return;
+    }
+    window.variantSelectorsInitialized = true;
+  }
+
+  // Function to refresh cart data and update all UI elements
+  async function refreshCartData() {
+    try {
+      // Prevent multiple simultaneous refreshes
+      if (window.cartRefreshInProgress) {
+        console.log('Cart refresh already in progress, skipping...');
+        return null;
+      }
+      
+      window.cartRefreshInProgress = true;
+      
+      // Use CartDataManager instead of direct fetch
+      const cartData = await window.CartDataManager.getCart(true); // Force refresh
+      
+      console.log('Cart refreshed:', cartData);
+      
+      updateCartPageState(cartData);
+      
+      // Handle empty cart state
+      if (cartData.item_count === 0) {
+        console.log('Cart is empty, showing empty cart state');
+        
+        // Show empty cart message
+        const cartSection = document.querySelector('.cart');
+        if (cartSection) {
+          cartSection.classList.add('is-empty');
+        }
+        
+        // Hide cart content
+        const cartContent = document.querySelector('main-cart');
+        if (cartContent) {
+          cartContent.style.display = 'none';
+        }
+        
+        // Show empty cart content
+        const emptyCartContent = document.querySelector('.cart__empty');
+        if (emptyCartContent) {
+          emptyCartContent.style.display = 'block';
+        }
+        
+      } else {
+        // Show cart content
+        const cartSection = document.querySelector('.cart');
+        if (cartSection) {
+          cartSection.classList.remove('is-empty');
+        }
+        
+        const cartContent = document.querySelector('main-cart');
+        if (cartContent) {
+          cartContent.style.display = 'flex';
+        }
+        
+        const emptyCartContent = document.querySelector('.cart__empty');
+        if (emptyCartContent) {
+          emptyCartContent.style.display = 'none';
+        }
+        
+        // Update cart totals and items
+        updateCartTotals(cartData);
+        updateCartItemsDisplay(cartData);
+      }
+      
+      // Update discount buttons state
+      if (typeof updateDiscountButtonsState === 'function') {
+        updateDiscountButtonsState(cartData);
+      }
+      
+      console.log('Cart refresh completed, checking discount status...');
+      
+      // Ensure discount persistence after cart refresh
+      if (window.ensureDiscountPersistence) {
+        setTimeout(() => {
+          window.ensureDiscountPersistence();
+        }, 400);
+      }
+      
+      // Also sync discount display UI
+      if (window.syncDiscountDisplayOnCartUpdate) {
+        setTimeout(() => {
+          console.log('Calling syncDiscountDisplayOnCartUpdate after cart refresh');
+          window.syncDiscountDisplayOnCartUpdate();
+        }, 600);
+      }
+      
+      // Check current discount status first to get the correct state
+      if (window.checkCurrentDiscountStatus) {
+        setTimeout(() => {
+          window.checkCurrentDiscountStatus();
+        }, 300);
+      }
+      
+      // Then reinitialize discount system if the function exists
+      if (window.reinitializeDiscountSystem) {
+        setTimeout(() => {
+          window.reinitializeDiscountSystem();
+        }, 400);
+      }
+      
+      // Dispatch cart updated event only once
+      if (!window.lastCartUpdateTime || (Date.now() - window.lastCartUpdateTime) > 100) {
+        window.lastCartUpdateTime = Date.now();
+        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cartData } }));
+      }
+      
+      return cartData;
+    } catch (error) {
+      console.error('Error refreshing cart data:', error);
+      return null;
+    } finally {
+      // Reset the flag after a short delay to allow for rapid successive updates
+      setTimeout(() => {
+        window.cartRefreshInProgress = false;
+      }, 100);
+    }
+  }
+
+  // Function to update cart count in header
+  function updateCartCount(itemCount) {
+    const cartCountElements = document.querySelectorAll('.cart-count, .cart-count-badge, [data-cart-count], .cart__count');
+    cartCountElements.forEach(element => {
+      element.textContent = itemCount;
+    });
+    
+    const shoppingCartTitle = document.querySelector('.shopping-cart-title');
+    if (shoppingCartTitle) {
+      shoppingCartTitle.textContent = `Shopping Cart (${itemCount})`;
+      shoppingCartTitle.style.display = itemCount > 0 ? '' : 'none';
+    }
+
+    // Update cart title if it shows item count
+    const cartTitle = document.querySelector('.cart__title');
+    if (cartTitle && cartTitle.textContent.includes('Items')) {
+      cartTitle.textContent = `Shopping Cart (${itemCount} Items)`;
+    }
+  }
+
+  function updateCartPageState(cartData) {
+    if (!cartData) return;
+
+    const itemCount = Number(cartData.item_count) || 0;
+    const cartSection = document.querySelector('.cart');
+    const cartContent = document.querySelector('main-cart');
+    const emptyCartContent = document.querySelector('.cart__empty');
+
+    updateCartCount(itemCount);
+
+    if (cartSection) {
+      cartSection.classList.toggle('is-empty', itemCount === 0);
+      cartSection.classList.toggle('cart-background', itemCount > 0);
+    }
+
+    if (cartContent) {
+      cartContent.style.display = itemCount > 0 ? '' : 'none';
+    }
+
+    if (emptyCartContent) {
+      emptyCartContent.style.display = itemCount === 0 ? '' : 'none';
+    }
+  }
+
+  // Function to update cart totals
+  function updateCartTotals(cartData) {
+    const format = (amount) => `₹${(amount / 100).toFixed(0)}`;
+    
+    // Update cart footer subtotal
+    const footerSubtotal = document.querySelector('.cart__footer--subtotal .totals__subtotal-value');
+    if (footerSubtotal) {
+      footerSubtotal.textContent = format(cartData.items_subtotal_price);
+    }
+    
+    // Update cart footer total
+    const footerTotal = document.querySelector('.cart__footer--total .totals__total-value');
+    if (footerTotal) {
+      footerTotal.textContent = format(cartData.total_price);
+    }
+    
+    // Update any other total elements
+    const totalElements = document.querySelectorAll('[data-cart-total], .cart-total, .cart__total');
+    totalElements.forEach(element => {
+      element.textContent = format(cartData.total_price);
+    });
+
+    // Update order summary if it exists
+    if (window.updateOrderSummaryFromDiscount) {
+      window.updateOrderSummaryFromDiscount(cartData);
+    }
+
+    // Also update discount summary if the function exists
+    if (window.updateDiscountSummaryFromCart) {
+      window.updateDiscountSummaryFromCart(cartData);
+    }
+    
+    // Force update order summary to ensure discount row shows
+    if (window.forceUpdateOrderSummary) {
+      window.forceUpdateOrderSummary(cartData);
+    }
+  }
+
+  // Function to update cart items display
+  function updateCartItemsDisplay(cartData) {
+    // Cart markup can be either a real table (with <tbody>) or a div-based layout (role="table").
+    // Support both so coupon/discount refresh updates item prices reliably.
+    const cartItemsContainer =
+      document.querySelector('cart-items tbody') || document.querySelector('cart-items');
+    if (!cartItemsContainer) return;
+
+    const format = (amount) => `₹${(amount / 100).toFixed(0)}`;
+    const capped =
+      typeof window.shouldCapDiscount === 'function' && window.shouldCapDiscount(cartData);
+
+    // Update each cart item
+    cartData.items.forEach((item, index) => {
+      const cartItemRow = cartItemsContainer.querySelector(`#CartItem-${index + 1}`);
+      if (!cartItemRow) return;
+
+      // Capping: keep Liquid-rendered unit/compare prices — scripts must not repaint line prices.
+      if (capped) {
+        const quantityInput = cartItemRow.querySelector('input[name="updates[]"]');
+        if (quantityInput) {
+          quantityInput.value = item.quantity;
+        }
+        const lineTotalSpans = cartItemRow.querySelectorAll('.cart-item__total span.font-body-bolder');
+        lineTotalSpans.forEach((lineTotalSpan) => {
+          lineTotalSpan.textContent = format(item.original_line_price);
+        });
+        cartItemRow.querySelectorAll('[data-item-price], [data-item-total]').forEach((element) => {
+          if (element.dataset.itemPrice) {
+            element.textContent = format(item.original_price);
+          } else if (element.dataset.itemTotal) {
+            element.textContent = format(item.original_line_price);
+          }
+        });
+        return;
+      }
+
+      // All unit-price blocks in this row (product column + desktop price column)
+      const priceElements = cartItemRow.querySelectorAll('.cart-item__prices .price');
+      priceElements.forEach((priceElement) => {
+        const comparePriceElement = priceElement.querySelector('.compare-price');
+        const cartDiscountElement = priceElement.querySelector('.cart__discount');
+
+        priceElement.innerHTML = '';
+
+        const priceRegularSpan = document.createElement('span');
+        priceRegularSpan.className = 'price__regular';
+
+        const priceSaleSpan = document.createElement('s');
+        priceSaleSpan.className = 'price__sale font-body text-sm text-subtext';
+
+        if (capped) {
+          priceElement.classList.remove('price--on-sale');
+          priceRegularSpan.textContent = format(item.original_price);
+          priceSaleSpan.style.display = 'none';
+          priceElement.appendChild(priceRegularSpan);
+        } else if (item.original_price !== item.final_price) {
+          priceElement.classList.add('price--on-sale');
+          priceRegularSpan.textContent = format(item.final_price);
+          priceSaleSpan.textContent = format(item.original_price);
+          priceSaleSpan.style.display = 'inline';
+          priceElement.appendChild(priceRegularSpan);
+          priceElement.appendChild(priceSaleSpan);
+        } else {
+          priceElement.classList.remove('price--on-sale');
+          priceRegularSpan.textContent = format(item.original_price);
+          priceSaleSpan.style.display = 'none';
+          priceElement.appendChild(priceRegularSpan);
+        }
+
+        if (comparePriceElement) priceElement.appendChild(comparePriceElement);
+        if (cartDiscountElement) priceElement.appendChild(cartDiscountElement);
+      });
+
+      // Compare-at / variant promo badge (use original unit price when cap hides cart discount on lines)
+      const comparePriceElements = cartItemRow.querySelectorAll('.compare-price');
+      const cartDiscountElements = cartItemRow.querySelectorAll('.cart__discount');
+      const unitForCompare = capped ? item.original_price : item.final_price;
+
+      comparePriceElements.forEach((comparePriceElement, i) => {
+        const cartDiscountElement = cartDiscountElements[i];
+        if (!cartDiscountElement) return;
+
+        const existingComparePriceText = comparePriceElement.textContent.trim();
+        if (existingComparePriceText && existingComparePriceText !== '') {
+          const priceMatch = existingComparePriceText.match(/₹?([\d,.]+)/);
+          if (priceMatch) {
+            const compareAtPrice = Math.round(parseFloat(priceMatch[1].replace(/,/g, '')) * 100);
+            if (compareAtPrice > unitForCompare) {
+              comparePriceElement.textContent = format(compareAtPrice);
+              comparePriceElement.style.display = 'inline';
+              const discountPercentage = Math.round(
+                ((compareAtPrice - unitForCompare) / compareAtPrice) * 100
+              );
+              cartDiscountElement.textContent = `(${discountPercentage}% OFF)`;
+              cartDiscountElement.style.display = 'inline';
+            } else {
+              comparePriceElement.style.display = 'none';
+              cartDiscountElement.style.display = 'none';
+            }
+          } else {
+            comparePriceElement.style.display = 'none';
+            cartDiscountElement.style.display = 'none';
+          }
+        } else {
+          comparePriceElement.style.display = 'none';
+          cartDiscountElement.style.display = 'none';
+        }
+      });
+
+      const quantityInput = cartItemRow.querySelector('input[name="updates[]"]');
+      if (quantityInput) {
+        quantityInput.value = item.quantity;
+      }
+
+      const lineTotalSpans = cartItemRow.querySelectorAll('.cart-item__total span.font-body-bolder');
+      lineTotalSpans.forEach((lineTotalSpan) => {
+        lineTotalSpan.textContent = capped
+          ? format(item.original_line_price)
+          : format(item.final_line_price);
+      });
+
+      const allPriceElements = cartItemRow.querySelectorAll(
+        '[data-item-price], [data-item-total], [data-item-compare-price]'
+      );
+      allPriceElements.forEach((element) => {
+        const dataType = element.dataset.itemPrice
+          ? 'price'
+          : element.dataset.itemTotal
+            ? 'total'
+            : element.dataset.itemComparePrice
+              ? 'compare-price'
+              : null;
+
+        if (dataType === 'price') {
+          element.textContent = capped ? format(item.original_price) : format(item.final_price);
+        } else if (dataType === 'total') {
+          element.textContent = capped
+            ? format(item.original_line_price)
+            : format(item.final_line_price);
+        }
+      });
+    });
+  }
+
+  // Function to initialize compare prices and cart discounts on page load
+  function initializeComparePricesAndDiscounts() {
+    const cartItemsContainer =
+      document.querySelector('cart-items tbody') || document.querySelector('cart-items');
+    if (!cartItemsContainer) return;
+
+    //console.log('Initializing compare prices and cart discounts...');
+
+    const cartItemRows = cartItemsContainer.querySelectorAll('div[id^="CartItem-"]');
+    cartItemRows.forEach((cartItemRow, index) => {
+      const comparePriceElement = cartItemRow.querySelector('.compare-price');
+      const cartDiscountElement = cartItemRow.querySelector('.cart__discount');
+      
+      if (comparePriceElement && cartDiscountElement) {
+        const comparePriceText = comparePriceElement.textContent.trim();
+        const cartDiscountText = cartDiscountElement.textContent.trim();
+        
+        // Only show if there's actual content
+        if (comparePriceText && comparePriceText !== '') {
+          comparePriceElement.style.display = 'inline';
+         // console.log(`Item ${index + 1} compare price: "${comparePriceText}" - SHOWING`);
+        } else {
+          comparePriceElement.style.display = 'none';
+        //  console.log(`Item ${index + 1} compare price: empty - HIDING`);
+        }
+        
+        if (cartDiscountText && cartDiscountText !== '') {
+          cartDiscountElement.style.display = 'inline';
+        //  console.log(`Item ${index + 1} cart discount: "${cartDiscountText}" - SHOWING`);
+        } else {
+          cartDiscountElement.style.display = 'none';
+        //  console.log(`Item ${index + 1} cart discount: empty - HIDING`);
+        }
+      } else {
+     //   console.log(`Item ${index + 1}: No compare-price or cart__discount elements found`);
+      }
+    });
+  }
+
+  // Function to refresh compare prices and cart discounts after cart updates
+  function refreshComparePricesAndDiscounts() {
+    //console.log('Refreshing compare prices and cart discounts...');
+    // Call the initialization function to refresh the display
+    initializeComparePricesAndDiscounts();
+  }
+
+  // Show quantity error near the input (e.g. when exceeding available stock)
+  function showQuantityError(input, message) {
+    // Intentionally left almost empty: we silently revert quantity without showing UI errors,
+    // to avoid breaking the cart layout when Shopify returns soft errors alongside valid updates.
+    if (!input) return;
+    input.setCustomValidity('');
+  }
+
+  function clearQuantityError(input) {
+    if (!input) return;
+    input.setCustomValidity('');
+    const row = input.closest('div, .cart-item');
+    if (row) {
+      const errEl = row.querySelector('.cart-quantity-error');
+      if (errEl) errEl.style.display = 'none';
+    }
+  }
+
+  // Set up cart refresh event listeners
+  function setupCartRefreshListeners() {
+    // Check if already initialized
+    if (window.cartRefreshListenersInitialized) {
+    //  console.log('Cart refresh listeners already initialized, skipping...');
+      return;
+    }
+    window.cartRefreshListenersInitialized = true;
+    
+    // Debounce timer for quantity changes
+    let quantityChangeTimeout = null;
+    
+    // Listen for quantity changes with debouncing
+    document.addEventListener('change', function(event) {
+      if (event.target.matches('input[name="updates[]"]')) {
+        const input = event.target;
+        const quantity = parseInt(input.value);
+        
+        if (!isNaN(quantity) && quantity >= 0) {
+          // Clear any previous quantity error
+          clearQuantityError(input);
+          // Clear any pending quantity change
+          if (quantityChangeTimeout) {
+            clearTimeout(quantityChangeTimeout);
+          }
+          
+          // Show loading state
+          input.disabled = true;
+          const originalValue = input.value;
+          
+          // Get the variant ID from the input
+          const variantId = input.dataset.quantityVariantId;
+          
+          // Debounce to prevent multiple rapid changes
+          quantityChangeTimeout = setTimeout(() => {
+            // Update cart via Shopify API
+            fetch('/cart/change.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: variantId,
+                quantity: quantity
+              })
+            })
+            .then(response => response.json().then(data => ({ ok: response.ok, data })))
+            .then(({ ok, data: cartData }) => {
+              // Do not update UI with error response (e.g. 422 - quantity not available)
+              if (!ok) {
+                input.value = originalValue;
+                input.disabled = false;
+                const errorMessage = cartData.message || cartData.description || 'Requested quantity not available.';
+                showQuantityError(input, errorMessage);
+                return;
+              }
+              
+              // CRITICAL: Invalidate cache and update it with fresh data
+              if (window.CartDataManager) {
+                window.CartDataManager.cache = cartData;
+                window.CartDataManager.cacheTimestamp = Date.now();
+              }
+              
+              // Update UI with the data we already have (no additional fetch needed)
+              updateCartPageState(cartData);
+              updateCartTotals(cartData);
+              updateCartItemsDisplay(cartData);
+              
+              // Re-enable input
+              input.disabled = false;
+              clearQuantityError(input);
+              
+              // Check if discount is still valid after quantity change
+              checkDiscountValidity(cartData);
+              
+              // Update discount buttons state
+              updateDiscountButtonsState(cartData);
+              
+              // Sync discount display UI after quantity change (uses cached data)
+              if (window.forceUpdateAllDiscountElements) {
+                setTimeout(() => {
+                  console.log('Force updating all discount elements after quantity change');
+                  window.forceUpdateAllDiscountElements();
+                }, 300);
+              } else if (window.syncDiscountDisplayOnCartUpdate) {
+                setTimeout(() => {
+                  console.log('Calling syncDiscountDisplayOnCartUpdate after quantity change');
+                  window.syncDiscountDisplayOnCartUpdate();
+                }, 200);
+              }
+              
+              // Dispatch single cart updated event with data
+              document.dispatchEvent(new CustomEvent('cart:updated', { 
+                detail: { cart: cartData } 
+              }));
+            })
+            .catch(error => {
+              // Revert to original value on error
+              input.value = originalValue;
+              input.disabled = false;
+              showQuantityError(input, 'Unable to update quantity. Please try again.');
+            });
+          }, 300); // 300ms debounce
+        }
+      }
+    });
+
+    // ============================================================
+    // REMOVE ITEM MODAL — OPEN & CLOSE HANDLING
+    // ============================================================
+
+    (function () {
+      const overlay = document.getElementById('removeItemOverlay');
+      const modal = document.getElementById('removeItemModal');
+      const imgEl = document.getElementById('removeItemImage');
+      const flitsWishlistBtn = document.getElementById('flitsWishlistBtn');
+      const removeConfirmButton = document.getElementById('removeItemConfirm');
+      const removeWishlistButton = document.getElementById('removeItemWishlist');
+      let removeLoaderTimeout = null;
+
+      if (!overlay || !modal) return;
+
+      const setRemoveModalLoading = function (isLoading) {
+        overlay.classList.toggle('is-loading', isLoading);
+        removeConfirmButton?.toggleAttribute('disabled', isLoading);
+        removeWishlistButton?.toggleAttribute('disabled', isLoading);
+      };
+
+      const closeRemoveModal = function () {
+        overlay.classList.remove('open');
+        overlay.dataset.pendingLine = '';
+        overlay.dataset.pendingVariant = '';
+        if (removeLoaderTimeout) {
+          window.clearTimeout(removeLoaderTimeout);
+          removeLoaderTimeout = null;
+        }
+        setRemoveModalLoading(false);
+      };
+
+      // ----------------------------
+      // OPEN MODAL
+      // ----------------------------
+      document.addEventListener('click', function (event) {
+        const btn = event.target.closest('.remove-cart-item-modal-btn');
+        if (!btn) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const cartItem = btn.closest('[id^="CartItem-"], .cart-item');
+
+        let itemImage = '';
+        let variantId = null;
+        let line = null;
+
+        if (cartItem) {
+          line = btn.dataset.index || cartItem.dataset.index || cartItem.getAttribute('data-index');
+
+          const img = cartItem.querySelector('.cart-item__media img, img');
+          if (img) itemImage = img.src || img.dataset.src || '';
+
+          const qtyInput = cartItem.querySelector('input[data-quantity-variant-id]');
+          if (qtyInput) variantId = qtyInput.dataset.quantityVariantId;
+        }
+
+        if (!itemImage) {
+          itemImage = btn.dataset.productImage || '';
+        }
+
+        // store data for confirm step
+        overlay.dataset.pendingLine = line || '';
+        overlay.dataset.pendingVariant = variantId || '';
+
+        // handle image safely
+        if (imgEl) {
+          if (itemImage) {
+            imgEl.src = itemImage;
+            imgEl.style.display = 'block';
+          } else {
+            imgEl.removeAttribute('src');
+            imgEl.style.display = 'none';
+          }
+        }
+
+        if (flitsWishlistBtn) {
+          flitsWishlistBtn.setAttribute('data-flits-product-id', btn.dataset.productId || '');
+          flitsWishlistBtn.setAttribute('data-flits-product-handle', btn.dataset.productHandle || '');
+          flitsWishlistBtn.setAttribute('data-flits-product-title', btn.dataset.productTitle || '');
+          flitsWishlistBtn.setAttribute('data-flits-product-image', itemImage || '');
+          flitsWishlistBtn.setAttribute('data-flits-product-wsl-count', btn.dataset.productWslCount || 0);
+        }
+
+        setRemoveModalLoading(false);
+        overlay.classList.add('open');
+
+        window.setTimeout(function () {
+          if (window.Flits?.reloadWidgets) {
+            window.Flits.reloadWidgets();
+          }
+          if (window.flitsApp?.init) {
+            window.flitsApp.init();
+          }
+        }, 500);
+
+        // focus for accessibility
+        removeConfirmButton?.focus();
+      });
+
+      // ----------------------------
+      // CLOSE ON OVERLAY CLICK
+      // ----------------------------
+      document.addEventListener('click', function (event) {
+        if (!overlay.classList.contains('open') || overlay.classList.contains('is-loading')) return;
+
+        if (event.target === overlay) {
+          closeRemoveModal();
+        }
+      });
+
+      // ----------------------------
+      // CLOSE ON CROSS BUTTON
+      // ----------------------------
+      document.getElementById('removeItemClose')?.addEventListener('click', function () {
+        if (overlay.classList.contains('is-loading')) return;
+        closeRemoveModal();
+      });
+
+      removeConfirmButton?.addEventListener('click', function () {
+        if (overlay.classList.contains('is-loading')) return;
+
+        const pendingLine = overlay.dataset.pendingLine;
+        if (!pendingLine) return;
+
+        const cartItems = document.querySelector('cart-items');
+        if (!cartItems || typeof cartItems.updateQuantity !== 'function') {
+          closeRemoveModal();
+          return;
+        }
+
+        setRemoveModalLoading(true);
+        overlay.classList.add('open');
+        removeLoaderTimeout = window.setTimeout(function () {
+          closeRemoveModal();
+        }, 10000);
+        cartItems.updateQuantity(pendingLine, 0);
+      });
+
+      removeWishlistButton?.addEventListener('click', function () {
+        const pendingLine = overlay.dataset.pendingLine;
+        const cartItem =
+          document.getElementById(`CartItem-${pendingLine}`) ||
+          document.querySelector(`.cart-item[data-index="${pendingLine}"]`);
+        const wishlistTrigger = cartItem?.querySelector(
+          '.wkh-save-for-later, .guest-wishlist-login-btn, .flits-collection-page-wishlist-button'
+        );
+
+        closeRemoveModal();
+
+        if (wishlistTrigger) {
+          wishlistTrigger.click();
+        }
+      });
+
+      // ----------------------------
+      // CLOSE ON ESC KEY
+      // ----------------------------
+      document.addEventListener('keydown', function (event) {
+        if (overlay.classList.contains('is-loading')) return;
+        if (event.key === 'Escape') {
+          closeRemoveModal();
+        }
+      });
+
+      document.addEventListener('cart:updated', function () {
+        if (overlay.classList.contains('is-loading')) {
+          closeRemoveModal();
+        }
+      });
+
+    })();
+
+    document.addEventListener('click', function(event) {
+      // Look for remove buttons with comprehensive selectors
+      const removeButton = event.target.closest('[is="cart-remove-item"], [is="gift-wrap-remove-item"], .cart-item__remove, a[href*="url_to_remove"], a[href*="/cart/change"]');
+
+      if (removeButton) {
+        if (removeButton.matches('[is="cart-remove-item"], [is="gift-wrap-remove-item"]')) {
+          return;
+        }
+
+        // CRITICAL: Prevent default browser behavior immediately
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        
+        console.log('Remove button clicked, prevented default behavior');
+        
+        const line = removeButton.dataset.index;
+        if (!line) {
+          console.error('No line index found for removal');
+          return;
+        }
+        
+        // Show loading state
+        removeButton.style.opacity = '0.5';
+        removeButton.style.pointerEvents = 'none';
+        
+        // Get variant ID if available for more reliable removal
+        const cartItem = removeButton.closest('div[id^="CartItem-"], .cart-item');
+        let variantId = null;
+        
+        if (cartItem) {
+          const quantityInput = cartItem.querySelector('input[data-quantity-variant-id]');
+          if (quantityInput) {
+            variantId = quantityInput.dataset.quantityVariantId;
+          }
+        }
+        
+        // MoEngage tracking - Fire before removal with dynamic data
+        if (cartItem && typeof Moengage !== 'undefined') {
+          // Fetch current cart data to get accurate values using CartDataManager
+          window.CartDataManager.getCart()
+          .then(cartData => {
+            // Find the cart item data by variant ID or line index
+            let cartItemData = null;
+            
+            // Method 1: Find by variant ID
+            if (variantId) {
+              cartItemData = cartData.items.find(item => item.variant_id == variantId);
+            }
+            
+            // Method 2: Find by line index (line is 1-based, array is 0-based)
+            if (!cartItemData && line) {
+              cartItemData = cartData.items[parseInt(line) - 1];
+            }
+            
+            // Method 3: Find by DOM index as fallback
+            if (!cartItemData) {
+              const cartItemIndex = Array.from(cartItem.parentElement.children).indexOf(cartItem);
+              cartItemData = cartData.items[cartItemIndex];
+            }
+            
+            if (cartItemData) {
+              // Parse variant title for color and size
+              let color = 'N/A';
+              let size = 'N/A';
+              if (cartItemData.variant_title) {
+                const variantParts = cartItemData.variant_title.split('/').map(part => part.trim());
+                if (variantParts.length >= 2) {
+                  color = variantParts[0];
+                  size = variantParts[1];
+                } else if (variantParts.length === 1) {
+                  size = variantParts[0];
+                }
+              }
+              
+              // Fire MoEngage event with accurate cart data
+              Moengage.track_event("Removed From Cart", {
+                "Product ID": cartItemData.sku || cartItemData.id,
+                "Product Name": cartItemData.product_title || cartItemData.title,
+                "Category Name": cartItemData.product_type || 'N/A',
+                //"Category ID": cartItemData.product_type.id || 'N/A',
+                "Quantity": cartItemData.quantity,
+                "Price": (cartItemData.final_price / 100).toFixed(2),
+                //"Discount": (cartItemData.final_price / 100).toFixed(2),
+                "Currency": cartData.currency || 'USD',
+                "Color": color,
+                "Size": size,
+                "Image": cartItemData.featured_image?.url || cartItemData.image || 'N/A'
+              });
+              
+              console.log('MoEngage event fired with dynamic data: Removed From Cart', cartItemData);
+            } else {
+              console.warn('Could not find cart item data for MoEngage tracking');
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching cart data for MoEngage:', error);
+          });
+        }
+        
+        // Use variant ID if available, otherwise use line number
+        const removePayload = variantId ? 
+          { id: variantId, quantity: 0 } : 
+          { line: parseInt(line), quantity: 0 };
+        
+        //console.log('Removing item with payload:', removePayload);
+        
+        // Remove item via Shopify API
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(removePayload)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(cartData => {
+          console.log('Item removed successfully:', cartData);
+          
+          // Refresh cart data without page reload
+          refreshCartData();
+          
+          // Check if discount is still valid after removal
+          checkDiscountValidity(cartData);
+          
+          // Update discount buttons state
+          updateDiscountButtonsState(cartData);
+          
+          // Sync discount display UI after item removal
+          if (window.syncDiscountDisplayOnCartUpdate) {
+            setTimeout(() => {
+             // console.log('Calling syncDiscountDisplayOnCartUpdate after item removal');
+              window.syncDiscountDisplayOnCartUpdate();
+            }, 800);
+          }
+          
+        })
+        .catch(error => {
+          //console.error('Error removing item:', error);
+          
+          // Restore button state on error
+          removeButton.style.opacity = '1';
+          removeButton.style.pointerEvents = 'auto';
+          
+          // Show user-friendly error message
+          //alert('There was an error removing the item. Please try again.');
+        });
+      }
+    });
+
+    // Listen for cart form submissions
+    const cartForm = document.querySelector('#cart');
+    if (cartForm) {
+      cartForm.addEventListener('submit', function(event) {
+        var isCheckout = event.submitter && (event.submitter.name === 'checkout' || event.submitter.id === 'cart-checkout-btn');
+        if (isCheckout) {
+          event.preventDefault();
+          var checkoutUrl = (event.submitter && event.submitter.getAttribute('data-checkout-url')) || '/checkout';
+          var fetchCart = window.CartDataManager && typeof window.CartDataManager.getCart === 'function'
+            ? window.CartDataManager.getCart()
+            : fetch('/cart.js').then(function(r) { return r.json(); });
+          fetchCart.then(function(cartData) {
+            if (cartData && cartData.item_count > 0) {
+              var currency = cartData.currency || 'INR';
+              var value = parseFloat((cartData.total_price / 100).toFixed(2));
+              if (typeof Moengage !== 'undefined') {
+                var moengageProducts = (cartData.items || []).map(function(item) {
+                  return {
+                    productId: item.product_id,
+                    variantId: item.variant_id,
+                    itemTitle: item.product_title || item.title,
+                    variantTitle: item.variant_title || '',
+                    quantity: item.quantity,
+                    price: (item.final_price / 100).toFixed(2),
+                    currency: currency
+                  };
+                });
+                {% comment %} Moengage.track_event('Started_Checkout', {
+                  'No. Of Products': cartData.item_count,
+                  'Total Amount': value,
+                  'Currency': currency,
+                  'Product Details': moengageProducts
+                }); {% endcomment %}
+              }
+            }
+           // alert('Events fired: MoEngage Checkout Started');
+            setTimeout(function() { window.location.href = checkoutUrl; }, 150);
+          }).catch(function() {
+            window.location.href = checkoutUrl;
+          });
+          return;
+        }
+
+        event.preventDefault();
+        
+        // Handle form submission and refresh cart (only for "Update" button, not checkout)
+        const formData = new FormData(cartForm);
+        fetch('/cart/update.js', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(cartData => {
+         // console.log('Cart updated after form submission:', cartData);
+          
+          refreshCartData();
+          
+          // Check if discount is still valid after form update
+          checkDiscountValidity(cartData);
+          
+          // Update discount buttons state
+          updateDiscountButtonsState(cartData);
+          
+          // Sync discount display UI after form update
+          if (window.syncDiscountDisplayOnCartUpdate) {
+            setTimeout(() => {
+              console.log('Calling syncDiscountDisplayOnCartUpdate after form update');
+              window.syncDiscountDisplayOnCartUpdate();
+            }, 800);
+          }
+        })
+        .catch(error => {
+         // console.error('Error updating cart:', error);
+        });
+      });
+    }
+  }
+
+  // Remove href attributes from cart removal links to prevent fallback navigation
+  function removeCartRemovalHrefs() {
+    const cartRemoveLinks = document.querySelectorAll('a[is="cart-remove-item"], a[is="gift-wrap-remove-item"], .cart-item__remove');
+    
+    cartRemoveLinks.forEach(link => {
+      // Store original href for debugging but remove it to prevent navigation
+      if (link.href && (link.href.includes('url_to_remove') || link.href.includes('/cart/change'))) {
+        link.dataset.originalHref = link.href;
+        link.removeAttribute('href');
+        // Make it look like a button
+        link.style.cursor = 'pointer';
+        link.style.textDecoration = 'none';
+      }
+    });
+  }
+
+  // Function to check if current discount is still valid after cart changes
+  function checkDiscountValidity(cartData) {
+    // Get current discount code if any
+    const currentDiscountCode = getCurrentDiscountCode();
+    
+    if (currentDiscountCode) {
+      // Check if discount is still valid with new cart state
+      validateDiscountCode(currentDiscountCode, cartData);
+    }
+  }
+
+  // Function to get current discount code from cart
+  function getCurrentDiscountCode() {
+    // Check if there's a discount applied
+    const discountRow = document.querySelector('.wk-order-summary .price-row.discount');
+    if (discountRow && discountRow.style.display !== 'none') {
+      const discountLabel = document.getElementById('discount-label');
+      if (discountLabel) {
+        const labelText = discountLabel.textContent;
+        // Extract discount code from label (assuming format: "(Title – CODE)")
+        const match = labelText.match(/–\s*([A-Z0-9]+)\)/);
+        if (match) {
+          return match[1];
+        }
+      }
+    }
+    return null;
+  }
+
+  // Function to validate discount code with current cart state
+  function validateDiscountCode(discountCode, cartData) {
+    // Get cart totals for validation
+    const cartTotal = cartData.total_price / 100; // Convert to dollars
+    const cartQuantity = cartData.item_count;
+    
+    // Find the discount button for this code
+    const discountButton = document.querySelector(`[data-discount-code="${discountCode}"]`);
+    if (!discountButton) return;
+    
+    // Check if discount is still valid based on cart state
+    let isValid = true;
+    let reason = '';
+    
+    // Check minimum quantity requirements
+    const minQuantity = discountButton.dataset.minQuantity;
+    if (minQuantity && cartQuantity < parseInt(minQuantity)) {
+      isValid = false;
+      reason = `Minimum ${minQuantity} items required`;
+    }
+    
+    // Check minimum value requirements
+    const minValue = discountButton.dataset.minValue;
+    if (minValue && cartTotal < parseFloat(minValue)) {
+      isValid = false;
+      reason = `Minimum ₹${minValue} required`;
+    }
+    
+    // If discount is no longer valid, remove it
+    if (!isValid) {
+     // console.log(`Discount ${discountCode} no longer valid: ${reason}`);
+      removeInvalidDiscount(discountCode, reason);
+    }
+  }
+
+  // Function to remove invalid discount
+  function removeInvalidDiscount(discountCode, reason) {
+    // Show user notification
+    alert(`Discount ${discountCode} has been removed: ${reason}`);
+    
+    // Remove discount via API
+    removeDiscountCode(discountCode);
+  }
+
+  // Function to remove discount code
+  function removeDiscountCode(discountCode) {
+    // Get cart token
+    fetch('/cart.js')
+      .then(response => response.json())
+      .then(cartData => {
+        const cartToken = cartData.token;
+        
+        // Remove discount via GraphQL API
+        const storefrontAccessToken = "df3b1660e6859f510b854dc282eccdf9";
+        
+        fetch("https://powerlook-apparels.myshopify.com/api/2024-10/graphql.json", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-shopify-storefront-access-token": storefrontAccessToken,
+          },
+          body: JSON.stringify({
+            query: `
+              mutation cartDiscountCodesUpdate($id: ID!, $discountCodes:[String!]) {
+                cartDiscountCodesUpdate(cartId: $id, discountCodes: $discountCodes) {
+                  cart {
+                    id
+                    discountCodes {
+                      code
+                      applicable
+                    }
+                  }
+                  userErrors {
+                    field
+                    message
+                  }
+                }
+              }
+            `,
+            variables: {
+              id: `gid://shopify/Cart/${cartToken}`,
+              discountCodes: [],
+            },
+          }),
+        })
+        .then(response => response.json())
+        .then(data => {
+         // console.log('Discount removed successfully:', data);
+          
+          // Refresh cart data
+          refreshCartData(); 
+          // Update discount buttons state
+          updateDiscountButtonsState(data.data.cartDiscountCodesUpdate.cart); 
+
+        })
+        .catch(error => {
+        //  console.error('Error removing discount:', error);
+        });
+      });
+  }
+
+  // Function to update discount buttons state based on current cart
+  function updateDiscountButtonsState(cartData) {
+   // console.log('updateDiscountButtonsState called with cart data:', cartData);
+    
+    const discountButtons = document.querySelectorAll('.apply-discount-button');
+   // console.log('Found discount buttons:', discountButtons.length);
+    
+    discountButtons.forEach(button => {
+      const discountCode = button.dataset.discountCode || button.dataset.code;
+      if (!discountCode) return;
+      
+    //  console.log('Checking button for code:', discountCode);
+      
+      // Check if this discount is currently applied
+      const isCurrentlyApplied = isDiscountApplied(discountCode, cartData);
+    //  console.log('Is discount applied:', isCurrentlyApplied);
+      
+      // Update button state
+      if (isCurrentlyApplied) {
+      //  console.log('Setting button to Remove for code:', discountCode);
+        button.textContent = "Remove";
+        button.dataset.buttonState = "remove";
+      } else {
+      //  console.log('Setting button to Apply for code:', discountCode);
+        button.textContent = "Apply";
+        button.dataset.buttonState = "apply";
+      }
+      
+      // Check if discount is valid for current cart state
+      const isValid = isDiscountValidForCart(discountCode, cartData);
+      button.disabled = !isValid;
+      
+      if (!isValid) {
+        button.textContent = "Invalid";
+        button.style.opacity = "0.5";
+      } else {
+        button.style.opacity = "1";
+      }
+    });
+  }
+
+  // Function to check if discount is currently applied
+  function isDiscountApplied(discountCode, cartData) {
+   // console.log('isDiscountApplied called for code:', discountCode, 'with cart data:', cartData);
+   // console.log('discount_applications:', cartData.discount_applications);
+   // console.log('cart_level_discount_applications:', cartData.cart_level_discount_applications);
+   // console.log('total_discount:', cartData.total_discount);
+    
+    if (cartData.discount_applications && cartData.discount_applications.length > 0) {
+      const isApplied = cartData.discount_applications.some(app => 
+        app.code === discountCode || app.title.includes(discountCode)
+      );
+    //  console.log('Found in discount_applications:', isApplied);
+      return isApplied;
+    }
+    
+    // Also check cart_level_discount_applications
+    if (cartData.cart_level_discount_applications && cartData.cart_level_discount_applications.length > 0) {
+      const isApplied = cartData.cart_level_discount_applications.some(app => 
+        app.code === discountCode || app.title.includes(discountCode)
+      );
+   //   console.log('Found in cart_level_discount_applications:', isApplied);
+      return isApplied;
+    }
+    
+    // Check if there's any discount at all
+    if (cartData.total_discount > 0) {
+    //  console.log('Total discount > 0, but no specific applications found');
+    }
+    
+    return false;
+  }
+
+  // Function to check if discount is valid for current cart state
+  function isDiscountValidForCart(discountCode, cartData) {
+    const cartTotal = cartData.total_price / 100;
+    const cartQuantity = cartData.item_count;
+    
+    // Get discount requirements from button data
+    const discountButton = document.querySelector(`[data-discount-code="${discountCode}"]`);
+    if (!discountButton) return false;
+    
+    // Check minimum quantity
+    const minQuantity = discountButton.dataset.minQuantity;
+    if (minQuantity && cartQuantity < parseInt(minQuantity)) {
+      return false;
+    }
+    
+    // Check minimum value
+    const minValue = discountButton.dataset.minValue;
+    if (minValue && cartTotal < parseFloat(minValue)) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  // Initialize cart refresh system
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setupCartRefreshListeners();
+      initVariantSelectors();
+      initializeComparePricesAndDiscounts();
+      removeCartRemovalHrefs(); // Remove href attributes to prevent page reloads
+    });
+  } else {
+    setupCartRefreshListeners();
+    initVariantSelectors();
+    initializeComparePricesAndDiscounts();
+    removeCartRemovalHrefs(); // Remove href attributes to prevent page reloads
+  }
+
+  // Also initialize after cart updates
+  document.addEventListener('cart:updated', function(event) {
+    // If cart data is passed in event, update cache to prevent redundant fetches
+    if (event.detail && event.detail.cart && window.CartDataManager) {
+      window.CartDataManager.updateCache(event.detail.cart);
+    }
+
+    if (event.detail && event.detail.cart) {
+      updateCartPageState(event.detail.cart);
+    }
+    
+    initVariantSelectors();
+    initializeComparePricesAndDiscounts();
+    removeCartRemovalHrefs(); // Re-apply after dynamic content updates
+  });
+  
+  document.addEventListener('cart:refresh', function(event) {
+    // If cart data is passed in event, update cache
+    if (event.detail && event.detail.cart && window.CartDataManager) {
+      window.CartDataManager.updateCache(event.detail.cart);
+    }
+    
+    initVariantSelectors();
+    initializeComparePricesAndDiscounts();
+    removeCartRemovalHrefs(); // Re-apply after dynamic content updates
+  });
+
+  // Export functions for external use
+  window.refreshCartData = refreshCartData;
+  window.updateCartCount = updateCartCount;
+  window.updateCartTotals = updateCartTotals;
+  window.updateCartItemsDisplay = updateCartItemsDisplay;
+  window.refreshComparePricesAndDiscounts = refreshComparePricesAndDiscounts;
+  window.initializeComparePricesAndDiscounts = initializeComparePricesAndDiscounts;
+
+  window.onload = function() { 
+   window.CartDataManager.getCart()
+    .then(cartData => {
+      const cartTotal = cartData.total_price / 100;
+      const cartQuantity = cartData.item_count; 
+
+      if (cartQuantity === 0) { 
+        //alert("Cart is empty → removing discount");  
+        if (window.removeDiscountCode) {
+          window.removeDiscountCode(null, cartData.discount_applications?.[0]?.code || "");
+        }
+      }
+    })
+    .catch(err => console.error("Error checking cart on load:", err));
+  };
+
+  (function () {
+    const mobileMedia = window.matchMedia('(max-width: 768px)');
+    let recommendationWrapper = null;
+    let originalParent = null;
+    let originalNextSibling = null;
+
+    function getRecommendationWrapper() {
+      if (recommendationWrapper && recommendationWrapper.isConnected) {
+        return recommendationWrapper;
+      }
+
+      const recommendationSection = document.querySelector('[data-section-type="cart-discount-recommendations"]');
+      if (!recommendationSection) {
+        return null;
+      }
+
+      recommendationWrapper =
+        recommendationSection.closest('.shopify-section') ||
+        recommendationSection.closest('[id^="shopify-section-"]') ||
+        recommendationSection;
+
+      if (!originalParent) {
+        originalParent = recommendationWrapper.parentNode;
+        originalNextSibling = recommendationWrapper.nextElementSibling;
+      }
+
+      return recommendationWrapper;
+    }
+
+    function moveRecommendationsForMobile() {
+      const slot = document.querySelector('#MainCart-{{ section.id }} [data-cart-mobile-recommendations-slot]');
+      const sectionWrapper = getRecommendationWrapper();
+
+      if (!slot || !sectionWrapper || !originalParent) {
+        return;
+      }
+
+      if (mobileMedia.matches) {
+        if (slot.nextElementSibling !== sectionWrapper) {
+          slot.insertAdjacentElement('afterend', sectionWrapper);
+        }
+        return;
+      }
+
+      if (originalNextSibling && originalNextSibling.parentNode === originalParent) {
+        originalParent.insertBefore(sectionWrapper, originalNextSibling);
+      } else {
+        originalParent.appendChild(sectionWrapper);
+      }
+    }
+
+    function initializeCartRecommendationPlacement() {
+      moveRecommendationsForMobile();
+
+      if (mobileMedia.addEventListener) {
+        mobileMedia.addEventListener('change', moveRecommendationsForMobile);
+      } else if (mobileMedia.addListener) {
+        mobileMedia.addListener(moveRecommendationsForMobile);
+      }
+
+      document.addEventListener('cart:updated', moveRecommendationsForMobile);
+      document.addEventListener('cart:refresh', moveRecommendationsForMobile);
+      document.addEventListener('shopify:section:load', moveRecommendationsForMobile);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeCartRecommendationPlacement);
+    } else {
+      initializeCartRecommendationPlacement();
+    }
+  })();
+
+  (function () {
+    const mobileMedia = window.matchMedia('(max-width: 768px)');
+    let checkoutBarObserver = null;
+    let orderSummaryObserver = null;
+    let fallbackListenerAttached = false;
+
+    function getCheckoutBarElements() {
+      const sectionRoot = document.getElementById('shopify-section-{{ section.id }}');
+      const checkoutBar = sectionRoot?.querySelector('#MainCart-{{ section.id }} .cart__footer--buttons');
+      const orderSummary = sectionRoot?.querySelector('.checkout-button-place');
+
+      return { sectionRoot, checkoutBar, orderSummary };
+    }
+
+    function setCheckoutBarMode(shouldBeStatic) {
+      const { checkoutBar } = getCheckoutBarElements();
+      if (!checkoutBar) return;
+
+      checkoutBar.classList.toggle('is-static', shouldBeStatic);
+    }
+
+    function updateCheckoutBarMode() {
+      const { checkoutBar, orderSummary } = getCheckoutBarElements();
+      if (!checkoutBar) return;
+
+      if (!mobileMedia.matches) {
+        setCheckoutBarMode(true);
+        syncMobileCheckoutOffset();
+        return;
+      }
+
+      if (!orderSummary) {
+        setCheckoutBarMode(false);
+        syncMobileCheckoutOffset();
+        return;
+      }
+
+      const orderSummaryRect = orderSummary.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const summaryVisible = orderSummaryRect.top < viewportHeight && orderSummaryRect.bottom > 0;
+
+      setCheckoutBarMode(summaryVisible);
+      syncMobileCheckoutOffset();
+    }
+
+    function syncMobileCheckoutOffset() {
+      const { sectionRoot, checkoutBar } = getCheckoutBarElements();
+
+      if (!sectionRoot) return;
+
+      if (!mobileMedia.matches || !checkoutBar) {
+        sectionRoot.style.setProperty('--mobile-cart-checkout-offset', '0px');
+        return;
+      }
+
+      const checkoutOffset = checkoutBar.classList.contains('is-static') ? 0 : checkoutBar.offsetHeight;
+      sectionRoot.style.setProperty('--mobile-cart-checkout-offset', `${checkoutOffset}px`);
+    }
+
+    function teardownOrderSummaryWatchers() {
+      if (orderSummaryObserver) {
+        orderSummaryObserver.disconnect();
+        orderSummaryObserver = null;
+      }
+
+      if (fallbackListenerAttached) {
+        window.removeEventListener('scroll', updateCheckoutBarMode);
+        fallbackListenerAttached = false;
+      }
+    }
+
+    function watchOrderSummaryVisibility() {
+      const { orderSummary } = getCheckoutBarElements();
+
+      teardownOrderSummaryWatchers();
+      updateCheckoutBarMode();
+
+      if (!mobileMedia.matches || !orderSummary) {
+        syncMobileCheckoutOffset();
+        return;
+      }
+
+      if ('IntersectionObserver' in window) {
+        orderSummaryObserver = new IntersectionObserver((entries) => {
+          const entry = entries[0];
+          setCheckoutBarMode(entry.isIntersecting);
+          syncMobileCheckoutOffset();
+        }, {
+          threshold: 0
+        });
+
+        orderSummaryObserver.observe(orderSummary);
+        return;
+      }
+
+      window.addEventListener('scroll', updateCheckoutBarMode, { passive: true });
+      fallbackListenerAttached = true;
+    }
+
+    function watchMobileCheckoutBar() {
+      const { checkoutBar } = getCheckoutBarElements();
+
+      if (checkoutBarObserver) {
+        checkoutBarObserver.disconnect();
+        checkoutBarObserver = null;
+      }
+
+      watchOrderSummaryVisibility();
+      syncMobileCheckoutOffset();
+
+      if (!mobileMedia.matches || !checkoutBar || !('ResizeObserver' in window)) {
+        return;
+      }
+
+      checkoutBarObserver = new ResizeObserver(() => {
+        updateCheckoutBarMode();
+        syncMobileCheckoutOffset();
+      });
+      checkoutBarObserver.observe(checkoutBar);
+    }
+
+    function initializeMobileCheckoutBar() {
+      watchMobileCheckoutBar();
+
+      if (mobileMedia.addEventListener) {
+        mobileMedia.addEventListener('change', watchMobileCheckoutBar);
+      } else if (mobileMedia.addListener) {
+        mobileMedia.addListener(watchMobileCheckoutBar);
+      }
+
+      window.addEventListener('resize', syncMobileCheckoutOffset);
+      document.addEventListener('cart:updated', watchMobileCheckoutBar);
+      document.addEventListener('cart:refresh', watchMobileCheckoutBar);
+      document.addEventListener('shopify:section:load', watchMobileCheckoutBar);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeMobileCheckoutBar);
+    } else {
+      initializeMobileCheckoutBar();
+    }
+  })();
+</script>
+{% schema %}
+{
+  "name": "t:sections.main-cart.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "showoffertext",
+      "label": "Show Offer text"
+    },
+    {
+      "type": "richtext",
+      "id": "offer_texts",
+      "label": "Offer text"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 60
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show Title",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "cart_milestone_hide_mobile",
+      "label": "Hide Milestone Progress on Mobile",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Cart Icon Strip"
+    },
+    {
+      "type": "text",
+      "id": "cart_icon_strip_heading_1",
+      "label": "First label",
+      "default": "Fast Delivery"
+    },
+    {
+      "type": "image_picker",
+      "id": "cart_icon_strip_image_1",
+      "label": "First icon image"
+    },
+    {
+      "type": "text",
+      "id": "cart_icon_strip_heading_2",
+      "label": "Second label",
+      "default": "Easy Returns"
+    },
+    {
+      "type": "image_picker",
+      "id": "cart_icon_strip_image_2",
+      "label": "Second icon image"
+    },
+    {
+      "type": "text",
+      "id": "cart_icon_strip_heading_3",
+      "label": "Third label",
+      "default": "Secure Checkout"
+    },
+    {
+      "type": "image_picker",
+      "id": "cart_icon_strip_image_3",
+      "label": "Third icon image"
+    },
+    {
+      "type": "header",
+      "content": "Discount Cap Settings"
+    },
+    {
+      "type": "text",
+      "id": "cap_discount_name",
+      "label": "Discount Code to Cap",
+      "info": "Enter the discount code name (e.g. RAV15). Leave blank to disable capping."
+    },
+    {
+      "type": "number",
+      "id": "cap_discount_amount",
+      "label": "Maximum Discount Amount (in Rs)",
+      "default": 0,
+      "info": "Maximum discount value in rupees. Set 0 to disable capping."
+    },
+    {
+      "type": "text",
+      "id": "cap_discount_name_2",
+      "label": "Discount Code to Cap",
+      "info": "Enter the discount code name (e.g. RAV15). Leave blank to disable capping."
+    },
+    {
+      "type": "number",
+      "id": "cap_discount_amount_2",
+      "label": "Maximum Discount Amount (in Rs)",
+      "default": 0,
+      "info": "Maximum discount value in rupees. Set 0 to disable capping."
+    },
+    {
+      "type": "header",
+      "content": "Buy More in Lesser Price Section"
+    },
+    {
+      "type": "checkbox",
+      "id": "bmlp_enable",
+      "label": "Enable Buy More Section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "bmlp_title",
+      "label": "Section Title",
+      "default": "Buy more in lesser price !!!!"
+    },
+    {
+      "type": "header",
+      "content": "Offer 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "bmlp_offer1_icon",
+      "label": "Offer 1 Icon"
+    },
+    {
+      "type": "text",
+      "id": "bmlp_offer1_main_text",
+      "label": "Offer 1 Main Text",
+      "default": "Buy 3 Get ₹500 off"
+    },
+    {
+      "type": "text",
+      "id": "bmlp_offer1_sub_text",
+      "label": "Offer 1 Sub Text",
+      "default": "+ Extra 5% off on Prepaid"
+    },
+    {
+      "type": "header",
+      "content": "Offer 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "bmlp_offer2_icon",
+      "label": "Offer 2 Icon"
+    },
+    {
+      "type": "text",
+      "id": "bmlp_offer2_main_text",
+      "label": "Offer 2 Main Text",
+      "default": "Buy 2 Get ₹250 off"
+    },
+    {
+      "type": "text",
+      "id": "bmlp_offer2_sub_text",
+      "label": "Offer 2 Sub Text",
+      "default": "+ Extra 5% off on Prepaid"
+    },
+    {
+      "type": "header",
+      "content": "Offer 3 (Optional)"
+    },
+    {
+      "type": "image_picker",
+      "id": "bmlp_offer3_icon",
+      "label": "Offer 3 Icon"
+    },
+    {
+      "type": "text",
+      "id": "bmlp_offer3_main_text",
+      "label": "Offer 3 Main Text"
+    },
+    {
+      "type": "text",
+      "id": "bmlp_offer3_sub_text",
+      "label": "Offer 3 Sub Text"
+    },
+    {
+      "type": "header",
+      "content": "Offer 4 (Optional)"
+    },
+    {
+      "type": "image_picker",
+      "id": "bmlp_offer4_icon",
+      "label": "Offer 4 Icon"
+    },
+    {
+      "type": "text",
+      "id": "bmlp_offer4_main_text",
+      "label": "Offer 4 Main Text"
+    },
+    {
+      "type": "text",
+      "id": "bmlp_offer4_sub_text",
+      "label": "Offer 4 Sub Text"
+    },
+    {
+      "type": "header",
+      "content": "Checkout Offer Popup Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "checkout_popup_enable",
+      "label": "Enable Checkout Offer Popup",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "checkout_popup_icon",
+      "label": "Popup Icon",
+      "info": "Icon displayed at top of popup"
+    },
+    {
+      "type": "text",
+      "id": "checkout_popup_title",
+      "label": "Popup Title",
+      "default": "Wait! You're Missing Out!"
+    },
+    {
+      "type": "text",
+      "id": "checkout_popup_message_2_items",
+      "label": "Message for 1 item in cart",
+      "default": "Buy 2 products and get ₹250 off.",
+      "info": "Shown when cart has 1 product"
+    },
+    {
+      "type": "text",
+      "id": "checkout_popup_message_3_items",
+      "label": "Message for 2+ items in cart",
+      "default": "Buy 3 products and get ₹500 off.",
+      "info": "Shown when cart has 2 or more products"
+    },
+    {
+      "type": "text",
+      "id": "checkout_popup_tier2_coupon",
+      "label": "Tier 2 Coupon Code",
+      "default": "B3G500",
+      "info": "If this coupon is applied with 3+ items, popup won't show"
+    },
+    {
+      "type": "text",
+      "id": "checkout_popup_continue_url",
+      "label": "Continue Shopping URL",
+      "default": "/collections/all",
+      "info": "URL for Continue Shopping button"
+    },
+    {
+      "type": "text",
+      "id": "checkout_popup_continue_btn",
+      "label": "Continue Shopping Button Text",
+      "default": "Continue Shopping"
+    },
+    {
+      "type": "text",
+      "id": "checkout_popup_proceed_btn",
+      "label": "Proceed to Checkout Button Text",
+      "default": "No, I want to Checkout"
+    },
+    {
+      "type": "header",
+      "content": "Minimum Order Value (MOV) Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "mov_enable",
+      "label": "Enable Minimum Order Value Restriction",
+      "default": true,
+      "info": "Block checkout if cart value is below minimum"
+    },
+    {
+      "type": "text",
+      "id": "mov_minimum_amount",
+      "label": "Minimum Order Value (₹)",
+      "default": "500",
+      "info": "Enter amount without currency symbol"
+    },
+    {
+      "type": "textarea",
+      "id": "mov_error_message",
+      "label": "Error Message",
+      "default": "Minimum order value should be ₹500 to proceed with checkout."
+    },
+    {
+      "type": "image_picker",
+      "id": "empty_cart_web",
+      "label": "Empty cart image"
+    },
+    {
+      "type": "image_picker",
+      "id": "empty_cart_mweb",
+      "label": "Empty cart image mobile"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "free_shipping_goal",
+      "name": "t:sections.main-cart.blocks.free_shipping_goal.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "t:settings_schema.cart.settings.free_shipping_minimum_amount.info"
+        }
+      ]
+    },
+    {
+      "type": "estimate_delivery",
+      "name": "Estimate Delivery",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "html",
+          "id": "estimatetext",
+          "label": "Delivery Content"
+        }
+      ]
+    },
+    {
+      "type": "subtotal",
+      "name": "t:sections.main-cart.blocks.subtotal.name",
+      "limit": 1
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.main-cart.blocks.buttons.name",
+      "limit": 1
+    },
+    {
+      "type": "cart_note",
+      "name": "t:sections.main-cart.blocks.cart_note.name",
+      "limit": 1
+    },
+    {
+      "type": "cart_shipping_rate",
+      "name": "t:sections.main-cart.blocks.cart_shipping_rate.name",
+      "limit": 1
+    },
+    {
+      "type": "discount_coupon",
+      "name": "Discount Coupon",
+      "settings": [
+        {
+          "type": "text",
+          "id": "code",
+          "label": "Coupon Code"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Coupon Description"
+        },
+        {
+          "type": "text",
+          "id": "milestone_label",
+          "label": "Milestone Progress Label",
+          "info": "Shown in the cart milestone progress bar step label."
+        },
+        {
+          "type": "number",
+          "id": "min_quantity",
+          "label": "Minimum Quantity Required",
+          "default": 0
+        },
+        {
+          "type": "number",
+          "id": "min_value",
+          "label": "Minimum Cart Value Required",
+          "default": 0
+        },
+        {
+          "type": "collection_list",
+          "id": "eligible_collections",
+          "label": "Eligible Collections"
+        },
+        {
+          "type": "text",
+          "id": "customer_tag",
+          "label": "Customer Tag (optional)",
+          "info": "If set, this coupon is only visible to customers with this tag. Leave empty to show to all."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+<style>
+    @media (min-width: 1024px) {
+
+      #MainCart-{{ section.id }} .cart-item__options {
+        row-gap: 0.8rem;
+        column-gap: 0.8rem;
+      }
+
+      #MainCart-{{ section.id }} .cart-item__options .variant-selector {
+        min-height: 2.4rem;
+        height: 2.4rem;
+        padding: 0 18px 0 10px;
+        margin-right: 1.2rem;
+        border: 0.8px solid #EEEEEE;
+        border-radius: 0px;
+        background-color: #fff;
+        font-size: 1.1rem;
+      }
+
+      #MainCart-{{ section.id }} .cart-quantity {
+        --buttons-height: 2.4rem;
+        --quantity-button-width: 2.8rem;
+        width: 8.4rem;
+        min-height: 2.4rem;
+        height: 2.4rem;
+      }
+
+      #MainCart-{{ section.id }} .quantity__button {
+        min-height: 2.4rem;
+        height: 2.4rem;
+      }
+
+      #MainCart-{{ section.id }} .cart-item__prices--below-controls {
+        margin-top: 0.8rem;
+      }
+
+      #MainCart-{{ section.id }} .cart-item__product--info .wk-flex {
+        /* margin-top: auto; */
+        /* gap: 1.2rem; */
+        align-items: center;
+      }
+    }
+
+    #MainCart-{{ section.id }} .wk-flex [is="cart-remove-item"],
+    #MainCart-{{ section.id }} .wk-flex-mobile [is="cart-remove-item"],
+    #MainCart-{{ section.id }} .wk-flex .save-for-later-container .wkh-button,
+    #MainCart-{{ section.id }} .wk-flex-mobile .save-for-later-container .wkh-button,
+    #MainCart-{{ section.id }} .wk-flex .save-for-later-container .guest-wishlist-login-btn,
+    #MainCart-{{ section.id }} .wk-flex-mobile .save-for-later-container .guest-wishlist-login-btn {
+      {% comment %} padding: 6px !important; {% endcomment %}
+       {% comment %} margin-top: 10px; {% endcomment %}
+
+    }
+    .guest-wishlist-text{
+      color: #000;
+    }
+    @media(max-width:768px){
+      #MainCart-{{ section.id }} .wk-flex [is="cart-remove-item"],
+      #MainCart-{{ section.id }} .wk-flex-mobile [is="cart-remove-item"],
+      #MainCart-{{ section.id }} .wk-flex .save-for-later-container .wkh-button,
+      #MainCart-{{ section.id }} .wk-flex-mobile .save-for-later-container .wkh-button,
+      #MainCart-{{ section.id }} .wk-flex .save-for-later-container .guest-wishlist-login-btn,
+      #MainCart-{{ section.id }} .wk-flex-mobile .save-for-later-container .guest-wishlist-login-btn {
+        {% comment %} padding: 4px !important; {% endcomment %}
+      }
+    }
+    #shopify-section-{{ section.id }} .offer_cart_title_main {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #3a3128;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin: 0 0 12px;
+    }
+
+    #shopify-section-{{ section.id }} .estimate_deliverytext.free-shipping-goal {
+      width: 100%;
+      font-family: 'Montserrat', sans-serif;
+      {% comment %} margin: 0 0 60px; {% endcomment %}
+    }
+
+    #shopify-section-{{ section.id }} .estimate_deliverytext .free-shipping-image--truck {
+      width: 22px;
+      min-width: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #shopify-section-{{ section.id }} .estimate_deliverytext .free-shipping-image--truck svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .shopping-cart-title{
+      font-family: 'Bebas Neue',sans-serif;
+      font-weight: 400;
+      font-size: 36px;
+      line-height: 43px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #202020;
+      margin-bottom: 4px;
+    }
+    .try-these{
+      font-family: 'Bebas Neue';
+      font-weight: 400;
+      font-size: 28px;
+      line-height: 130%;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #453d2b;
+      text-align: center;
+      width: 100%;
+      display: flex;
+      align-items:center;
+      justify-content: center;
+      margin-top:32px;
+    }
+    .empty-cart-heading{
+      font-size: 20px;
+      font-family: 'Montserrat',sans-serif;
+      font-weight: 500;
+    }
+    .shop-now{
+       width: 220px;
+       height: 48px;
+       display: flex;
+       align-items:center;
+       justify-content: center;
+       font-family: 'Montserrat',sans-serif;
+       font-size: 16px;
+       font-weight: 500;
+       color: white;
+       background-color: #453d2b;
+       text-decoration: none;
+       cursor:pointer;
+       margin: 0 auto;
+    }
+    .cart-collection-title{
+      font-size: 16px;
+      font-family: 'Montserrat',sans-serif;
+      color: #111827;
+      font-weight: 500;
+      text-transform: capitalize;
+      white-space: nowrap;     
+      overflow: hidden;          
+      text-overflow: ellipsis;
+    }
+    .cart-background{
+      background-color: #F8F8F8;
+    }
+    @media (min-width: 769px) {
+      .cart__footer--buttons {
+        position: static;
+        box-shadow: none;
+        padding: 0;
+      }
+    }
+    @media(max-width:768px){
+
+      /* Keep the mobile checkout bar visible from first paint on cart pages. */
+      #MainCart-{{ section.id }} .cart__footer--buttons {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 60;
+        width: 100%;
+        background: #fff;
+        padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+        box-sizing: border-box;
+        border-top: 1px solid #e5e7eb;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+        margin: 0;
+      }
+
+      #MainCart-{{ section.id }} .cart__footer--buttons.is-static {
+        position: static;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        box-shadow: none;
+        border-top: 0;
+        z-index:0;
+      }
+
+      #MainCart-{{ section.id }} .cart__gokwik-sticky-mobile {
+        width: 100%;
+      }
+
+      #MainCart-{{ section.id }} .cart__gokwik-sticky-mobile > *,
+      #MainCart-{{ section.id }} .cart__footer--buttons .gokwik-checkout,
+      #MainCart-{{ section.id }} .cart__footer--buttons .gokwik-checkout > button {
+        width: 100% !important;
+        margin: 0 !important;
+      }
+      #shopify-section-{{ section.id }} .offer_cart_title_main {
+        padding: 0px;
+        font-size: 12px;
+        margin-bottom:0px;
+      }
+      .try-these{
+        font-size: 16px;
+      }
+      .shop-now {
+        height: 44px;
+        font-size: 14px;
+      }
+      .shopping-cart-title {
+        font-size: 24px;
+        line-height: 29px;
+      }
+      #shopify-section-{{ section.id }} .estimate_deliverytext.free-shipping-goal {
+        padding:0px;
+      }
+    }
+    @media (max-width: 767.98px) {
+     .swipe-mobile__inner-cart {
+      --slider-grid: auto / auto-flow 50vw;
+      display: grid;
+      grid: var(--slider-grid);
+      column-gap: 12px;
+      margin-inline: 0 !important;
+    }
+  }
+  @media (max-width: 768px) {
+  #MainCart-{{ section.id }} .cart__footer {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  #MainCart-{{ section.id }} .cart__footer-wrapper,
+  #MainCart-{{ section.id }} .cart__footer-wrapper > *,
+  #MainCart-{{ section.id }} .available-coupons-wrapper,
+  #MainCart-{{ section.id }} .coupon-modal-content,
+  #MainCart-{{ section.id }} .wk-accordion-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  #MainCart-{{ section.id }} .coupon-apply_input,
+  #MainCart-{{ section.id }} .view-all-coupons-btn,
+  #MainCart-{{ section.id }} .applied-coupons-btn,
+  #MainCart-{{ section.id }} .price-row,
+  #MainCart-{{ section.id }} .price-row > span {
+    min-width: 0;
+  }
+
+  #MainCart-{{ section.id }} #manualCouponInput {
+    min-width: 0;
+  }
+
+  #MainCart-{{ section.id }} .coupon-details,
+  #MainCart-{{ section.id }} .coupon-details p,
+  #MainCart-{{ section.id }} .no-coupon-text,
+  #MainCart-{{ section.id }} .price-row .label {
+    overflow-wrap: anywhere;
+  }
+
+  #MainCart-{{ section.id }} .price-row {
+    gap: 12px;
+  }
+
+  #MainCart-{{ section.id }} .price-row > span:last-child {
+    flex-shrink: 0;
+  }
+
+  /* Give the footer wrapper a known anchor for insertion */
+  #MainCart-{{ section.id }} .cart__footer-wrapper {
+    position: relative;
+    padding-bottom: calc(var(--mobile-cart-checkout-offset, 0px) + 16px);
+  }
+
+  #shopify-section-{{ section.id }} .offer_cart_title_main {
+    padding: 0px;
+    font-size: 12px;
+    margin-bottom: 0px;
+  }
+  .try-these { font-size: 16px; }
+  .shop-now { height: 44px; font-size: 14px; }
+  .shopping-cart-title { font-size: 24px; line-height: 29px; }
+  #shopify-section-{{ section.id }} .estimate_deliverytext.free-shipping-goal { padding: 0px; }
+}
+
+.selling-fast{
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color:#453D2B;
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  background:#F7F5F1;
+  padding: 2px 4px;
+  margin-bottom: 12px;
+}
+.cart-product-urgency {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 0px;
+  left:0px;
+  width:11rem;
+}
+@media(max-width:768px){
+  .cart-product-urgency {
+    width:12rem;
+  }
+}
+.low-stock {
+  padding: 3px 8px;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content:center;
+  gap: 8px;
+  background: #453D2B;
+  color: #ECE8E8;
+  font-size: 10px;
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Battery outline */
+.cart-badge__battery {
+  position: relative;
+  width: 14px;
+  height: 8px;
+  border: 1px solid #fff;
+  /* border-radius: 4px; */
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+/* Battery terminal */
+.cart-badge__battery::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 1px;
+  width: 2px;
+  height: 4px;
+  background: #fff;
+  /* border-radius: 1px; */
+}
+
+/* Battery fill */
+.cart-badge__battery-level {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  height: 4px;
+  width: 4px;
+  background: #fff;
+  /* border-radius: 2px; */
+  animation: batteryBlink 1s infinite;
+}
+
+/* Blink animation */
+@keyframes batteryBlink {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+
+</style>

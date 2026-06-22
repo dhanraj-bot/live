@@ -1,0 +1,454 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "collapsible_tabs_BVA8Ew": {
+      "type": "collapsible-tabs",
+      "blocks": {
+        "collapsible_item_ADJmdG": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "How do I place an order on Powerlook?",
+            "subheading": "",
+            "content": "<p>Placing an order on Powerlook is quick and easy. Follow the steps below:</p><ol><li>Visit<a href=\"http://www.powerlook.in\"> <span style=\"text-decoration:underline\"><strong>www.powerlook.in<br/></strong></span></a></li><li>Log in using your registered <strong>mobile number or email ID<br/></strong></li><li>Browse through the collection and select your preferred product<br/></li><li>Choose the correct size using the <strong>Size Chart </strong>available on the product page<br/></li><li>Click on <strong>Add to Cart<br/></strong></li><li>Proceed to <strong>Checkout<br/></strong></li><li>Enter your delivery address and select a payment method<br/></li><li>Click on <strong>Place Order<br/></strong></li></ol><p>Once your order is successfully placed, you will receive an <strong>order confirmation via WhatsApp</strong>.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_LG4fg9": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "When will my order be dispatched?",
+            "subheading": "",
+            "content": "<p>Orders are usually <strong>dispatched within 24 to 48 working hours</strong> after being placed. Dispatch timelines may vary slightly during sale periods, festivals or high-volume days.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_8GhjFT": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "How can I track my order?",
+            "subheading": "",
+            "content": "<p>You can easily track your order by following these steps:</p><ol><li>Log in to your <strong>Powerlook account<br/></strong></li><li>Go to <strong>My Orders<br/></strong></li><li>Click on <strong>View Details<br/></strong></li><li>Select <strong>Track Order<br/></strong></li></ol><p>Once the order is dispatched, you will be able to view the <strong>real-time shipment status</strong>.<br/><br/></p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_imVJpr": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "How do I cancel my order?",
+            "subheading": "",
+            "content": "<p>To cancel an order:</p><ol><li>Log in to your <strong>Powerlook account<br/></strong></li><li>Go to <strong>My Orders<br/></strong></li><li>Click on <strong>View Details<br/></strong></li><li>Select <strong>Cancel Request<br/></strong></li></ol><p></p><p><strong>Please note:</strong> Once an order is dispatched, cancellation is not possible.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_p7Cq78": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "Can I cancel my order after it has been dispatched?",
+            "subheading": "",
+            "content": "<p>No. <strong>Orders cannot be cancelled once dispatched</strong>. However, you may <strong>refuse the delivery</strong> at the time of delivery if you do not wish to accept the order.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_mxBii6": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "How do I place a return or exchange request?",
+            "subheading": "",
+            "content": "<p>To initiate a return or exchange:</p><ol><li>Log in to your <strong>Powerlook account<br/></strong></li><li>Go to <strong>My Orders<br/></strong></li><li>Select the order and click on <strong>Return or Exchange<br/></strong></li><li>Choose the reason and select the required size for exchange.<br/></li><li>Follow the pickup instructions displayed<br/></li></ol><p><strong>Return Conditions:</strong></p><ul><li>Product must be <strong>unused and unwashed<br/><br/></strong></li><li>Original <strong>tags and packaging must be intact<br/><br/></strong></li></ul><p>All returns are subject to a <strong>quality check</strong></p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_KL6LpK": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "When will my return or exchange be picked up?",
+            "subheading": "",
+            "content": "<p>Pickup is usually attempted within <strong>2 to 3 working days</strong> after submitting the request.</p><p>If pickup is <strong>not attempted or fails</strong>, please contact <strong>Powerlook customer support</strong> via call or email for assistance.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_3wPap3": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "When will I receive my refund after returning a product?",
+            "subheading": "",
+            "content": "<p>Once the product is <strong>successfully picked up</strong>, the refund is <strong>processed within 48 to 72 working hours</strong> from our end. Once the refund is processed, you will receive a refund notification at your registered email address. It takes 5 to 7 working days for the amount to be credited to your bank account. If the refund is not <strong>processed </strong>within this timeframe, please reach out to the <strong>customer support</strong> team for assistance.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_fLiQ98": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": " When will I receive a refund for a cancelled order?",
+            "subheading": "",
+            "content": "<p>Refunds for cancelled orders are processed within <strong>48 to 72 working hours</strong> to the original payment method. Once the refund is processed, you will receive a refund notification at your registered email address. It takes 5 to 7 working days for the amount to be credited to your bank account. If the refund is not <strong>processed </strong>within this timeframe, please reach out to <strong>customer support</strong> team for assistance</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_43P4GW": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "When will I get my RTO (Returned to Origin) refund?",
+            "subheading": "",
+            "content": "<p>Once the order is marked as <strong>RTO (Returned to Origin)</strong>, the refund is processed within <strong>48 to 72 working hours</strong>.Once the refund is processed you will receive a refund notification on your registered email address, it takes 5 to 7 working days for the amount to be credited to your bank account. If the refund is not <strong>processed </strong>within this timeframe, please reach out to <strong>customer support</strong> team for assistance</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_BzJYtM": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": " When will I receive my exchange order?",
+            "subheading": "",
+            "content": "<p>After the returned product is picked up, the <strong>exchange order is processed and dispatched within 24 to 48 working hours</strong>. You will receive a <strong>new tracking ID</strong> on your registered mobile number.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_LhgyWG": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "I received a wrong or missing product. What should I do?",
+            "subheading": "",
+            "content": "<p>In case of a wrong or missing item:</p><ul><li>Within 24hrs of delivery,Mention the <strong>packet condition</strong> at the time of delivery (damaged/torn)<br/></li><li>Share <strong>clear images of the packet, product, and shipping label within 24 hours<br/></strong></li><li>Email the details to <strong>support@powerlook.in<br/><br/></strong></li></ul>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_PGE9cF": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "What if I receive a defective or damaged product?",
+            "subheading": "",
+            "content": "<ul><li>Raise a <strong>return or exchange request within 24 to 48 hours</strong> of delivery<br/></li><li>Upload <strong>clear images</strong> for verification<br/></li></ul><p>Our team will assist with a <strong>replacement or refund</strong> after review<br/><br/></p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_HnWnDG": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "Courier delivery issues (fake remarks or no delivery attempt)",
+            "subheading": "",
+            "content": "<p>Common issues may include:</p><ul><li>Wrong phone number<br/></li><li>Incomplete address<br/></li><li>Customer marked unavailable<br/></li><li>OTP verified but delivery cancelled<br/><br/></li></ul><p>Please contact <strong>customer support immediately</strong> for quick resolution.<br/><br/></p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_FarwJq": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "What if my return pincode is not serviceable (Self-Courier)?",
+            "subheading": "",
+            "content": "<p>If pickup is not available, please self-ship the product to:</p><p><strong>Prozo Distribution Pvt. Ltd.<br/></strong> Building B, Infinity Logipark<br/> Kalyan Padgha Road, Amane<br/> Bhiwandi – 421302<br/> Dist. Thane, Maharashtra</p><ul><li>Pack the product securely to avoid loss/damage in transit.</li><li>Mention your Order ID and registered mobile number on the package.</li><li>Items must be unused, with original tags and packaging intact.</li><li>Once we receive and verify the product(s), we’ll process a full refund within 48 hours. No ₹100 reverse pickup charge will be deducted.</li><li>Do not use The Professional Couriers for returns — they are unreliable.</li><li>We recommend using India Post Speed Post for safe and cost-effective shipping</li></ul>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_4anxh4": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": " Payment failure policy (Amount debited but order not placed)",
+            "subheading": "",
+            "content": "<p>If your payment is debited but the order is not confirmed, the amount is <strong>automatically refunded within 24 to 48 working hours</strong>.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_LWcVQb": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "How can I use my Powerlook Wallet?",
+            "subheading": "",
+            "content": "<ol><li>Log in to your <strong>Powerlook account<br/></strong></li><li>Add products to your cart<br/></li><li>Proceed to checkout<br/><br/></li></ol><p>Select <strong>Redeem from Powerlook Wallet</strong></p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_zYHYzy": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": " After placing an order, can I change my phone number or address?",
+            "subheading": "",
+            "content": "<p>No. <strong>Delivery details cannot be modified</strong> once the order is placed.<br/> You may cancel the order (if not dispatched) and place a new one.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_Bmr6Np": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "What payment methods are available?",
+            "subheading": "",
+            "content": "<p>Powerlook supports the following payment modes:</p><ul><li>UPI<br/><br/></li><li>Credit Card<br/><br/></li><li>Debit Card<br/><br/></li><li>Net Banking<br/><br/></li><li>Powerlook Wallet<br/><br/></li><li>Cash on Delivery (subject to availability)</li></ul>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_CGjHQ6": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "What is the sale item's return or exchange policy?",
+            "subheading": "",
+            "content": "<p>The products purchased during <strong>sale or discount offers are not eligible for return or exchange</strong>.</p><p>Please check the product details carefully before placing your order</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_z7xe9g": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": " How do I choose the correct size?",
+            "subheading": "",
+            "content": "<p>Each product page includes a <strong>detailed size chart</strong>. We strongly recommend checking the size guide before ordering.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_e7Ap4n": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": " Do you deliver all over India?",
+            "subheading": "",
+            "content": "<p>Service availability depends on the pincode.</p><p> Please enter your pin code on the product page to verify delivery eligibility.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_XXwbfA": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "How do I contact Powerlook customer support?",
+            "subheading": "",
+            "content": "<ul><li> <strong>Support Number:</strong> 9696333000<br/></li><li> <strong>Email:</strong> support@powerlook.in<br/></li><li>WhatsApp chat support</li></ul>",
+            "custom_liquid": "",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_HXGQeR": {
+          "type": "collapsible_item",
+          "settings": {
+            "icon": "none",
+            "heading": "Powerlook Wallet Policy",
+            "subheading": "",
+            "content": "<p>Fill in the text content of the collapsible item here. You can provide details and explanation for the question here.</p>",
+            "custom_liquid": "Wallet balance can be used partially or fully\n\n\nWallet refunds cannot be transferred to a bank account\n\n\nWallet balance does not expire, unless stated otherwise",
+            "page": "",
+            "open": false
+          }
+        }
+      },
+      "block_order": [
+        "collapsible_item_ADJmdG",
+        "collapsible_item_LG4fg9",
+        "collapsible_item_8GhjFT",
+        "collapsible_item_imVJpr",
+        "collapsible_item_p7Cq78",
+        "collapsible_item_mxBii6",
+        "collapsible_item_KL6LpK",
+        "collapsible_item_3wPap3",
+        "collapsible_item_fLiQ98",
+        "collapsible_item_43P4GW",
+        "collapsible_item_BzJYtM",
+        "collapsible_item_LhgyWG",
+        "collapsible_item_PGE9cF",
+        "collapsible_item_HnWnDG",
+        "collapsible_item_FarwJq",
+        "collapsible_item_4anxh4",
+        "collapsible_item_LWcVQb",
+        "collapsible_item_zYHYzy",
+        "collapsible_item_Bmr6Np",
+        "collapsible_item_CGjHQ6",
+        "collapsible_item_z7xe9g",
+        "collapsible_item_e7Ap4n",
+        "collapsible_item_XXwbfA",
+        "collapsible_item_HXGQeR"
+      ],
+      "custom_css": [
+        ".collapsible-tabs__wrapper {--row-gap-mobile: 4.8rem !important;}",
+        "@media (min-width: 768px) {.accordion-item:first-child .accordion-details__summary {padding-top: 0; }}",
+        "@media (min-width: 1280px) {.section--collapsible-tabs {max-width: 1170px; } .collapsible-tabs__wrapper {--column-gap: 9rem; }}",
+        "@media (max-width: 767px) {.section--collapsible-tabs {padding-top: 1.2rem; }}"
+      ],
+      "settings": {
+        "container": "narrow",
+        "color_scheme": "",
+        "header_layout": "vertical",
+        "heading": "Contact us",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "text_size": "text-base",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "btn--primary",
+        "column_gap": "large",
+        "row_gap": "inherit",
+        "item_style": "standard",
+        "item_color_scheme": "",
+        "item_heading_font": "heading",
+        "item_heading_size": "h4",
+        "item_icon_size": "extra-large",
+        "padding_top": 56,
+        "padding_bottom": 56,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "custom_icon_with_text_NC47ac": {
+      "type": "custom-icon-with-text",
+      "blocks": {
+        "column_zygzfN": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/download.svg",
+            "image_width": "small",
+            "title": "Call Now",
+            "heading_size": "h5",
+            "text": "<p><a href=\"tel:9696333000\">+91 969-6333-000</a></p>",
+            "description_text": "<p>Mon - Sun : 10:00 am - 06:00 pm</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_style": "btn--underline",
+            "button_link": "",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_WLxarC": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/download_2edd1912-ba87-493c-accb-0424eb1fd598.svg",
+            "image_width": "small",
+            "title": "Chat Now",
+            "heading_size": "h5",
+            "text": "<p><a href=\"https://wa.me/918828102133?text=Hey,%20Let%E2%80%99s%20chat%20about%20Powerlook.\" target=\"_blank\">Chat with us.</a></p>",
+            "description_text": "<p>Mon - Sun : 10:00 am - 06:00 pm</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_style": "btn--underline",
+            "button_link": "",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_3jXE3b": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/download_c7187a1b-85c3-4603-8bbd-f183a0fa14d6.svg",
+            "image_width": "small",
+            "title": "Drop an Email",
+            "heading_size": "h5",
+            "text": "<p><a href=\"mailto:support@powerlook.in\">support@powerlook.in</a></p>",
+            "description_text": "<p>We will try to revert you ASAP.</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_style": "btn--underline",
+            "button_link": "",
+            "mobile_layout": "inherit"
+          }
+        }
+      },
+      "block_order": [
+        "column_zygzfN",
+        "column_WLxarC",
+        "column_3jXE3b"
+      ],
+      "name": "custom-icon-with-text",
+      "settings": {
+        "customClass": "custom_icon_with_text",
+        "color_scheme": "",
+        "heading": "",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "text_size": "text-base",
+        "column_alignment": "center",
+        "columns_desktop": 3,
+        "column_gap": "extra-large",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 50,
+        "padding_bottom": 62,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "collapsible_tabs_BVA8Ew",
+    "custom_icon_with_text_NC47ac"
+  ]
+}

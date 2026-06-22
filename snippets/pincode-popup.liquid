@@ -1,0 +1,546 @@
+{% comment %}
+  Pincode Input Modal / Bottom Sheet
+  - No trigger button included
+  - Add the class `is-open` to `.pincode-widget` from elsewhere to show it
+  - Desktop: centered modal
+  - Mobile: bottom sheet
+  - Numeric input only
+{% endcomment %}
+
+<div class="pincode-widget" data-pincode-widget data-customer-logged-in="{% if customer %}true{% else %}false{% endif %}">
+  <div class="pincode-backdrop" data-pincode-backdrop></div>
+
+  <div class="pincode-modal" data-pincode-modal aria-hidden="true">
+    <div class="pincode-header">
+       <div class="complete-the-look__header">
+      <img
+      src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Rectangle_49701.png?v=1780559844"
+      alt="Complete The Look"
+      width="520"
+      height="300"
+      loading="lazy"
+  >
+  </div>
+      <button type="button" class="pincode-close-btn" aria-label="Close" data-pincode-close>
+        {% render 'icon-cross' %}
+      </button>
+    </div>
+
+    <div class="pincode-body">
+      <label class="pincode-label" for="PincodeInput-{{ section.id | default: 'default' }}">
+       Want to know the delivery dates ?
+      </label>
+      <input
+        id="PincodeInput-{{ section.id | default: 'default' }}"
+        class="pincode-input"
+        type="tel"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        maxlength="6"
+        placeholder="Enter 6 digit pincode"
+        autocomplete="postal-code"
+      >
+
+      <button type="button" class="pincode-submit-btn" data-pincode-submit>
+        Check
+      </button>
+      <p class="pincode-error" data-pincode-error aria-live="polite"></p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .pincode-widget {
+    position: relative;
+  }
+
+  .pincode-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 9998;
+  }
+
+  .pincode-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: min(92vw, 520px);
+    background: #fff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+    z-index: 9999;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .pincode-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .pincode-close-btn {
+    border: 0;
+    background: #FFF;
+    box-shadow: -3px 2px 34px 0px #0000001A;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    color: #111827;
+    padding: 8px;
+    position: absolute;
+    right: 16px;
+    top: 20px;
+  }
+  .pincode-close-btn svg{
+    width: 20px;
+    height: 20px;
+  }
+  .pincode-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding:24px;
+  }
+
+  .pincode-label {
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 24px;
+    line-height: 100%;
+    letter-spacing: -0.01em;
+    color:#1A1A1A;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .pincode-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 0.8px solid #A49267;
+    border-radius: 2px;
+    padding: 10px 16px;
+    font-size: 16px;
+    outline: none;
+    background-color: #FBFAF9;
+    color: #1A1A1A;
+    width: 100%;
+    height: 52px;
+
+  }
+
+  .pincode-input:focus {
+    border-color: #453D2B;
+  }
+
+  .pincode-submit-btn {
+    border: 0;
+    cursor: pointer;
+    border-radius: 2px;
+    padding: 12px 14px;
+    font-size: 16px;
+    font-weight: 600;
+    background-color: #453D2B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    width: 100%;
+    color: #FFF;
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0%;
+    text-transform: uppercase;
+  }
+
+  .pincode-submit-btn[disabled] {
+    cursor: progress;
+    opacity: 0.7;
+  }
+
+  .pincode-error {
+    display: none;
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #c00;
+  }
+
+  .pincode-error:not(:empty) {
+    display: block;
+  }
+
+  .pincode-widget:not(.is-open) .pincode-modal,
+  .pincode-widget:not(.is-open) .pincode-backdrop {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .pincode-modal {
+      top: auto;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 100%;
+      transform: none;
+    }
+    .pincode-label{
+      font-size: 16px;
+    }
+    .pincode-body {
+      padding: 16px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const widget = document.querySelector('[data-pincode-widget]');
+    if (!widget) return;
+
+    const backdrop = widget.querySelector('[data-pincode-backdrop]');
+    const modal = widget.querySelector('[data-pincode-modal]');
+    const closeBtn = widget.querySelector('[data-pincode-close]');
+    const submitBtn = widget.querySelector('[data-pincode-submit]');
+    const input = widget.querySelector('.pincode-input');
+    const errorEl = widget.querySelector('[data-pincode-error]');
+    const guestPincodeKey = 'clickpost-edd-guest-pincode';
+    const scrollLock = {
+      isLocked: false,
+      scrollY: 0,
+      htmlOverflow: '',
+      bodyOverflow: '',
+      bodyPosition: '',
+      bodyTop: '',
+      bodyWidth: '',
+    };
+
+    if (!backdrop || !modal || !closeBtn || !input) return;
+    if (widget.dataset.pincodePopupInitialized === 'true') return;
+    widget.dataset.pincodePopupInitialized = 'true';
+
+    const isLoggedIn = widget.getAttribute('data-customer-logged-in') === 'true';
+
+    // ─── Helpers ────────────────────────────────────────────────────────────────
+
+    const getStoredGuestPincode = () => {
+      try {
+        const pincode = localStorage.getItem(guestPincodeKey) || '';
+        return /^\d{6}$/.test(pincode) ? pincode : '';
+      } catch (e) {
+        return '';
+      }
+    };
+
+    const setError = (message) => {
+      if (errorEl) errorEl.textContent = message || '';
+    };
+
+    const lockPageScroll = () => {
+      if (scrollLock.isLocked) return;
+      scrollLock.isLocked = true;
+      scrollLock.scrollY = window.scrollY || window.pageYOffset || 0;
+      scrollLock.htmlOverflow = document.documentElement.style.overflow;
+      scrollLock.bodyOverflow = document.body.style.overflow;
+      scrollLock.bodyPosition = document.body.style.position;
+      scrollLock.bodyTop = document.body.style.top;
+      scrollLock.bodyWidth = document.body.style.width;
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollLock.scrollY}px`;
+      document.body.style.width = '100%';
+    };
+
+    const unlockPageScroll = () => {
+      if (!scrollLock.isLocked) return;
+      document.documentElement.style.overflow = scrollLock.htmlOverflow;
+      document.body.style.overflow = scrollLock.bodyOverflow;
+      document.body.style.position = scrollLock.bodyPosition;
+      document.body.style.top = scrollLock.bodyTop;
+      document.body.style.width = scrollLock.bodyWidth;
+      window.scrollTo(0, scrollLock.scrollY);
+      scrollLock.isLocked = false;
+    };
+
+    const getStickyHeaderOffset = () => {
+      const header = document.querySelector('.shopify-section-header-sticky, sticky-header, .section-header, header');
+      if (!header) return 16;
+      const headerStyles = window.getComputedStyle(header);
+      const isPinned = headerStyles.position === 'fixed' || headerStyles.position === 'sticky';
+      return isPinned ? header.getBoundingClientRect().height + 16 : 16;
+    };
+
+    const scrollToDeliveryDetails = () => {
+      const target =
+        document.querySelector('[data-clickpost-edd-scroll-target]') ||
+        document.querySelector('.product__block--clickpost_edd .clickpost-edd') ||
+        document.querySelector('.clickpost-edd');
+      if (!target) return;
+      const GAP = 30;
+      const targetTop =
+        target.getBoundingClientRect().top +
+        window.scrollY -
+        getStickyHeaderOffset() -
+        GAP;
+      window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+    };
+
+    // ─── Session-based second-visit logic ────────────────────────────────────────
+
+    const visitKey = 'pdp-visit-count';
+    const shownKey = 'pdp-popup-shown';
+
+    const shouldOpenForSecondPdpVisit = () => {
+      if (isLoggedIn || getStoredGuestPincode()) return false;
+      if (sessionStorage.getItem(shownKey) === 'true') return false;
+
+      const visits = parseInt(sessionStorage.getItem(visitKey) || '0', 10) + 1;
+      sessionStorage.setItem(visitKey, String(visits));
+
+      if (visits === 2) {
+        sessionStorage.setItem(shownKey, 'true');
+        return true;
+      }
+      return false;
+    };
+
+    // ─── Tracking ────────────────────────────────────────────────────────────────
+
+    const popupTrackingState = {
+      moengageViewTracked: false,
+      ga4ViewTracked: false,
+      moengageCancelTracked: false,
+      ga4CancelTracked: false,
+      submitClicked: false,
+    };
+
+    const resetPopupTrackingState = () => {
+      popupTrackingState.moengageViewTracked = false;
+      popupTrackingState.ga4ViewTracked = false;
+      popupTrackingState.moengageCancelTracked = false;
+      popupTrackingState.ga4CancelTracked = false;
+      popupTrackingState.submitClicked = false;
+    };
+
+    const trackPincodePopupView = () => {
+      if (typeof Moengage !== 'undefined') {
+        Moengage.track_event('pincode_popup_view', {
+          page_type: '{{ template | handleize }}'
+        });
+        popupTrackingState.moengageViewTracked = true;
+      }
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'pincode_popup_view', {
+          page_type: '{{ template | handleize }}',
+          userID: '{{ customer.id }}',
+          user_type: '{{ customer.tags | join: "," | default: "guest" }}'
+        });
+        popupTrackingState.ga4ViewTracked = true;
+      }
+    };
+
+    const trackPincodePopupCancel = () => {
+      if (popupTrackingState.submitClicked) return;
+
+      if (
+        popupTrackingState.moengageViewTracked &&
+        !popupTrackingState.moengageCancelTracked &&
+        typeof Moengage !== 'undefined'
+      ) {
+        Moengage.track_event('pincode_popup_cancel', {
+          page_type: '{{ template | handleize }}'
+        });
+        popupTrackingState.moengageCancelTracked = true;
+      }
+      if (
+        popupTrackingState.ga4ViewTracked &&
+        !popupTrackingState.ga4CancelTracked &&
+        typeof gtag !== 'undefined'
+      ) {
+        gtag('event', 'pincode_popup_cancel', {
+          page_type: '{{ template | handleize }}',
+          userID: '{{ customer.id }}',
+          user_type: '{{ customer.tags | join: "," | default: "guest" }}'
+        });
+        popupTrackingState.ga4CancelTracked = true;
+      }
+    };
+
+    // ─── Open / Close ────────────────────────────────────────────────────────────
+
+    // FIX: openModal and closeModal only toggle the class.
+    // The MutationObserver below is the single source of truth for all
+    // side-effects (aria, scroll lock, focus, tracking). This ensures
+    // that even external code adding/removing `is-open` is fully tracked.
+
+    const openModal = () => {
+      widget.classList.add('is-open');
+    };
+
+    // FIX: closeModal guards against firing when already closed,
+    // preventing cancel events without a prior view event.
+    // trackCancel flag lets close-button/backdrop/Escape fire the cancel
+    // event only when the user closes without clicking submit.
+    const closeModal = (trackCancel = false) => {
+      if (!widget.classList.contains('is-open')) return;
+      if (trackCancel) trackPincodePopupCancel();
+      widget.classList.remove('is-open');
+    };
+
+    // ─── MutationObserver — single source of truth ───────────────────────────────
+
+    // FIX: All side-effects (aria, scroll lock, focus, view tracking) live
+    // here so they fire regardless of whether openModal() was called or
+    // external code toggled the class directly.
+    let wasOpen = false;
+
+    const openStateObserver = new MutationObserver(() => {
+      const isOpen = widget.classList.contains('is-open');
+
+      if (isOpen && !wasOpen) {
+        // Modal just opened
+        resetPopupTrackingState();
+        modal.setAttribute('aria-hidden', 'false');
+        lockPageScroll();
+        setTimeout(() => input.focus(), 50);
+        trackPincodePopupView(); // ✅ always fires on open, from any source
+      } else if (!isOpen && wasOpen) {
+        // Modal just closed
+        modal.setAttribute('aria-hidden', 'true');
+        unlockPageScroll();
+        setError('');
+      }
+
+      wasOpen = isOpen;
+    });
+
+    openStateObserver.observe(widget, { attributes: true, attributeFilter: ['class'] });
+
+    // ─── Close triggers ──────────────────────────────────────────────────────────
+
+    // FIX: Each close trigger guards with the is-open check (via closeModal)
+    // so cancel can never fire more times than view.
+
+    closeBtn.addEventListener('click', function () {
+      closeModal(true);
+    });
+
+    backdrop.addEventListener('click', function () {
+      closeModal(true);
+    });
+
+    // FIX: Named handler avoids stacking duplicate listeners if the
+    // snippet is rendered more than once on the page.
+    const handleKeydown = (e) => {
+      if (e.key === 'Escape' && widget.classList.contains('is-open')) {
+        closeModal(true);
+      }
+    };
+    document.addEventListener('keydown', handleKeydown);
+
+    // ─── Input handling ──────────────────────────────────────────────────────────
+
+    input.addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '').slice(0, 6);
+    });
+
+    input.addEventListener('keypress', function (e) {
+      const char = String.fromCharCode(e.which || e.keyCode);
+      if (!/[0-9]/.test(char)) e.preventDefault();
+    });
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && submitBtn) {
+        e.preventDefault();
+        submitBtn.click();
+      }
+    });
+
+    // ─── Submit ──────────────────────────────────────────────────────────────────
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', function () {
+        popupTrackingState.submitClicked = true;
+
+        const pincode = input.value.trim();
+        if (!/^\d{6}$/.test(pincode)) {
+          setError('Please enter valid Pincode.');
+          input.focus();
+          return;
+        }
+
+        setError('');
+
+        if (typeof Moengage !== 'undefined') {
+          Moengage.track_event('pincode_popup_submit', {
+            pincode: pincode,
+            page_type: '{{ template | handleize }}',
+            product_name: '{{ product.title | escape }}',
+            product_id: '{{ product.id }}',
+          });
+        }
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'pincode_popup_submit', {
+            pincode: pincode,
+            page_type: '{{ template | handleize }}',
+            product_name: '{{ product.title | escape }}',
+            product_id: '{{ product.id }}',
+            userID: '{{ customer.id }}',
+            user_type: '{{ customer.tags | join: "," | default: "guest" }}'
+          });
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
+
+        const finish = (result) => {
+          submitBtn.disabled = false;
+          submitBtn.removeAttribute('aria-busy');
+          if (result && result.success) {
+            closeModal(false); // programmatic close — no cancel event
+            window.requestAnimationFrame(scrollToDeliveryDetails);
+            return;
+          }
+          setError((result && result.error) ? result.error : 'Unable to fetch delivery date. Please try again.');
+          input.focus();
+        };
+
+        if (window.ClickpostEdd && typeof window.ClickpostEdd.submitPincode === 'function') {
+          window.ClickpostEdd.submitPincode(pincode).then(finish).catch(function () {
+            finish({ success: false });
+          });
+          return;
+        }
+
+        const onResult = (event) => {
+          if (!event.detail || event.detail.pincode !== pincode) return;
+          document.removeEventListener('clickpost-edd:pincode-result', onResult);
+          finish(event.detail.result);
+        };
+        document.addEventListener('clickpost-edd:pincode-result', onResult);
+        document.dispatchEvent(new CustomEvent('clickpost-edd:submit-pincode', { detail: { pincode } }));
+      });
+    }
+
+    // ─── Auto-open logic ─────────────────────────────────────────────────────────
+
+    if (shouldOpenForSecondPdpVisit()) {
+      openModal();
+    } else if (widget.classList.contains('is-open')) {
+      // Already open on page load (class added server-side or by external code)
+      // MutationObserver won't fire for the initial state, so manually sync.
+      wasOpen = true;
+      resetPopupTrackingState();
+      modal.setAttribute('aria-hidden', 'false');
+      lockPageScroll();
+      setTimeout(() => input.focus(), 50);
+      trackPincodePopupView();
+    }
+  });
+</script>

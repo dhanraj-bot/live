@@ -1,0 +1,31 @@
+.countdown-timer .countdown-timer__block {
+  align-items: center;
+  display: inline-flex; 
+  justify-content: center;
+  min-width: 52px;
+  margin: 0 1.5rem;
+  position: relative;
+}
+span.timer_space {
+  color: #dc3545;
+  font-size: 16px;
+}
+@media (min-width: 768px) {
+  .countdown-timer .countdown-timer__block {
+    min-width: 55px;
+    margin: 0 2rem;
+  }
+}
+.countdown-timer .countdown-timer__block div {
+  width: 100%;
+  line-height: 1;
+  position: relative;
+  text-align: center;
+}  
+.countdown-timer .countdown-timer__block:first-child {
+  margin-inline-start: 0;
+}
+.countdown-timer .countdown-timer__block:last-child {
+  margin-inline-end: 0;
+}
+ 

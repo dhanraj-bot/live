@@ -1,0 +1,306 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "black_friday_banner_XDWq3h": {
+      "type": "black-friday-banner",
+      "disabled": true,
+      "name": "TimeBomb Category banner",
+      "settings": {
+        "enable_banner": true,
+        "categories": [],
+        "end_date": "2026-05-29",
+        "end_time": "00:00:00",
+        "banner_image": "shopify://shop_images/4_34_087241bd-af0d-4ec1-9bc2-b09fa1a85d71.jpg",
+        "banner_image_mobile": "shopify://shop_images/mobile_29.jpg",
+        "banner_title": "",
+        "banner_subtitle": "",
+        "button_text": "",
+        "button_link": "",
+        "show_countdown": true,
+        "countdown_label_days": "Days",
+        "countdown_label_hours": "Hours",
+        "countdown_label_minutes": "Minutes",
+        "countdown_label_seconds": "Seconds",
+        "full_width": true,
+        "banner_height_desktop": 400,
+        "banner_height_mobile": 350,
+        "content_position": "center",
+        "content_alignment": "center",
+        "bg_color": "#000000",
+        "text_color": "#ffffff",
+        "timer_bg_color": "#ffffff",
+        "timer_text_color": "#000000",
+        "overlay_opacity": 30
+      }
+    },
+    "breadcrumbs_Gxg9wp": {
+      "type": "breadcrumbs",
+      "settings": {
+        "text_alignment": "center"
+      }
+    },
+    "banner": {
+      "type": "main-collection-banner",
+      "blocks": {
+        "collection_info_zUNyKV": {
+          "type": "collection_info",
+          "settings": {
+            "heading_size": "h1",
+            "heading_tag": "h2",
+            "show_description": true,
+            "padding_top": 20,
+            "padding_bottom": 0
+          }
+        }
+      },
+      "block_order": [
+        "collection_info_zUNyKV"
+      ],
+      "disabled": true,
+      "custom_css": [],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "image_overlay_opacity": 0,
+        "image_position": "as-bg",
+        "image_height": "adapt",
+        "text_alignment": "center",
+        "enable_parallax": false,
+        "parallax_direction": "vertical",
+        "image_height_mobile": "adapt",
+        "showtimer": false,
+        "salecontent": "",
+        "type": "fixed_time",
+        "style": "number",
+        "duration": "every_month",
+        "time": "2025/10/13 06:00 PM",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "plp_mobile_banner": {
+      "type": "plp-mobile-banner",
+      "blocks": {
+        "collection_banner_mwPaYY": {
+          "type": "collection_banner",
+          "settings": {
+            "collection": "",
+            "banner_image_mobile": "shopify://shop_images/4_13_f7abb073-90a6-4d5f-94f1-e9f945acb3fe.jpg",
+            "banner_image_desktop": "shopify://shop_images/4_12_b22290af-3c9f-4f70-8cdc-b03c60466781.jpg"
+          }
+        },
+        "collection_banner_iyYRt8": {
+          "type": "collection_banner",
+          "settings": {
+            "collection": "bottoms-jeans-cargo",
+            "banner_image_mobile": "shopify://shop_images/5_7_1a660069-cdc7-4366-95a5-b20ba76b732e.jpg",
+            "banner_image_desktop": "shopify://shop_images/5_6_dc777d8a-da5e-4882-90a0-51fe8ffad8b3.jpg"
+          }
+        },
+        "collection_banner_NFTL9z": {
+          "type": "collection_banner",
+          "settings": {
+            "collection": "co-ords",
+            "banner_image_mobile": "shopify://shop_images/6_9.jpg",
+            "banner_image_desktop": "shopify://shop_images/6_8.jpg"
+          }
+        },
+        "collection_banner_DTyJmT": {
+          "type": "collection_banner",
+          "settings": {
+            "collection": "t-shirt-view-all",
+            "banner_image_mobile": "shopify://shop_images/3_13_14e2c41d-67e8-4c75-988a-8913d0eb74ee.jpg",
+            "banner_image_desktop": "shopify://shop_images/3_12.jpg"
+          }
+        },
+        "collection_banner_FqJ4wL": {
+          "type": "collection_banner",
+          "settings": {
+            "collection": "shirts",
+            "banner_image_mobile": "shopify://shop_images/2_15_a107a53c-71bc-4f3e-8fbd-6451d38709a8.jpg",
+            "banner_image_desktop": "shopify://shop_images/2_14.jpg"
+          }
+        },
+        "collection_banner_A3cGcD": {
+          "type": "collection_banner",
+          "settings": {
+            "collection": "casual-shirts",
+            "banner_image_mobile": "shopify://shop_images/1_23_33e4e67b-f12d-496d-b06f-da8314de1bc5.jpg",
+            "banner_image_desktop": "shopify://shop_images/1_22_b5d38dd8-a98e-44fe-97b4-d9e6ade9f94e.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "collection_banner_mwPaYY",
+        "collection_banner_iyYRt8",
+        "collection_banner_NFTL9z",
+        "collection_banner_DTyJmT",
+        "collection_banner_FqJ4wL",
+        "collection_banner_A3cGcD"
+      ],
+      "disabled": true,
+      "settings": {
+        "banner_image_mobile": "shopify://shop_images/plp-banner.png",
+        "banner_image_desktop": "shopify://shop_images/plp-desktop.png",
+        "cta_text": "Check availability by location",
+        "cta_link": "",
+        "text_color": "#ffffff",
+        "cta_bg": "#f6f4f0",
+        "cta_text_color": "#202020",
+        "cta_border_color": "#ffffff"
+      }
+    },
+    "product-grid": {
+      "type": "main-collection-product-grid",
+      "custom_css": [],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "products_per_page": 24,
+        "columns_desktop": 4,
+        "grid_layout": "standard",
+        "pagination": "infinite",
+        "enable_color_swatch": true,
+        "enable_filtering": true,
+        "filter_type": "vertical",
+        "enable_sorting": true,
+        "expand_filter_groups": "Availability, Price, Color, Size, Product type, size,color",
+        "columns_mobile": "2",
+        "padding_top": 28,
+        "padding_bottom": 50,
+        "show_section_divider": false,
+        "divider_width": "full"
+      }
+    },
+    "custom_video_collection_djUanw": {
+      "type": "custom-video-collection",
+      "disabled": true,
+      "name": "Category Video Collection",
+      "settings": {
+        "color_scheme": "",
+        "header_layout": "vertical",
+        "heading": "Featured Video Category",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "text_size": "text-base",
+        "show_collection_description": false,
+        "collection": "plain-shirts",
+        "limit": 8,
+        "columns": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "grid_layout": "standard",
+        "enable_slider": true,
+        "controls_position": "inside",
+        "pcard_image_ratio": "",
+        "columns_mobile": "1",
+        "swipe_on_mobile": true,
+        "show_all_button_on_top": false,
+        "button_label": "",
+        "button_style": "btn--primary",
+        "padding_top": 50,
+        "padding_bottom": 50,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "recently_viewed_products_Yn9YFD": {
+      "type": "recently-viewed-products",
+      "name": "t:sections.recently-viewed-products.name",
+      "settings": {
+        "color_scheme": "",
+        "heading": "Recently viewed products",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "limit": 8,
+        "columns": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "enable_slider": true,
+        "controls_position": "inside",
+        "pcard_image_ratio": "3/4",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 50,
+        "padding_bottom": 20,
+        "show_section_divider": true,
+        "divider_width": "fixed"
+      }
+    },
+    "rich_text_gCrhFP": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_77bCP6": {
+          "type": "heading",
+          "settings": {
+            "heading": "Talk about your brand",
+            "heading_size": "hd2",
+            "heading_highlight_style": "none"
+          }
+        },
+        "text_jfWF7M": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "text_size": "text-base"
+          }
+        },
+        "button_yw3EKk": {
+          "type": "button",
+          "disabled": true,
+          "settings": {
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style": "btn--primary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_77bCP6",
+        "text_jfWF7M",
+        "button_yw3EKk"
+      ],
+      "disabled": true,
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "customClass": "",
+        "color_scheme": "",
+        "content_alignment": "center",
+        "padding_top": 50,
+        "padding_bottom": 0,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "collection_info_fnrFFG": {
+      "type": "collection-info",
+      "name": "Collection Info",
+      "settings": {
+        "section_heading": "About this Collection",
+        "metafield_namespace": "",
+        "metafield_key": ""
+      }
+    }
+  },
+  "order": [
+    "black_friday_banner_XDWq3h",
+    "breadcrumbs_Gxg9wp",
+    "banner",
+    "plp_mobile_banner",
+    "product-grid",
+    "custom_video_collection_djUanw",
+    "recently_viewed_products_Yn9YFD",
+    "rich_text_gCrhFP",
+    "collection_info_fnrFFG"
+  ]
+}

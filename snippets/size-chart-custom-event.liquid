@@ -1,0 +1,158 @@
+<!-- Size Chart Click Tracking: DataLayer + GA4 + MoEngage -->
+<script>
+(function () {
+  // ─── 1. SHOPIFY DATA LAYER ───────────────────────────────────────────────
+  // Expose Liquid data into JS at render time
+  const shopifyProductMeta = {
+    productId:   {{ product.id | json }},
+    productTitle: {{ product.title | json }},
+    variants: {{ product.variants | json }},
+  };
+
+  const shopifyCustomer = {
+    isLoggedIn: {{ customer | json }} !== null,
+    {% if customer %}
+      id:    {{ customer.id | json }},
+      name:  {{ customer.name | json }},
+      email: {{ customer.email | json }},
+    {% else %}
+      id:    null,
+      name:  null,
+      email: null,
+    {% endif %}
+  };
+
+  // ─── 2. HELPER: Get Currently Selected Variant ───────────────────────────
+  function getSelectedVariant() {
+    const urlParams  = new URLSearchParams(window.location.search);
+    const variantId  = urlParams.get('variant')
+                    || (window.ShopifyAnalytics?.meta?.selectedVariantId)
+                    || null;
+
+    const variantData = variantId
+      ? shopifyProductMeta.variants.find(v => String(v.id) === String(variantId))
+      : shopifyProductMeta.variants[0]; // fallback to first variant
+
+    return {
+      variantId:    variantData?.id    ?? null,
+      variantTitle: variantData?.title ?? null,
+      variantSku:   variantData?.sku   ?? null,
+      variantPrice: variantData?.price ?? null,
+    };
+  }
+
+  // ─── 3. HELPER: Build Full Event Payload ─────────────────────────────────
+  function buildEventPayload() {
+    const variant = getSelectedVariant();
+
+    return {
+      event:          'size_chart_click',
+      element:        'size_chart',
+      product_id:     shopifyProductMeta.productId,
+      product_title:  shopifyProductMeta.productTitle,
+      variant_id:     variant.variantId,
+      variant_title:  variant.variantTitle,
+      variant_sku:    variant.variantSku,
+      variant_price:  variant.variantPrice,
+      customer_logged_in: shopifyCustomer.isLoggedIn,
+      customer_id:    shopifyCustomer.id,
+      customer_name:  shopifyCustomer.name,
+      customer_email: shopifyCustomer.email,
+      page_url:       window.location.href,
+      timestamp:      new Date().toISOString(),
+    };
+  }
+
+  // ─── 4. PUSH TO DATA LAYER (GTM) ─────────────────────────────────────────
+  function pushToDataLayer(payload) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(payload);
+    
+  }
+
+ // ─── 5. FIRE GA4 EVENT ───────────────────────────────────────────────────
+  function fireGA4Event(payload) {
+    if (typeof window.gtag !== 'function') {
+      console.warn('[GA4] gtag not found. Ensure GA4 is initialized.');
+      return;
+    }
+
+    // Set user_id separately using GA4's reserved parameter
+    if (payload.customer_id) {
+      window.gtag('set', { user_id: String(payload.customer_id) });
+    }
+
+    window.gtag('event', 'size_chart_click', {
+      product_id:         payload.product_id,
+      product_title:      payload.product_title,
+      variant_id:         payload.variant_id,
+      variant_title:      payload.variant_title,
+      variant_sku:        payload.variant_sku,
+      variant_price:      payload.variant_price ? (payload.variant_price / 100) : 0, 
+      customer_logged_in: payload.customer_logged_in ? 'true' : 'false',             
+      customer_id:        payload.customer_id ?? 'guest',     
+    });
+  }
+  
+  // ─── 6. FIRE MOENGAGE EVENT ──────────────────────────────────────────────
+  function fireMoEngageEvent(payload) {
+    if (typeof window.Moengage === 'undefined') {
+      console.warn('[MoEngage] SDK not found. Ensure MoEngage is initialized.');
+      return;
+    }
+
+    // If customer is logged in, identify them first
+    if (payload.customer_logged_in && payload.customer_id) {
+      window.Moengage.add_unique_user_id(String(payload.customer_id));
+      if (payload.customer_name)  window.Moengage.add_user_name(payload.customer_name);
+      if (payload.customer_email) window.Moengage.add_email(payload.customer_email);
+    }
+
+    window.Moengage.track_event('Size Chart Click', {
+      product_id:         payload.product_id,
+      product_title:      payload.product_title,
+      variant_id:         payload.variant_id,
+      variant_title:      payload.variant_title,
+      variant_sku:        payload.variant_sku,
+      variant_price:      payload.variant_price,
+      customer_logged_in: payload.customer_logged_in,
+      customer_id:        payload.customer_id,
+      customer_name:      payload.customer_name,
+      page_url:           payload.page_url,
+      timestamp:          payload.timestamp,
+    });
+
+   
+  }
+
+  // ─── 7. ATTACH CLICK LISTENER ────────────────────────────────────────────
+  function attachSizeChartListener() {
+    // Use class OR id selector — adjust if your selector is an ID
+    const sizeChartEl = document.querySelector('.product__sizechart_container')
+                     || document.getElementById('product__sizechart_container');
+
+    if (!sizeChartEl) {
+      console.warn('[SizeChart Tracking] Element not found: product__sizechart_container');
+      return;
+    }
+
+    sizeChartEl.addEventListener('click', function (event) {
+      const payload = buildEventPayload();
+
+      pushToDataLayer(payload);   // → GTM DataLayer
+      fireGA4Event(payload);      // → GA4 (gtag)
+      fireMoEngageEvent(payload); // → MoEngage
+    });
+
+    
+  }
+
+  // ─── 8. INIT ON DOM READY ────────────────────────────────────────────────
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachSizeChartListener);
+  } else {
+    attachSizeChartListener();
+  }
+
+})();
+</script>

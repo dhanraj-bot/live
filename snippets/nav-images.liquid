@@ -1,0 +1,96 @@
+{%- assign nav_title_handle = nav_title | downcase | strip -%}
+{%- assign parent_title_handle = parent_title | downcase | strip -%}
+{%- assign nav_image_url = null -%}
+
+{%- comment -%} Handle "View All" based on parent menu {%- endcomment -%}
+{%- if nav_title_handle == 'view all' -%}
+  {%- case parent_title_handle -%}
+    {%- when 'new arrivals' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/3_f52869c3-833c-4465-9a22-05593eb24e97.jpg?v=1765368251&width=80' -%}
+
+    {%- when 'shirts' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/1390821_3.jpg?v=1764080434&width=80' -%}
+
+    {%- when 't-shirts' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/3_cddd6d96-d8e6-41a6-96ae-0cfbc4c80c33.jpg?v=1758623400&width=80' -%}
+
+    {%- when 'bottoms' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/1331660_5.jpg?v=1755937998&width=80' -%}
+
+  {%- endcase -%}
+
+{%- else -%}
+  {%- comment -%} Handle other menu items {%- endcomment -%}
+  {%- case nav_title_handle -%}
+    {%- when 'shirts' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/3_7796895a-84c6-464e-b63b-2d362803869b.jpg?v=1763792220&width=80' -%}
+
+    {%- when 't-shirts' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/41129211-1.jpg?v=1758548429&width=80' -%}
+
+    {%- when 'bottoms' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/6_e53d8a2a-0973-405e-9ad6-3d8d04a95df3.jpg?v=1762518111&width=80' -%}
+
+    {%- when 'plain t-shirts' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/dp11224111.jpg?v=1755939292&width=80' -%}
+
+    {%- when 'printed t-shirts' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/5_2327e1ae-8bc5-4bd4-8933-658684433c80.jpg?v=1764671986&width=80' -%}
+
+    {%- when 'textured polos' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/dp01-1039110.jpg?v=1755940778&width=80' -%}
+
+    {%- when 'striped t-shirts' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/1427111_1.jpg?v=1758717123&width=80' -%}
+
+    {%- when 'plain shirts' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/dp11251921.jpg?v=1755939376&width=80' -%}
+
+    {%- when 'checked shirts' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/3_ff567c3e-97bd-4ab2-89af-65531244dc42.jpg?v=1761806011&width=80' -%}
+
+    {%- when 'printed shirts' -%}
+      {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/1_6dcca299-e9b3-4951-ba40-a5c9176822fb.jpg?v=1766052176&width=80' -%}
+
+      {%- when 'striped shirts' -%}
+        {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/1351321_4.jpg?v=1755938455&width=80' -%}
+
+      {%- when 'track pants' -%}
+        {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/dp11194940-1.jpg?v=1755940033&width=80' -%}
+
+      {%- when 'jeans and cargo' -%}
+        {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/dp_1456.jpg?v=1755942324&width=80' -%}
+
+      {%- when 'shorts' -%}
+        {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/1354851_4.jpg?v=1755938246&width=80' -%}
+
+      {%- when 'trousers' -%}
+        {%- assign nav_image_url = 'https://powerlook.in/cdn/shop/files/dp11276560.jpg?v=1755939243&width=80' -%}
+
+      {%- when 'vests' -%}
+        {%- assign nav_image_url = 'https://cdn.shopify.com/s/files/1/0750/2685/8234/files/2_57.jpg?v=1778476460&width=80' -%}
+  {%- endcase -%}
+{%- endif -%}
+
+{%- if nav_image_url -%}
+  {%- if image_size == 'mobile' -%}
+    <img
+      src="{{ nav_image_url }}"
+      alt="{{ nav_title | escape }}"
+      class="w-10 h-10"
+      loading="lazy"
+      width="60"
+      height="60"
+    >
+  {%- else -%}
+    <img
+      src="{{ nav_image_url }}"
+      alt="{{ nav_title | escape }}"
+      class="w-12 h-12"
+      loading="lazy"
+      width="80"
+      height="80"
+    >
+  {%- endif -%}
+{%- endif -%}
+

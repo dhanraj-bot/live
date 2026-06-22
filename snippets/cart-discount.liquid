@@ -1,0 +1,2609 @@
+  {% style %} 
+	  .coupon-heading {
+	    font-family: 'Montserrat',sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 22px;
+      margin-bottom:20px;
+	  }
+	  .coupon-heading .coupon-heading__left {
+	    display: flex;
+	    align-items: center;
+	    gap: 10px;
+	  }
+	  .coupon-heading .coupon-heading__icon {
+	    width: 16px;
+	    height: 16px;
+	    object-fit: contain;
+	  }
+	  .available-coupons-wrapper .coupon-modal-content {
+	    background: #fff;
+	    border: 1px solid #e7e7e7;
+	    border-radius: 4px;
+	    padding: 16px 0 0;
+	  }
+	  .available-coupons-wrapper .coupon-apply_input {
+	    padding: 0 2rem;
+	  }
+  .coupon-modal-content input#manualCouponInput {
+    background: #fff;
+    border: 1px solid #EEEEEE;
+    height: 48px;
+    box-shadow: none;
+    flex: 1 1 auto;
+    padding: 0 16px;
+    color: #2a2e35;
+    font-size: 12px;
+    line-height: 22px;
+    outline: none;
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 500;
+
+  }
+  .coupon-list {
+    padding: 1.5rem 2rem 0;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    max-height: 400px;
+  }
+  .coupon-slider {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+  }
+  .coupon-card {
+    /* border-top: 1px solid #ddd; */
+    padding: 1.2rem 0;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .apply-btn {
+    padding: 0;
+    border: none;
+    color: #dc3545;
+    background: white;
+    cursor: pointer;
+    height: auto;
+    width: 20%;
+    font-size: 14px;
+    letter-spacing: normal;
+  } 
+  .view-all-wrapper {
+    text-align: center;
+    margin-top: 0.8rem ;
+    margin-bottom: 16px;
+  }
+  .view-all-coupons-btn, .applied-coupons-btn {
+    background: none;
+    cursor: pointer;
+    color: #189037;
+    font-size: 12px;
+    font-family: 'Montserrat',sans-serif;
+    font-weight: 500;
+    border-radius: 0px;
+    border: 1px solid #EEEEEE;
+    background-color: #fff;
+    height: 40px;
+    line-height: 40px;
+    width: 100%;
+    position: relative;
+    padding: 0 10px;
+    transition: all .4s ease;
+    justify-content: left;
+    text-transform: capitalize;
+    align-items: center;
+  }
+  .view-all-coupons-btn img, .applied-coupons-btn img  {
+    width: 100%;
+    max-width: 16px;
+    object-fit: contain;
+  }
+  .applied-coupons-btn {
+   gap: 0 var(--buttons-gap, .6rem);
+   display: none; 
+  }
+  
+  /* Force display classes to override CSS */
+  .applied-coupons-btn.force-show {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .view-all-coupons-btn.force-hide {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  .coupon-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    z-index: 999;
+  }
+  .coupon-modal-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .coupon-modal-overlay.open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .coupon-modal {
+    background: #fff;
+    max-width: 450px;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 2rem;
+    position: relative;
+  }
+  .coupon-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;   
+    padding-bottom: 1rem;
+  }  
+  .coupon-list h3 {
+    color: #252931;
+    font-size: 14px;
+    font-weight: 500;
+    padding-bottom: 15px;
+  }
+  .close-modal {
+    background: none;
+    border: none;
+    font-size: 3.2rem;
+    cursor: pointer;
+    font-weight: 300;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    padding: 0;
+    height: auto;
+    position: absolute;
+    right: 20px;
+    top: 5px;
+  }
+  /* .apply-manual {
+    background: #dc3545;
+    width: 30%; 
+    border: 1px solid #dc3545;
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 3px 7px 0 #00000014;
+    color: #fff;
+    font-size: 14px;
+    letter-spacing: normal;
+    max-height: 44px; 
+    padding: 0 27px;
+    transition: all .4s ease;
+    cursor: pointer;
+  } */
+ 
+  .coupon-apply_input {
+    display: flex;
+    align-items: center; 
+  }
+ .view-all-coupons-btn svg.discount_arrow.feather, span.remove_coupens {
+    position: absolute;
+    right: 10px;
+  }
+  .remove_coupens {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    color: #666;
+    transition: color 0.3s ease;
+    padding: 2px 6px;
+    border-radius: 50%;
+    line-height: 1;
+  } 
+.view-all-coupons-btn:hover, .applied-coupons-btn:hover {
+    background-color: #f1fff6;
+  }
+  .coupon-details p {
+    color: #252931;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 19px;
+    margin-bottom: 1px;
+    margin-top: 5px;
+  }
+  .coupon-card.disable .coupon-details strong{
+    -webkit-filter: grayscale(1);
+  }
+  .coupon-details {
+    display: inline-grid;
+    width: 80%;
+  }
+  .discount_errormessage {
+    color: #dc3545;
+    width: 100%;
+    font-size: 12px;
+    display: none;
+  }
+    .coupon-card.disable .discount_errormessage {
+    display: block;
+  }  
+  .apply-discount-button.disable-invalid {
+    cursor: not-allowed !important;
+    border:none;
+    background: #F6F6F6;
+    color: #BABABA;
+  }
+	  @media (max-width: 767.98px) {
+	  .coupon-modal { 
+	    padding: 1rem; 
+	    margin: 10px;
+	  } 
+    .coupon-heading {
+      font-size: 14px;
+	  }
+  .coupon-list {
+    padding: 1.5rem 1rem 0; 
+  }
+  .coupon-modal-header h2 {
+    font-size: 16px; 
+  }
+  .close-modal { 
+    font-size: 3rem; 
+    right: 10px;
+    top: 0px;
+  }
+  .coupon-details p { 
+    font-size: 12px; 
+    line-height: normal; 
+  }
+	  .coupon-details strong { 
+	    font-size: 14px; 
+	    /* padding: 0 10px;  */
+	  }
+		  .available-coupons-wrapper .coupon-apply_input {
+		    padding: 0 1rem;
+		  }
+		  }
+
+		  /* --- Cart discount redesign (inline, no modal) --- */
+		  .available-coupons-wrapper.coupon-redesign {
+		    border: 1px solid #D5CDB9;
+		    background: #fff;
+		    padding: 16px;
+		  }
+		  
+		  /* .available-coupons-wrapper.coupon-redesign .coupon-heading__left,
+		  .available-coupons-wrapper.coupon-redesign .coupon-heading__icon,
+		  .available-coupons-wrapper.coupon-redesign .view-all-wrapper,
+		  .available-coupons-wrapper.coupon-redesign .applied-coupons-btn,
+		  .available-coupons-wrapper.coupon-redesign .coupon-modal-header,
+		  .available-coupons-wrapper.coupon-redesign .close-modal,
+		  .available-coupons-wrapper.coupon-redesign .coupon-modal-overlay {
+		    display: none !important;
+		  } */
+		  .available-coupons-wrapper.coupon-redesign .coupon-modal-content {
+		    background: transparent;
+		    border: 0;
+		    border-radius: 0;
+		    padding: 0;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .coupon-apply_input {
+		    padding: 0;
+		    margin: 0 0 20px;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .apply-manual {
+		    width: 106px;
+        background: #fff;
+        color: #453D2B;
+        border: 1px solid #453D2B;
+        border-radius: 0;
+        box-shadow: none;
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 22px;
+        text-transform: uppercase;
+        height: 48px !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Montserrat',sans-serif;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .coupon-list {
+		    padding: 20px 0 0;
+		    margin: 0;
+		    border-top: 1px solid #EEEEEE;
+		    max-height: 260px;
+		    overflow-y: auto;
+		    scrollbar-width: none;
+        scroll-behavior: smooth;
+		  }
+      .available-coupons-wrapper.coupon-redesign .coupon-list::-webkit-scrollbar{
+        display:none;
+      }
+		  .available-coupons-wrapper.coupon-redesign .coupon-list h3 {
+		    display: none;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .coupon-card {
+		    padding: 8px;
+		    flex-wrap: nowrap;
+		    gap: 12px;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .coupon-card__left {
+		    display: flex;
+		    align-items: center;
+		    gap: 10px;
+		    flex: 1 1 auto;
+		    min-width: 0;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .coupon-card__icon {
+		    width: 36px !important;
+        min-width: 36px;
+		    height: 36px;
+        display:flex;
+        align-items:center;
+        justify-content: center;
+		  }
+		  .coupon-card__icon svg{
+        height:16px;
+        width:16px;
+        color: #189037;
+      }
+      .coupon-card.disable .coupon-card__icon svg{
+        color: #BABABA;
+        stroke: #BABABA;
+      }
+		 
+		  .available-coupons-wrapper.coupon-redesign .coupon-card.disable .coupon-card__icon {
+		    
+        background-color:#F6F6F6;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .coupon-card.is-applied .coupon-card__icon {
+		    background: #F4FBF6;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .coupon-details {
+		    width: 100%;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .coupon-details strong {
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 19.2px;
+        font-family: 'Montserrat',sans-serif;
+        color: #189037;
+
+		  }
+		  .available-coupons-wrapper.coupon-redesign .coupon-details p {
+		    font-family: 'Montserrat',sans-serif;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 140%;
+        color:#6A6A6A;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .coupon-card.disable .coupon-details strong,
+		  .available-coupons-wrapper.coupon-redesign .coupon-card.disable .coupon-details p {
+		    color: #BABABA;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .apply-btn {
+		    width: 93px;
+		    height: 37px;
+		    background: #FBFAF9;
+		    color: #6A6A6A;
+        font-family:'Montserrat',sans-serif;
+		    font-weight: 600;
+		    font-size: 12px;
+        line-height: 140%;
+		    text-transform: uppercase;
+		    display: inline-flex;
+		    align-items: center;
+		    justify-content: center;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .apply-btn.disable-invalid {
+		    background: #f3f3f3 !important;
+		    color: #aaa !important;
+		  }
+		  .available-coupons-wrapper.coupon-redesign .discount_errormessage {
+		    display: none !important;
+		  }
+      .no-coupon-text{
+        color:gray;
+      }
+	  {% endstyle %}
+
+  {% assign cart_total = 0 %}
+  {% assign cart_quantity = 0 %}
+  {% assign cart_collections = "" %}
+
+  {% for item in cart.items %}
+    {% assign cart_total = cart_total | plus: item.final_line_price %}
+    {% assign cart_quantity = cart_quantity | plus: item.quantity %}
+
+    {%- for col in item.product.collections -%}
+      {% unless cart_collections contains col.id %}
+        {% assign cart_collections = cart_collections | append: col.id | append: "," %}
+      {% endunless %}
+    {%- endfor -%}
+  {% endfor %}
+
+		  <div class="available-coupons-wrapper coupon-redesign">
+		    <div class="coupon-heading">APPLY COUPON</div>
+
+	    <div class="coupon-modal-content">
+		      <div class="coupon-apply_input">
+		        <input type="text" placeholder="Enter Code" id="manualCouponInput" />
+		        <button class="apply-manual apply-discount-button"
+		          data-discount-code=""
+		          data-button-state="apply"
+		          data-code=""
+		          data-min-quantity="0"
+		          data-min-value="0">
+		          Apply
+		        </button>
+		      </div>
+
+          <div class="view-all-wrapper">
+          <button class="view-all-coupons-btn" onclick="openCouponModal()">
+            {% comment %} <img src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/discount.avif?v=1754489453" alt="discount" width="" height=""> {% endcomment %}
+             {% render 'icon-offer' %}
+             <p class="no-coupon-text">No coupon applied</p>
+          </button>
+          <div class="applied-coupons-btn">
+            <span class="applied_current_coupen"></span>Applied
+            <span class="remove_coupens" onclick="removeDiscountCode(this, 'COUPONCODE')">{% render 'icon-cross' %}</span>
+          </div>
+        </div>
+
+		      <div class="coupon-list">
+		    {% for block in section.blocks %}
+		      {% if block.type == 'discount_coupon' %}
+	        {% assign show_to_customer = true %}
+        {% if block.settings.customer_tag != blank %}
+          {% assign show_to_customer = false %}
+          {% if customer %}
+            {% for tag in customer.tags %}
+              {% if tag == block.settings.customer_tag %}
+                {% assign show_to_customer = true %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+        {% if show_to_customer %}
+        {% assign disable_coupon = false %}
+
+        {%- comment -%} Quantity Validation {%- endcomment -%}
+        {% if block.settings.min_quantity > 0 and cart_quantity < block.settings.min_quantity %}
+          {% assign disable_coupon = true %}
+        {% endif %}
+
+        {%- comment -%} Value Validation (cart_total is in cents, so divide by 100) {%- endcomment -%}
+        {% assign cart_total_money = cart_total | divided_by: 100 %}
+        {% if block.settings.min_value > 0 and cart_total_money < block.settings.min_value %}
+          {% assign disable_coupon = true %}
+        {% endif %}
+
+        {%- comment -%} Collection Validation {%- endcomment -%}
+        {% if block.settings.eligible_collections != blank %}
+          {% assign valid_collection = false %}
+          {% for selected_col in block.settings.eligible_collections %}
+            {% if cart_collections contains selected_col.id %}
+              {% assign valid_collection = true %}
+            {% endif %}
+          {% endfor %}
+          {% unless valid_collection %}
+            {% assign disable_coupon = true %}
+          {% endunless %}
+        {% endif %}
+
+	        <div class="coupon-card {% if disable_coupon %}disable{% endif %}">
+	          <div class="coupon-card__left">
+	            <span class="coupon-card__icon" aria-hidden="true">{% render 'icon-offer' %}</span>
+	            <div class="coupon-details">
+	              <strong>{{ block.settings.code }}</strong>
+	              <p>{{ block.settings.description }}</p>
+	            </div>
+	          </div>
+	          <button 
+	            class="apply-btn apply-discount-button{% if disable_coupon %} disable-invalid{% endif %}"
+	            data-discount-code="{{ block.settings.code }}"
+	            data-button-state="apply"
+            data-code="{{ block.settings.code }}"
+            data-min-quantity="{{ block.settings.min_quantity }}"
+            data-min-value="{{ block.settings.min_value }}"
+            {% if disable_coupon %}disabled{% endif %}
+          >
+          {% if disable_coupon %}
+            Invalid
+          {% else %}
+            Apply
+          {% endif %}
+          </button>   
+          <div class="discount_errormessage">Discount is not valid to the current cart</div>
+        </div>
+	        {% endif %}
+	      {% endif %}
+	    {% endfor %}
+	  </div>
+	    </div>
+	  </div>
+
+	<script>
+	// Discount cap helper - waits for order-summary.liquid to define globals
+	function capAwareDiscount(cart) {
+	  if (window.getCappedDiscount) {
+    return window.getCappedDiscount(cart);
+  }
+  if (window.shouldCapDiscount && window.shouldCapDiscount(cart)) {
+    return window.DISCOUNT_CAP_CENTS;
+  }
+  return cart.total_discount;
+}
+function capAwareTotal(cart) {
+  if (window.getCappedTotal) {
+    return window.getCappedTotal(cart);
+  }
+  if (window.shouldCapDiscount && window.shouldCapDiscount(cart)) {
+    const excess = cart.total_discount - window.DISCOUNT_CAP_CENTS;
+    return cart.total_price + excess;
+  }
+  return cart.total_price;
+	}
+
+	// Open & Close Modal
+	function openCouponModal() {
+	  const modal = document.getElementById('coupon-modal');
+	  if (modal) modal.classList.add('open');
+	}
+	 
+	function closeCouponModal() {
+	  const modal = document.getElementById('coupon-modal');
+	  if (modal) modal.classList.remove('open');
+	}
+
+// Function to update discount display UI
+function updateDiscountDisplayUI(appliedCode = '') {
+  const viewAllBtn = document.querySelector('.view-all-coupons-btn');
+  const appliedCouponsBtn = document.querySelector('.applied-coupons-btn');
+  const appliedCurrentCoupon = document.querySelector('.applied_current_coupen');
+
+  // Store the current state to prevent unnecessary updates
+  const currentAppliedCode = appliedCurrentCoupon ? appliedCurrentCoupon.textContent.trim() : '';
+    
+  if (appliedCode && appliedCode.trim() !== '') {
+    // Show applied coupon UI 
+    
+    if (viewAllBtn) {
+      viewAllBtn.style.setProperty('display', 'none', 'important');
+      viewAllBtn.style.visibility = 'hidden';
+     // console.log('Hidden view-all-coupons-btn with !important');
+    }
+    
+    if (appliedCouponsBtn) {
+      appliedCouponsBtn.style.setProperty('display', 'flex', 'important');
+      appliedCouponsBtn.style.visibility = 'visible';
+      appliedCouponsBtn.style.opacity = '1';
+     // console.log('Showed applied-coupons-btn with !important');
+      
+      // Also check computed styles
+      const computedStyle = window.getComputedStyle(appliedCouponsBtn); 
+    }
+    
+    if (appliedCurrentCoupon) {
+      appliedCurrentCoupon.textContent = appliedCode;
+      //console.log('Set applied_current_coupen text to:', appliedCode);
+    }
+  } else {
+    // Hide applied coupon UI 
+    if (viewAllBtn) {
+      viewAllBtn.style.setProperty('display', 'flex', 'important');
+      viewAllBtn.style.setProperty('visibility', 'visible', 'important');
+      viewAllBtn.style.setProperty('opacity', '1', 'important');
+      //console.log('Showed view-all-coupons-btn with !important');
+    }
+    
+    if (appliedCouponsBtn) {
+      appliedCouponsBtn.style.setProperty('display', 'none', 'important');
+      appliedCouponsBtn.style.visibility = 'hidden';
+     // console.log('Hidden applied-coupons-btn with !important');
+    }  
+    
+    if (appliedCurrentCoupon) {
+      appliedCurrentCoupon.textContent = '';
+     // console.log('Cleared applied_current_coupen text');
+    }  
+  }
+  
+  // Force a visual update to ensure changes are applied
+  if (appliedCouponsBtn) {
+    appliedCouponsBtn.offsetHeight; // Force reflow
+  }
+  if (viewAllBtn) {
+    viewAllBtn.offsetHeight; // Force reflow
+  }
+  
+  // Additional check after update
+  setTimeout(() => {
+    if (appliedCode && appliedCode.trim() !== '') {
+      const isAppliedVisible = appliedCouponsBtn && window.getComputedStyle(appliedCouponsBtn).display !== 'none';
+      const isViewAllHidden = viewAllBtn && window.getComputedStyle(viewAllBtn).display === 'none'; 
+      
+      if (!isAppliedVisible || !isViewAllHidden) { 
+        if (appliedCouponsBtn) {
+          appliedCouponsBtn.style.setProperty('display', 'flex', 'important');
+          appliedCouponsBtn.classList.add('force-show');
+        }
+        if (viewAllBtn) {
+          viewAllBtn.style.setProperty('display', 'none', 'important');
+          viewAllBtn.classList.add('force-hide');
+        }
+      }
+    }
+  }, 100); 
+	}
+
+	function syncCouponCardState(buttonEl) {
+	  const cardEl = buttonEl?.closest?.('.coupon-card');
+	  if (!cardEl) return;
+	  cardEl.classList.toggle('is-applied', buttonEl.dataset.buttonState === 'remove');
+	}
+	
+	// Function to handle remove coupon click
+	function handleRemoveCoupon() {
+  // Find the currently applied discount and remove it
+  const appliedCurrentCoupon = document.querySelector('.applied_current_coupen');
+  
+  if (appliedCurrentCoupon && appliedCurrentCoupon.textContent.trim() !== '') {
+    const appliedCode = appliedCurrentCoupon.textContent.trim();
+    
+    // Find the corresponding discount button and trigger remove
+    const discountButtons = document.querySelectorAll('.apply-discount-button');
+    let foundButton = null;
+    
+    discountButtons.forEach(btn => {
+      if (btn.dataset.discountCode && btn.dataset.discountCode.toUpperCase() === appliedCode.toUpperCase()) {
+        foundButton = btn;
+      }
+    });
+    
+    if (foundButton) {
+      // Trigger the remove action
+      if (window.applyDiscountCode) {
+        window.applyDiscountCode("", foundButton, appliedCode);
+        updateDiscountDisplayUI('');
+      } else {
+        //console.error('applyDiscountCode function not available');
+      }
+    } else {
+      // If button not found, just remove via API
+      if (window.applyDiscountCode) {
+        window.applyDiscountCode("", null, appliedCode);
+      } else {
+        //console.error('applyDiscountCode function not available');
+      }
+    }
+    
+    // Immediately update the UI to show loading state
+    updateDiscountDisplayUI('');
+  }
+}
+
+// Add click event listener for remove coupon button
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('remove_coupens')) {
+    e.preventDefault();
+    handleRemoveCoupon();
+  }
+});
+
+// Discount HTML show JS
+window.addEventListener('load', function () {
+  const discountLabelEl = document.getElementById('discount-label');
+  const discountRowEl = discountLabelEl?.closest('.price-row.discount');
+
+  if (discountLabelEl && discountRowEl) {
+    if (discountLabelEl.textContent.trim() === '') {
+      discountRowEl.style.display = 'none';
+    } else {
+      discountRowEl.style.display = '';
+    }
+  }
+
+  const applyButtons = document.querySelectorAll('.apply-discount-button');
+  applyButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      if (discountRowEl) {
+        discountRowEl.style.display = '';
+      }
+    });
+  });
+});
+
+let appliedDiscountCode = "";
+function cartHasLineItemDiscounts(cartData) {
+  return cartData.items.some(item => item.discount_allocations && item.discount_allocations.length > 0);
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  // Prevent multiple initializations
+  if (window.discountSystemInitialized) {
+    return;
+  }
+  window.discountSystemInitialized = true;
+  
+  // Reset tracking flag on page load to ensure clean state
+  window.couponTrackingDone = false;
+  
+  let discountButtons = document.querySelectorAll(".apply-discount-button");
+  const manualInput = document.getElementById("manualCouponInput");
+  let manualApplyBtn = document.querySelector("#manualCouponInput + .apply-discount-button");
+  
+  const storefrontAccessToken = "df3b1660e6859f510b854dc282eccdf9";
+
+  // Use CartDataManager if available
+  const cartData = window.CartDataManager 
+    ? await window.CartDataManager.getCart() 
+    : await fetch('/cart.js').then(res => res.json());
+  const carttoken = cartData.token;
+
+  try {
+    const response = await fetch("https://powerlook-apparels.myshopify.com/api/2024-10/graphql.json", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-shopify-storefront-access-token": storefrontAccessToken,
+      },
+      body: JSON.stringify({
+        query: `
+          query {
+            cart(id: "gid://shopify/Cart/${carttoken}") {
+              discountCodes {
+                code
+                applicable
+              }
+            }
+          }
+        `,
+      }),
+    });
+    const result = await response.json();
+    appliedDiscountCode = result?.data?.cart?.discountCodes?.[0]?.code || "";
+    window.currentAppliedDiscountCode = appliedDiscountCode;
+  } catch (err) {
+    // console.error("Error fetching applied discount:", err);
+  }
+
+  // CRITICAL FIX: Check and update discount display IMMEDIATELY on load 
+  
+  if (appliedDiscountCode) {
+    // Immediately update the UI to show the applied discount
+    updateDiscountDisplayUI(appliedDiscountCode);
+    //console.log('Immediately updated UI for applied discount:', appliedDiscountCode);
+  } else {
+    // Check cart.js for any existing discounts (fallback)
+    try {
+      const cartData = window.CartDataManager 
+        ? await window.CartDataManager.getCart() 
+        : await fetch('/cart.js').then(res => res.json());
+      const hasDiscount = cartData.total_discount > 0 || (cartData.discount_applications && cartData.discount_applications.length > 0);
+      
+      if (hasDiscount) {
+        const discountApp = cartData.discount_applications?.[0];
+        const cartAppliedCode = discountApp?.code || discountApp?.title || 'APPLIED_DISCOUNT';
+       // console.log('Found discount in cart.js:', cartAppliedCode);
+        
+        // Immediately update the UI
+        updateDiscountDisplayUI(cartAppliedCode);
+        appliedDiscountCode = cartAppliedCode;
+      } else {
+        updateDiscountDisplayUI('');
+      }
+    } catch (error) {
+      //console.error('Error checking cart for existing discounts:', error);
+      updateDiscountDisplayUI('');
+    }
+  }
+
+	  discountButtons.forEach((btn) => {
+	    const btnCode = btn.dataset.discountCode;
+	    if (btnCode === appliedDiscountCode) {
+	      btn.textContent = "Remove";
+	      btn.dataset.buttonState = "remove";
+	    } else {
+      // Check if button has the disable-invalid class directly
+      const wasOriginallyDisabled = btn.classList.contains('disable-invalid');
+      
+      if (wasOriginallyDisabled) {
+        btn.textContent = "Invalid";
+        btn.dataset.buttonState = "invalid";
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        btn.title = "Discount is not valid to the current cart";
+      } else {
+        btn.textContent = "Apply";
+        btn.dataset.buttonState = "apply";
+	      }
+	    }
+	    syncCouponCardState(btn);
+	  });
+
+  if (manualInput && manualApplyBtn) {
+    if (!appliedDiscountCode || manualInput.value.trim().toUpperCase() !== appliedDiscountCode.toUpperCase()) {
+      manualApplyBtn.textContent = "Apply";
+      manualApplyBtn.dataset.buttonState = "apply";
+    } else {
+      manualApplyBtn.textContent = "Remove";
+      manualApplyBtn.dataset.buttonState = "remove";
+    }
+  }
+
+  // Add real-time validation for manual coupon input
+  if (manualInput) {
+    manualInput.addEventListener('input', function() {
+      const couponCode = this.value.trim();
+      // Always get current button from DOM (it may have been replaced after invalid apply)
+      const currentManualApplyBtn = document.querySelector("#manualCouponInput + .apply-discount-button");
+
+      if (couponCode) {
+        // Re-enable Apply button when user changes the code (so it's not stuck in invalid state)
+        if (currentManualApplyBtn) {
+          currentManualApplyBtn.textContent = "Apply";
+          currentManualApplyBtn.dataset.buttonState = "apply";
+          currentManualApplyBtn.disabled = false;
+          currentManualApplyBtn.style.opacity = "1";
+          currentManualApplyBtn.title = "";
+          currentManualApplyBtn.classList.remove('disable-invalid');
+        }
+        // Then check if this coupon is valid for current cart state
+        checkManualCouponValidity(couponCode);
+      } else {
+        // Reset button state if input is empty
+        if (currentManualApplyBtn) {
+          currentManualApplyBtn.textContent = "Apply";
+          currentManualApplyBtn.dataset.buttonState = "apply";
+          currentManualApplyBtn.disabled = false;
+          currentManualApplyBtn.style.opacity = "1";
+          currentManualApplyBtn.title = "";
+          currentManualApplyBtn.classList.remove('disable-invalid');
+        }
+      }
+    });
+  }
+
+  // Function to check if manual coupon is valid for current cart
+  function checkManualCouponValidity(couponCode) {
+    // Get current cart state using CartDataManager
+    const fetchPromise = window.CartDataManager 
+      ? window.CartDataManager.getCart() 
+      : fetch('/cart.js').then(res => res.json());
+    
+    fetchPromise
+      .then(cartData => {
+        // Get current button and input from DOM (may have been replaced after re-init)
+        const currentManualApplyBtn = document.querySelector("#manualCouponInput + .apply-discount-button");
+        const currentInput = document.getElementById("manualCouponInput");
+        // Only update button if input still shows this code (user may have typed something else)
+        if (currentInput && currentInput.value.trim().toUpperCase() !== couponCode.toUpperCase()) {
+          return;
+        }
+        const cartTotal = cartData.total_price / 100;
+        const cartQuantity = cartData.item_count;
+        
+        // Find the discount button for this code
+        const discountButton = document.querySelector(`[data-discount-code="${couponCode.toUpperCase()}"]`);
+        
+        if (discountButton) {
+          // Get discount requirements
+          const minQuantity = parseInt(discountButton.dataset.minQuantity) || 0;
+          const minValue = parseFloat(discountButton.dataset.minValue) || 0;
+          
+          // Check if discount is valid for current cart
+          let isValid = true;
+          let reason = '';
+          
+          if (minQuantity > 0 && cartQuantity < minQuantity) {
+            isValid = false;
+            reason = `Minimum ${minQuantity} items required`;
+          }
+          
+          if (minValue > 0 && cartTotal < minValue) {
+            isValid = false;
+            reason = `Minimum ₹${minValue} required`;
+          }
+          
+          // Update button state using live DOM reference
+          if (currentManualApplyBtn) {
+            if (isValid) {
+              currentManualApplyBtn.textContent = "Apply";
+              currentManualApplyBtn.dataset.buttonState = "apply";
+              currentManualApplyBtn.disabled = false;
+              currentManualApplyBtn.style.opacity = "1";
+              currentManualApplyBtn.title = "";
+              currentManualApplyBtn.classList.remove('disable-invalid');
+            } else {
+              currentManualApplyBtn.textContent = "Invalid";
+              currentManualApplyBtn.dataset.buttonState = "invalid";
+              currentManualApplyBtn.disabled = true;
+              currentManualApplyBtn.style.opacity = "0.5";
+              currentManualApplyBtn.title = reason;
+              currentManualApplyBtn.classList.add('disable-invalid');
+            }
+          }
+        } else {
+          // Coupon code not found - keep button enabled so user can try applying (server will reject)
+          if (currentManualApplyBtn) {
+            currentManualApplyBtn.textContent = "Apply";
+            currentManualApplyBtn.dataset.buttonState = "apply";
+            currentManualApplyBtn.disabled = false;
+            currentManualApplyBtn.style.opacity = "1";
+            currentManualApplyBtn.title = "Coupon code not in list – you can still try to apply";
+            currentManualApplyBtn.classList.remove('disable-invalid');
+          }
+        }
+      })
+      .catch(error => {
+        // console.error('Error checking coupon validity:', error);
+      });
+  }
+
+  // Function to trigger GA4 event for coupon buttons
+  function triggerCouponGA4Event(button, manualInputValue = '') {
+    const couponCode = button.dataset.discountCode || button.dataset.code || manualInputValue;
+    if (couponCode) {
+      const buttonText = button.textContent.trim();
+      const isRemoving = buttonText === 'Remove';
+      
+      const eventData = {
+        cta_text: button.dataset.buttonState || (isRemoving ? 'remove' : 'apply'),
+        content_title: couponCode,
+        page_type: '{{ template | handleize }}',
+        userID: '{{ customer.id | default: "guest" }}',
+        user_type: '{{ customer.tags | join: "," | default: "guest" }}'
+      };
+
+      if (typeof gtag === 'function') {
+        const eventName = isRemoving ? 'coupon_removed' : 'apply_coupon';
+        gtag('event', eventName, eventData);
+      }
+    }
+  }
+
+  // Add click event listener on apply button with console logging
+  if (manualApplyBtn) {
+    manualApplyBtn.addEventListener('click', function() {
+      // Trigger GA4 event for manual apply button
+      triggerCouponGA4Event(this, manualInput?.value.trim());
+    });
+  }
+
+  // Add click event listeners to all apply buttons (both apply-btn and apply-discount-button)
+  const allApplyButtons = document.querySelectorAll('.apply-btn, .apply-discount-button');
+  allApplyButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      // Trigger GA4 event
+      triggerCouponGA4Event(this);
+    });
+  });
+
+  function updateButtonState(btn, state) {
+    // Check if button has the disable-invalid class directly
+    const wasOriginallyDisabled = btn.classList.contains('disable-invalid');
+    
+    if (state === "remove") {
+      btn.textContent = "Remove";
+      btn.dataset.buttonState = "remove";
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      btn.title = "";
+    } else if (wasOriginallyDisabled) {
+      // Keep the original disabled state
+      btn.textContent = "Invalid";
+      btn.dataset.buttonState = "invalid";
+      btn.disabled = true;
+      btn.style.opacity = "0.5";
+      btn.title = "Discount is not valid to the current cart";
+    } else {
+      btn.textContent = "Apply";
+      btn.dataset.buttonState = "apply";
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      btn.title = "";
+    }
+  }
+
+  // Reusable: refresh discount/totals UI from current cart state
+  function updateDiscountSummaryFromCart(cart) {
+    const format = (amount) => `₹${(amount / 100).toFixed(0)}`;
+    
+    // Check for both discount_applications and total_discount
+    const discountApp = cart.discount_applications?.[0];
+    const appliedTitle = discountApp?.title || '';
+    const appliedCode = discountApp?.code || '';
+    const storedCode = window.currentAppliedDiscountCode || '';
+    const hasDiscount = cart.total_discount > 0 || (discountApp && discountApp.amount > 0);
+
+    // Update order summary elements with correct selectors
+    const subtotalEl = document.querySelector('.wk-order-summary .subtotal-amount');
+    const discountRowEl = document.querySelector('.wk-order-summary .price-row.discount');
+    const discountLabelEl = document.getElementById('discount-label');
+    const discountAmountEl = document.getElementById('discount-amount');
+    const totalEl = document.querySelector('.wk-order-summary .total-amount');
+    const taxEl = document.querySelector('.wk-order-summary .tax-amount');
+
+    // Update total (adjusted for discount cap)
+    if (totalEl) {
+      totalEl.textContent = format(capAwareTotal(cart));
+    }
+
+    // Update tax
+    if (taxEl) {
+      if (cart.total_tax > 0) {
+        taxEl.textContent = format(cart.total_tax);
+      } else {
+        taxEl.textContent = 'Included';
+      }
+    }
+
+    // Update discount section (label text stays as default "(Discount)")
+    if (discountRowEl) {
+      if (hasDiscount) {
+        if (discountLabelEl) {
+          discountLabelEl.textContent = '(Discount)';
+        }
+        if (discountAmountEl) {
+          const cappedDiscount = capAwareDiscount(cart);
+          discountAmountEl.textContent = `-${format(cappedDiscount)}`;
+        }
+
+        discountRowEl.style.display = 'flex';
+
+        const codeToShow = storedCode || appliedCode || appliedTitle || 'DISCOUNT';
+        updateDiscountDisplayUI(codeToShow);
+
+      } else {
+        discountRowEl.style.display = 'none';
+        updateDiscountDisplayUI('');
+      }
+    }
+
+    const discountList = document.querySelector('.discounts');
+    if (discountList) {
+      discountList.innerHTML = '';
+      if (cart.total_discount > 0) {
+        const cappedDiscountForList = capAwareDiscount(cart);
+        discountList.innerHTML = `
+          <li class="discount text-sm flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-discount icon--extra-small" viewBox="0 0 14 15" fill="none">
+              <path d="..." stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="..." fill="currentColor"/>
+            </svg>
+            <span>${appliedTitle} ${appliedCode ? `– ${appliedCode}` : ''}</span>
+            <span class="font-body-bold">(-${format(cappedDiscountForList)})</span>
+          </li>
+        `;
+      }
+    }
+
+    const bottomTotalEl = document.querySelector('.totals__subtotal-value');
+    if (bottomTotalEl) bottomTotalEl.textContent = format(capAwareTotal(cart));
+  }
+
+  // Initial refresh on load so discount row shows after page refresh if applied
+  try {
+    const initialCart = window.CartDataManager 
+      ? await window.CartDataManager.getCart() 
+      : await fetch('/cart.js').then(res => res.json());
+    updateDiscountSummaryFromCart(initialCart);
+  } catch (e) {
+    // console.error('Error refreshing cart summary on load', e);
+  }
+
+  // Function to force update order summary display
+  function forceUpdateOrderSummary(cart) {
+    const format = (amount) => `₹${(amount / 100).toFixed(0)}`;
+    
+    // Find all order summary elements using specific classes
+    const subtotalEl = document.querySelector('.wk-order-summary .subtotal-amount');
+    const discountRowEl = document.querySelector('.wk-order-summary .price-row.discount');
+    const discountLabelEl = document.getElementById('discount-label');
+    const discountAmountEl = document.getElementById('discount-amount');
+    const totalEl = document.querySelector('.wk-order-summary .total-amount');
+    const taxEl = document.querySelector('.wk-order-summary .tax-amount');
+    
+    // Do not touch subtotal here; it should reflect original cart total only
+    
+    // Update total (adjusted for discount cap)
+    if (totalEl) {
+      totalEl.textContent = format(capAwareTotal(cart));
+    }
+    
+    // Update tax
+    if (taxEl) {
+      if (cart.total_tax > 0) {
+        taxEl.textContent = format(cart.total_tax);
+      } else {
+        taxEl.textContent = 'Included';
+      }
+    }
+    
+    // Update discount section (label text stays as default "(Discount)")
+    if (discountRowEl && discountLabelEl && discountAmountEl) {
+      const hasDiscount = cart.total_discount > 0 || (cart.discount_applications && cart.discount_applications.length > 0);
+      
+      if (hasDiscount) {
+        discountLabelEl.textContent = '(Discount)';
+        discountAmountEl.textContent = `-${format(capAwareDiscount(cart))}`;
+        discountRowEl.style.display = 'flex';
+        
+        const codeToShow = storedCode || appliedCode || appliedTitle || 'DISCOUNT'; 
+        updateDiscountDisplayUI(codeToShow);
+        
+      } else {
+        discountRowEl.style.display = 'none'; 
+        updateDiscountDisplayUI('');
+      }
+    }
+    
+    // Force a visual update
+    if (discountRowEl) {
+      discountRowEl.style.opacity = '0.8';
+      setTimeout(() => {
+        discountRowEl.style.opacity = '1';
+      }, 100);
+    }
+  }
+
+  // Global function to apply/remove discount codes 
+  window.applyDiscountCode = function(code, ele, currentcode) {
+    // Get cart token and storefront access token
+    const storefrontAccessToken = "df3b1660e6859f510b854dc282eccdf9";
+    
+    // Get cart token using CartDataManager
+    const fetchPromise = window.CartDataManager 
+      ? window.CartDataManager.getCart(true) // Force refresh before applying discount
+      : fetch('/cart.js').then(res => res.json());
+    
+    fetchPromise
+      .then(cartData => {
+        const carttoken = cartData.token;
+        
+        // Signal to custom.js that this coupon is being handled by the modal system
+        if (code) {
+          window.couponModalHandled = code;
+          // window.currentAppliedDiscountCode = code;
+        } else {
+          window.currentAppliedDiscountCode = '';
+        }
+        
+        if (ele) {
+          ele.classList.add('loader');
+          const originalText = ele.textContent;
+          ele.textContent = 'Applying...';
+          ele.disabled = true;
+
+          // Store original text for restoration
+          ele.dataset.originalText = originalText;
+        }
+        const variables = {
+          id: `gid://shopify/Cart/${carttoken}`,
+          discountCodes: code ? code.split(',') : [],
+        };
+        const query = `
+          mutation cartDiscountCodesUpdate($id: ID!, $discountCodes:[String!]) {
+            cartDiscountCodesUpdate(cartId: $id, discountCodes: $discountCodes) {
+              cart {
+                id
+                discountCodes {
+                  code
+                  applicable
+                }
+              }
+              userErrors {
+                field
+                message
+              }
+            }
+          }
+        `;
+
+        fetch("https://powerlook-apparels.myshopify.com/api/2024-10/graphql.json", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-shopify-storefront-access-token": storefrontAccessToken,
+          },
+          body: JSON.stringify({ query, variables }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (ele) {
+            ele.classList.remove('loader');
+          }
+          const cart = data?.data?.cartDiscountCodesUpdate?.cart;
+          const errors = data?.data?.cartDiscountCodesUpdate?.userErrors;
+
+          if (errors?.length > 0) {
+            const message = errors[0].message || "Invalid discount code.";
+            alert(`Failed to apply discount: ${message}`);
+            if (ele) {
+              ele.textContent = "Invalid";
+              ele.disabled = true;
+            }
+
+            if (ele) {
+              const couponCard = ele.closest('.coupon-card');
+              if (couponCard) {
+                couponCard.classList.add('disable');
+                let errorMsg = couponCard.querySelector('.discount-error-message');
+                if (!errorMsg) {
+                  errorMsg = document.createElement('div');
+                  errorMsg.className = 'discount-error-message';
+                  errorMsg.style.color = '#dc3545';
+                  errorMsg.style.fontSize = '12px';
+                  errorMsg.style.marginTop = '5px';
+                  couponCard.appendChild(errorMsg);
+                }
+                errorMsg.textContent = message;
+              }
+            }
+            return;
+          }
+
+          const appliedCode = cart?.discountCodes?.[0]?.code;
+          const applicable = cart?.discountCodes?.[0]?.applicable;
+
+          // Immediately update the discount display UI based on the API response
+          if (code && applicable) {
+            // Discount was successfully applied
+            updateDiscountDisplayUI(code);
+            window.currentAppliedDiscountCode = code; 
+          } else if (!code) {
+            // Discount was removed
+            updateDiscountDisplayUI('');
+          }
+
+          if (code && !applicable) {
+            if (ele) {
+              ele.textContent = "Invalid";
+              ele.disabled = true;
+            }
+            
+            if (ele) {
+              const couponCard = ele.closest('.coupon-card');
+              if (couponCard) couponCard.classList.add('disable');
+            }
+            return;
+          }
+
+          // Get fresh button references
+          const currentDiscountButtons = document.querySelectorAll(".apply-discount-button");
+          currentDiscountButtons.forEach((btn) => {
+            if (btn.dataset.discountCode === appliedCode) {
+              updateButtonState(btn, "remove"); 
+            } else {
+              updateButtonState(btn, "apply");  
+            }
+          });
+
+          const manualInput = document.getElementById("manualCouponInput");
+          if (manualInput) {
+            // Get fresh reference to manual apply button
+            const currentManualApplyBtn = document.querySelector("#manualCouponInput + .apply-discount-button");
+            if (currentManualApplyBtn) {
+              if (manualInput.value.trim().toUpperCase() === appliedCode?.toUpperCase()) {
+                updateButtonState(currentManualApplyBtn, "remove");
+              } else {
+                updateButtonState(currentManualApplyBtn, "apply");
+              }
+            }
+          }
+
+          // Track coupon removal with MoEngage if code was removed
+          if (typeof Moengage !== 'undefined' && !code && currentcode) {
+            // This means a coupon was removed (code is empty but currentcode exists)
+            window.currentAppliedDiscountCode = '';
+            window.couponRemovalInProgress = true;
+            
+            if (!window.couponRemovedEventTracked) {
+              window.couponRemovedEventTracked = true;
+              Moengage.track_event("Coupon Code Removed", {
+                "Coupon Code": currentcode,
+                "Page Type": "{{ template | handleize }}",
+                "User Type": "{{ customer.tags | join: ',' | default: 'guest' }}"
+              });
+              
+              setTimeout(() => {
+                window.couponRemovedEventTracked = false;
+              }, 5000);
+            }
+            
+            // Reset the tracking flag when coupon is removed to allow future tracking
+            window.couponTrackingDone = false;
+            
+            // Update discount display UI for removal
+            updateDiscountDisplayUI('');
+            
+            // For removal, immediately hide the discount row and refresh cart
+            const discountRowEl = document.querySelector('.wk-order-summary .price-row.discount');
+            if (discountRowEl) {
+              discountRowEl.style.display = 'none';
+            }
+            
+            // Reset all button states after removal, but respect original disabled state
+            const currentDiscountButtons = document.querySelectorAll(".apply-discount-button");
+            currentDiscountButtons.forEach((btn) => {
+              const wasOriginallyDisabled = btn.classList.contains('disable-invalid');
+              
+              if (wasOriginallyDisabled) {
+                btn.textContent = "Invalid";
+                btn.dataset.buttonState = "invalid";
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                btn.title = "Discount is not valid to the current cart";
+              } else {
+                btn.textContent = "Apply";
+                btn.dataset.buttonState = "apply";
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                btn.title = "";
+              }
+            });
+            
+            // Reset manual input button
+            if (manualInput) {
+              const currentManualApplyBtn = document.querySelector("#manualCouponInput + .apply-discount-button");
+              if (currentManualApplyBtn) {
+                manualInput.value = '';
+                currentManualApplyBtn.textContent = "Apply";
+                currentManualApplyBtn.dataset.buttonState = "apply";
+                currentManualApplyBtn.disabled = false;
+                currentManualApplyBtn.style.opacity = "1";
+                currentManualApplyBtn.title = "";
+              }
+            }
+            
+            // Clear any error states
+            const errorMessages = document.querySelectorAll('.discount-error-message');
+            errorMessages.forEach(msg => msg.remove());
+            
+              // Update cart items after discount removal
+            setTimeout(() => {
+              if (window.CartDataManager) {
+                window.CartDataManager.invalidateCache();
+              }
+              
+              const updatePromise = window.CartDataManager 
+                ? window.CartDataManager.getCart(true) 
+                : fetch('/cart.js').then(res => res.json());
+              
+              updatePromise
+                .then(cart => {
+                  // Update cart items display
+                  if (window.updateCartItemsDisplay) {
+                    window.updateCartItemsDisplay(cart);
+                  }
+                  
+                  updateDiscountSummaryFromCart(cart);
+                  
+                  if (window.updateOrderSummaryFromDiscount) {
+                    window.updateOrderSummaryFromDiscount(cart);
+                  }
+                  
+                  if (window.refreshCartData && !window.couponRemovalInProgress) {
+                    window.refreshCartData();
+                  }
+                  
+                  if (window.refreshComparePricesAndDiscounts) {
+                    window.refreshComparePricesAndDiscounts();
+                  }
+                  
+                  forceUpdateOrderSummary(cart);
+                  
+                  // Reset the coupon removal progress flag
+                  setTimeout(() => {
+                    window.couponRemovalInProgress = false;
+                  }, 1000);
+                });
+            }, 500);
+            
+            // Skip further processing for removal actions
+            return;
+          }
+
+          // Update discount display UI immediately after successful discount application
+          if (code && !currentcode) {
+            // Applying new discount
+            updateDiscountDisplayUI(code);
+          } else if (!code && currentcode) {
+            // Removing discount
+            updateDiscountDisplayUI('');
+          }
+
+          // Close popup modal after updating the display
+          closeCouponModal();
+
+          // Track successful coupon application with MoEngage if code was applied
+          if (typeof Moengage !== 'undefined' && code && !currentcode) {
+            if (!window.couponTrackingDone) {
+              window.couponTrackingDone = true;
+              
+              const trackingPromise = window.CartDataManager 
+                ? window.CartDataManager.getCart(true) 
+                : fetch('/cart.js').then(res => res.json());
+              
+              trackingPromise
+                .then(cart => {
+                  let cartValueBeforeDiscount = 0;
+                  let cartValueAfterDiscount = cart.total_price / 100;
+                  let totalDiscountAmount = 0;
+                  
+                  cart.items.forEach(item => {
+                    cartValueBeforeDiscount += (item.original_price * item.quantity) / 100;
+                  });
+                  
+                  if (cart.cart_level_discount_applications && cart.cart_level_discount_applications.length > 0) {
+                    const cartLevelDiscount = cart.cart_level_discount_applications.reduce((sum, discount) => {
+                      return sum + discount.total_allocated_amount;
+                    }, 0);
+                    totalDiscountAmount += cartLevelDiscount / 100;
+                  }
+                  
+                  cart.items.forEach(item => {
+                    if (item.original_price !== item.final_price) {
+                      const itemDiscount = (item.original_price - item.final_price) * item.quantity;
+                      totalDiscountAmount += itemDiscount / 100;
+                    }
+                  });
+                  
+                  if (!window.couponAppliedEventTracked) {
+                    window.couponAppliedEventTracked = true;
+                    Moengage.track_event("Coupon Code Applied", {
+                      "Cart Value Before Discount": Math.round(cartValueBeforeDiscount),
+                      "Cart Value After Discount": Math.round(cartValueAfterDiscount),
+                      "Coupon Code": code,
+                      "Discount Amount": Math.round(totalDiscountAmount),
+                      "Page Type": "{{ template | handleize }}",
+                      "User Type": "{{ customer.tags | join: ',' | default: 'guest' }}"
+                    });
+                    
+                    setTimeout(() => {
+                      window.couponAppliedEventTracked = false;
+                    }, 5000);
+                  }
+                  
+                  setTimeout(() => {
+                    window.couponTrackingDone = false;
+                  }, 5000);
+                });
+            }
+          }
+          
+          // Update cart items after discount application
+          setTimeout(() => {
+            // Invalidate cache before fetching
+            if (window.CartDataManager) {
+              window.CartDataManager.invalidateCache();
+            }
+            
+            const updatePromise = window.CartDataManager 
+              ? window.CartDataManager.getCart(true) 
+              : fetch('/cart.js').then(res => res.json());
+            
+            updatePromise
+              .then(cart => {
+                // Update cart items display first
+                if (window.updateCartItemsDisplay) {
+                  window.updateCartItemsDisplay(cart);
+                }
+                
+                updateDiscountSummaryFromCart(cart);
+                
+                if (window.updateOrderSummaryFromDiscount) {
+                  window.updateOrderSummaryFromDiscount(cart);
+                }
+                
+                if (window.refreshCartData && !window.mainCartRefreshInProgress) {
+                  window.mainCartRefreshInProgress = true;
+                  window.refreshCartData();
+                  setTimeout(() => {
+                    window.mainCartRefreshInProgress = false;
+                  }, 1000);
+                }
+                
+                if (window.refreshComparePricesAndDiscounts) {
+                  window.refreshComparePricesAndDiscounts();
+                }
+                
+                forceUpdateOrderSummary(cart);
+              })
+              .catch(error => {
+                console.error('Error updating cart after discount:', error);
+              });
+          }, 500);
+        })
+        .catch(error => {
+          if (ele) {
+            ele.classList.remove('loader');
+            ele.textContent = ele.dataset.originalText || 'Apply';
+            ele.disabled = false;
+            delete ele.dataset.originalText;
+          }
+        });
+      })
+      .catch(error => {
+       // console.error('Error getting cart token:', error);
+      });
+  };
+
+  // Remove discount function
+  window.removeDiscountCode = function(ele, currentcode) {
+    const storefrontAccessToken = "df3b1660e6859f510b854dc282eccdf9";
+
+    // Step 1: Get cart token using CartDataManager
+    const fetchPromise = window.CartDataManager 
+      ? window.CartDataManager.getCart(true) 
+      : fetch('/cart.js').then(res => res.json());
+    
+    fetchPromise
+      .then(cartData => {
+        const carttoken = cartData.token;
+
+        if (ele) {
+          ele.classList.add('loader');
+        }
+
+        const variables = {
+          id: `gid://shopify/Cart/${carttoken}`,
+          discountCodes: []  // Empty array removes discounts
+        };
+
+        const query = `
+          mutation cartDiscountCodesUpdate($id: ID!, $discountCodes:[String!]) {
+            cartDiscountCodesUpdate(cartId: $id, discountCodes: $discountCodes) {
+              cart {
+                id
+                discountCodes {
+                  code
+                  applicable
+                }
+              }
+              userErrors {
+                field
+                message
+              }
+            }
+          }
+        `;
+
+        // Step 2: Call GraphQL
+        fetch("https://powerlook-apparels.myshopify.com/api/2024-10/graphql.json", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-shopify-storefront-access-token": storefrontAccessToken,
+          },
+          body: JSON.stringify({ query, variables }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (ele) {
+            ele.classList.remove('loader');
+          }
+
+          const errors = data?.data?.cartDiscountCodesUpdate?.userErrors;
+          if (errors?.length > 0) {
+            const message = errors[0].message || "Failed to remove discount.";
+            alert(`Error: ${message}`);
+            return;
+          }
+
+          // Discount removed successfully
+          window.currentAppliedDiscountCode = '';
+          updateDiscountDisplayUI('');
+
+          // Reset button states
+          const discountButtons = document.querySelectorAll(".apply-discount-button");
+          discountButtons.forEach(btn => {
+            btn.textContent = "Apply";
+            btn.dataset.buttonState = "apply";
+            btn.disabled = false;
+            btn.style.opacity = "1";
+          }); 
+
+          // Reset manual input field
+          const manualInput = document.getElementById("manualCouponInput");
+          if (manualInput) {
+            const manualBtn = document.querySelector("#manualCouponInput + .apply-discount-button");
+            if (manualBtn) {
+              manualInput.value = '';
+              manualBtn.textContent = "Apply";
+              manualBtn.dataset.buttonState = "apply";
+              manualBtn.disabled = false;
+              manualBtn.style.opacity = "1";
+            }
+          }
+
+          // Track removal in MoEngage
+          if (typeof Moengage !== 'undefined' && currentcode) {
+            Moengage.track_event("Coupon Code Removed", {
+              "Coupon Code": currentcode,
+              "Page Type": "{{ template | handleize }}",
+              "User Type": "{{ customer.tags | join: ',' | default: 'guest' }}"
+            });
+          }
+
+          // Refresh cart after removal
+          if (window.CartDataManager) {
+            window.CartDataManager.invalidateCache();
+          }
+          
+          const refreshPromise = window.CartDataManager 
+            ? window.CartDataManager.getCart(true) 
+            : fetch('/cart.js').then(res => res.json());
+          
+          refreshPromise
+            .then(cart => {
+              updateDiscountSummaryFromCart(cart);
+              if (window.updateOrderSummaryFromDiscount) {
+                window.updateOrderSummaryFromDiscount(cart);
+              }
+              if (window.refreshCartData) {
+                window.refreshCartData();
+              }
+              if (window.updateCartItemsDisplay) {
+                window.updateCartItemsDisplay(cart);
+              }
+              if (window.refreshComparePricesAndDiscounts) {
+                window.refreshComparePricesAndDiscounts();
+              }
+              forceUpdateOrderSummary(cart);
+
+              // Reload page after discount removed & cart refreshed 
+              location.reload(); 
+            });
+
+        })
+        .catch(error => {
+          if (ele) {
+            ele.classList.remove('loader'); 
+          }
+          //console.error("Error removing discount:", error);
+        });
+      })
+      .catch(error => {
+       // console.error("Error getting cart token:", error);
+      });
+  };
+
+  discountButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const state = btn.dataset.buttonState;
+      const code = btn.dataset.discountCode;
+      window.applyDiscountCode(state === "apply" ? code : "", btn, code);
+    });
+  });
+
+  if (manualInput && manualApplyBtn) {
+    manualApplyBtn.addEventListener("click", () => {
+      const code = manualInput.value.trim();
+      if (code) {
+        const state = manualApplyBtn.dataset.buttonState;
+        window.applyDiscountCode(state === "apply" ? code : "", manualApplyBtn, code);
+      }
+    });
+  }
+
+  // Function to ensure discount persists through cart operations
+  window.ensureDiscountPersistence = function() {
+   // console.log('Ensuring discount persistence...');
+    
+    // Check current cart state using CartDataManager
+    const fetchPromise = window.CartDataManager 
+      ? window.CartDataManager.getCart() 
+      : fetch('/cart.js').then(res => res.json());
+    
+    fetchPromise
+      .then(cart => {
+        const hasDiscount = cart.total_discount > 0 || (cart.discount_applications && cart.discount_applications.length > 0);
+        const currentDisplayedCode = document.querySelector('.applied_current_coupen')?.textContent.trim() || '';
+        
+        if (hasDiscount) {
+          const discountApp = cart.discount_applications?.[0];
+          const actualCode = discountApp?.code || discountApp?.title || '';
+          
+          // If there's a mismatch, update the display
+          if (actualCode && actualCode !== currentDisplayedCode) {
+            updateDiscountDisplayUI(actualCode);
+            
+            // Also update button states
+	            const discountButtons = document.querySelectorAll('.apply-discount-button');
+	            discountButtons.forEach(btn => {
+	              const btnCode = btn.dataset.discountCode || btn.dataset.code;
+	              if (btnCode === actualCode) {
+	                btn.textContent = "Remove";
+	                btn.dataset.buttonState = "remove";
+	              } else {
+                // Check if button has the disable-invalid class directly
+                const wasOriginallyDisabled = btn.classList.contains('disable-invalid');
+                
+                if (wasOriginallyDisabled) {
+                  btn.textContent = "Invalid";
+                  btn.dataset.buttonState = "invalid";
+                  btn.disabled = true;
+                  btn.style.opacity = "0.5";
+                  btn.title = "Discount is not valid to the current cart";
+	                } else {
+	                  btn.textContent = "Apply";
+	                  btn.dataset.buttonState = "apply";
+	                }
+	              }
+	              syncCouponCardState(btn);
+	            });
+	          }
+	        } else if (currentDisplayedCode) {
+          // No discount in cart but display shows one - clear it
+          updateDiscountDisplayUI('');
+          
+          // Reset all buttons to apply state
+          const discountButtons = document.querySelectorAll('.apply-discount-button');
+          discountButtons.forEach(btn => {
+            const wasOriginallyDisabled = btn.classList.contains('disable-invalid');
+            
+            if (wasOriginallyDisabled) {
+              btn.textContent = "Invalid";
+              btn.dataset.buttonState = "invalid";
+              btn.disabled = true;
+              btn.style.opacity = "0.5";
+              btn.title = "Discount is not valid to the current cart";
+            } else {
+              btn.textContent = "Apply";
+              btn.dataset.buttonState = "apply";
+              btn.disabled = false;
+              btn.style.opacity = "1";
+              btn.title = "";
+            }
+          });
+        }
+      })
+      .catch(error => {
+       // console.error('Error ensuring discount persistence:', error);
+      });
+  };
+
+  // Export functions for external use
+  window.updateDiscountDisplayUI = updateDiscountDisplayUI;
+  window.handleRemoveCoupon = handleRemoveCoupon;
+  window.ensureDiscountPersistence = window.ensureDiscountPersistence;
+  window.updateDiscountSummaryFromCart = updateDiscountSummaryFromCart;
+  window.forceUpdateOrderSummary = forceUpdateOrderSummary;
+  
+  // Enhanced function to check and update discount display
+  window.checkAndUpdateDiscountDisplay = function() {
+    //console.log('Checking and updating discount display...');
+    
+    const fetchPromise = window.CartDataManager 
+      ? window.CartDataManager.getCart() 
+      : fetch('/cart.js').then(res => res.json());
+    
+    fetchPromise
+      .then(cart => {
+        //console.log('Current cart state:', cart);
+        const hasDiscount = cart.total_discount > 0 || (cart.discount_applications && cart.discount_applications.length > 0);
+        
+        if (hasDiscount) {
+          const discountApp = cart.discount_applications?.[0];
+          let appliedCode = window.currentAppliedDiscountCode || discountApp?.code || discountApp?.title || '';
+          
+          // Try alternative methods to get discount code
+          if (!appliedCode && cart.discount_codes && cart.discount_codes.length > 0) {
+            appliedCode = cart.discount_codes[0].code || cart.discount_codes[0];
+          }
+          
+          // Fallback to a generic identifier if we can't get the actual code
+          if (!appliedCode) {
+            appliedCode = 'Applied Discount';
+          }
+          
+         // console.log('Found discount in cart:', appliedCode);
+          
+          // Update both the discount summary and the UI display
+          updateDiscountSummaryFromCart(cart);
+          
+          // Ensure the UI is definitely updated
+          setTimeout(() => {
+            updateDiscountDisplayUI(appliedCode);
+            
+            // Double-check after a short delay
+            setTimeout(() => {
+              const currentDisplayedCode = document.querySelector('.applied_current_coupen')?.textContent.trim() || '';
+              if (!currentDisplayedCode) {
+                //console.log('UI still not updated, forcing update...');
+                updateDiscountDisplayUI(appliedCode);
+              }
+            }, 500);
+          }, 200);
+          
+        } else {
+         // console.log('No discount found in cart');
+          updateDiscountDisplayUI('');
+        }
+      })
+      .catch(error => {
+        //console.error('Error checking cart:', error);
+      });
+  };
+  
+  // Function to immediately update all discount UI elements
+  window.forceUpdateAllDiscountElements = function() {
+    console.log('Force updating all discount elements...');
+    
+    const fetchPromise = window.CartDataManager 
+      ? window.CartDataManager.getCart() 
+      : fetch('/cart.js').then(res => res.json());
+    
+    fetchPromise
+      .then(cart => {
+        //console.log('Cart data for force update:', cart);
+        
+        const hasDiscount = cart.total_discount > 0 || (cart.discount_applications && cart.discount_applications.length > 0);
+        
+        // 1. Update discount row in order summary (label text stays as default "(Discount)")
+        const discountRowEl = document.querySelector('.wk-order-summary .price-row.discount');
+        const discountLabelEl = document.getElementById('discount-label');
+        const discountAmountEl = document.getElementById('discount-amount');
+        
+        if (discountRowEl && discountLabelEl && discountAmountEl) {
+          if (hasDiscount) {
+            discountLabelEl.textContent = '(Discount)';
+            const cappedVal = capAwareDiscount(cart);
+            discountAmountEl.textContent = `-₹${(cappedVal / 100).toFixed(0)}`;
+            discountRowEl.style.display = 'flex';
+            discountRowEl.style.visibility = 'visible';
+          } else {
+            discountRowEl.style.display = 'none';
+          }
+        }
+        
+        // 2. Update applied coupon display
+        if (hasDiscount) {
+          const discountApp = cart.discount_applications?.[0];
+          
+          // Try multiple ways to get the discount code
+          let appliedCode = '';
+          if (discountApp) {
+            appliedCode = discountApp.code || discountApp.title || discountApp.value || '';
+          }
+          
+          // If no code found from discount_applications, try other sources
+          if (!appliedCode) {
+            // Check if there's a discount code in the cart object
+            if (cart.discount_codes && cart.discount_codes.length > 0) {
+              appliedCode = cart.discount_codes[0].code || cart.discount_codes[0];
+             // console.log('Found code from discount_codes:', appliedCode);
+            }
+          }
+          
+          if (appliedCode && appliedCode.trim() !== '') {
+            //console.log('Force updating applied coupon display with code:', appliedCode);
+            
+            // Force update the display elements directly
+            const viewAllBtn = document.querySelector('.view-all-coupons-btn');
+            const appliedCouponsBtn = document.querySelector('.applied-coupons-btn');
+            const appliedCurrentCoupon = document.querySelector('.applied_current_coupen');
+            
+            if (viewAllBtn) {
+              viewAllBtn.style.setProperty('display', 'none', 'important');
+              viewAllBtn.style.visibility = 'hidden';
+              viewAllBtn.classList.add('force-hide');
+             // console.log('Force hidden view-all-coupons-btn');
+            }
+            
+            if (appliedCouponsBtn) {
+              appliedCouponsBtn.style.setProperty('display', 'flex', 'important');
+              appliedCouponsBtn.style.visibility = 'visible';
+              appliedCouponsBtn.style.opacity = '1';
+              appliedCouponsBtn.classList.add('force-show');
+              //console.log('Force showed applied-coupons-btn');
+            }
+            
+            if (appliedCurrentCoupon) {
+              appliedCurrentCoupon.textContent = appliedCode;
+              //console.log('Set applied_current_coupen text to:', appliedCode);
+            }
+            
+            // Also call the function as backup
+            updateDiscountDisplayUI(appliedCode);
+          } else {
+           // console.log('No valid discount code found, clearing display');
+            updateDiscountDisplayUI('');
+          }
+        } else {
+          updateDiscountDisplayUI('');
+          //console.log('Force updated applied coupon display - cleared (no discount)');
+        }
+        
+        // 3. Force visual update
+        setTimeout(() => {
+          if (discountRowEl) {
+            discountRowEl.offsetHeight; // Force reflow
+          }
+          const appliedCouponsBtn = document.querySelector('.applied-coupons-btn');
+          if (appliedCouponsBtn) {
+            appliedCouponsBtn.offsetHeight; // Force reflow
+          }
+        }, 50);
+      })
+      .catch(error => {
+       // console.error('Error in force update all discount elements:', error);
+      });
+  };
+  
+  // Function to check and sync discount display on cart updates
+  window.syncDiscountDisplayOnCartUpdate = function() {
+    // Use the comprehensive force update function
+    if (window.forceUpdateAllDiscountElements) {
+      window.forceUpdateAllDiscountElements();
+    }
+  };
+  
+  // Enhanced page load check - run multiple times to ensure consistency
+  setTimeout(() => {
+    window.checkAndUpdateDiscountDisplay();
+  }, 500);
+  
+  setTimeout(() => {
+   // console.log('Second discount display check on page load...');
+    window.checkAndUpdateDiscountDisplay();
+  }, 1500);
+  
+  setTimeout(() => {
+    //console.log('Final discount display check on page load...');
+    window.checkAndUpdateDiscountDisplay();
+  }, 3000);
+
+  // Restores coupon button states after DOM is re-rendered by onCartUpdate
+  window.restoreDiscountButtonStates = async function() {
+    const storefrontAccessToken = "df3b1660e6859f510b854dc282eccdf9";
+
+    // Get current applied discount from GraphQL (source of truth)
+    let activeCode = window.currentAppliedDiscountCode || '';
+
+    if (!activeCode) {
+      try {
+        const cartData = window.CartDataManager
+          ? await window.CartDataManager.getCart()
+          : await fetch('/cart.js').then(r => r.json());
+
+        const cartToken = cartData.token;
+
+        const response = await fetch(`https://powerlook-apparels.myshopify.com/api/2024-10/graphql.json`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-shopify-storefront-access-token": storefrontAccessToken,
+          },
+          body: JSON.stringify({
+            query: `query { cart(id: "gid://shopify/Cart/${cartToken}") { discountCodes { code applicable } } }`
+          })
+        });
+
+        const result = await response.json();
+        activeCode = result?.data?.cart?.discountCodes?.[0]?.code || '';
+
+        if (activeCode) {
+          window.currentAppliedDiscountCode = activeCode;
+        }
+      } catch (e) {
+        // fall through with empty activeCode
+      }
+    }
+
+    // Re-query buttons after DOM re-render
+    const allButtons = document.querySelectorAll('.apply-discount-button');
+
+    allButtons.forEach(btn => {
+      const btnCode = (btn.dataset.discountCode || btn.dataset.code || '').toUpperCase();
+      const isApplied = activeCode && btnCode && btnCode === activeCode.toUpperCase();
+      const wasDisabled = btn.classList.contains('disable-invalid');
+
+      if (isApplied) {
+        btn.textContent = 'Remove';
+        btn.dataset.buttonState = 'remove';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.classList.remove('disable-invalid');
+
+        // Re-attach click handler so Remove actually works
+        btn.onclick = function(e) {
+          e.preventDefault();
+          window.applyDiscountCode('', this, activeCode);
+        };
+
+        // Mark parent card as applied
+        const card = btn.closest('.coupon-card');
+        if (card) card.classList.add('is-applied');
+
+      } else if (wasDisabled) {
+        btn.textContent = 'Invalid';
+        btn.dataset.buttonState = 'invalid';
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+      } else {
+        btn.textContent = 'Apply';
+        btn.dataset.buttonState = 'apply';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+
+        btn.onclick = function(e) {
+          e.preventDefault();
+          const code = this.dataset.discountCode || this.dataset.code;
+          window.applyDiscountCode(code, this, '');
+        };
+
+        const card = btn.closest('.coupon-card');
+        if (card) card.classList.remove('is-applied');
+      }
+    });
+
+    // Also update the applied coupon display strip
+    if (activeCode) {
+      updateDiscountDisplayUI(activeCode);
+    }
+  };
+});
+
+// Enhanced cart update listeners
+document.addEventListener('cart:updated', function() {
+  setTimeout(() => {
+    if (typeof window.syncDiscountDisplayOnCartUpdate === 'function') {
+      window.syncDiscountDisplayOnCartUpdate();
+    }
+    // Also restore button states after any cart update
+    if (typeof window.restoreDiscountButtonStates === 'function') {
+      window.restoreDiscountButtonStates();
+    }
+  }, 400); // slightly longer delay to let DOM re-render finish first
+});
+
+document.addEventListener('cart:refresh', function() {
+  //console.log('Cart refresh event received, syncing discount display...');
+  setTimeout(() => {
+    if (typeof window.syncDiscountDisplayOnCartUpdate === 'function') {
+      window.syncDiscountDisplayOnCartUpdate();
+    }
+  }, 300);
+});
+
+// Debug functions
+window.testDiscountDisplay = function(code) {
+ // console.log('Testing discount display with code:', code);
+  updateDiscountDisplayUI(code);
+};
+
+window.debugButtonStates = function() {
+  const viewAllBtn = document.querySelector('.view-all-coupons-btn');
+  const appliedCouponsBtn = document.querySelector('.applied-coupons-btn');
+  const appliedCurrentCoupon = document.querySelector('.applied_current_coupen');
+   
+  if (viewAllBtn) {
+   // console.log('- Display:', window.getComputedStyle(viewAllBtn).display);
+   // console.log('- Visibility:', window.getComputedStyle(viewAllBtn).visibility);
+   // console.log('- Inline style:', viewAllBtn.style.display);
+   // console.log('- Classes:', viewAllBtn.className);
+  }
+  
+  console.log('Applied Coupons Button:', appliedCouponsBtn);
+  if (appliedCouponsBtn) {
+   // console.log('- Display:', window.getComputedStyle(appliedCouponsBtn).display);
+   // console.log('- Visibility:', window.getComputedStyle(appliedCouponsBtn).visibility);
+    //console.log('- Inline style:', appliedCouponsBtn.style.display);
+   // console.log('- Classes:', appliedCouponsBtn.className);
+  }
+  
+ // console.log('Applied Current Coupon:', appliedCurrentCoupon);
+  if (appliedCurrentCoupon) {
+    //console.log('- Text content:', appliedCurrentCoupon.textContent);
+  }
+ // console.log('=== END DEBUG ===');
+};
+
+window.debugCartDiscountData = function() {
+  const fetchPromise = window.CartDataManager 
+    ? window.CartDataManager.getCart() 
+    : fetch('/cart.js').then(res => res.json());
+  
+  fetchPromise
+    .then(cart => {
+     // console.log('=== CART DISCOUNT DATA DEBUG ===');
+     // console.log('Full cart object:', cart);
+    // console.log('total_discount:', cart.total_discount);
+     // console.log('discount_applications:', cart.discount_applications);
+     // console.log('discount_codes:', cart.discount_codes);
+     // console.log('cart_level_discount_applications:', cart.cart_level_discount_applications);
+      
+      if (cart.discount_applications && cart.discount_applications.length > 0) {
+       // console.log('First discount application:', cart.discount_applications[0]);
+        const discountApp = cart.discount_applications[0];
+      //console.log('- code:', discountApp.code);
+       // console.log('- title:', discountApp.title);
+       // console.log('- value:', discountApp.value);
+       // console.log('- type:', discountApp.type);
+       // console.log('- amount:', discountApp.amount);
+      }
+      
+      if (cart.discount_codes && cart.discount_codes.length > 0) {
+        //console.log('First discount code:', cart.discount_codes[0]);
+      }
+      
+      //console.log('=== END CART DEBUG ===');
+    })
+    .catch(error => {
+      console.error('Error fetching cart data:', error);
+    });
+};
+
+</script>
+
+<script> 
+// Refresh cart discount data 
+(function() {
+  'use strict';
+  
+  // Configuration
+  const config = {
+    storefrontAccessToken: "df3b1660e6859f510b854dc282eccdf9",
+    shopDomain: "powerlook-apparels.myshopify.com",
+    refreshDelay: 500,
+    maxRetries: 3,
+    retryDelay: 1000
+  };
+
+  // State management
+  let refreshInProgress = false;
+  let lastCartToken = null;
+  let currentAppliedDiscount = '';
+
+  // Main cart update event listener
+  document.addEventListener('cart:updated', function(evt) {
+    console.log('Cart updated event detected:', evt.detail.cart);
+    handleCartUpdate(evt.detail.cart);
+  });
+
+  // Additional cart refresh listeners
+  document.addEventListener('cart:refresh', function(evt) {
+    console.log('Cart refresh event detected');
+    setTimeout(() => {
+      refreshCompleteDiscountSystem();
+    }, config.refreshDelay);
+  });
+
+  // Handle cart updates with debouncing
+  function handleCartUpdate(cartData) {
+    if (refreshInProgress) {
+      console.log('Refresh already in progress, skipping...');
+      return;
+    }
+
+    refreshInProgress = true;
+    
+    setTimeout(() => {
+      refreshCompleteDiscountSystem(cartData);
+    }, config.refreshDelay);
+  }
+
+  // Main function to refresh the complete discount system
+  async function refreshCompleteDiscountSystem(providedCartData = null) {
+    try {
+      console.log('Starting complete discount system refresh...');
+      
+      // Get fresh cart data
+      const cartData = providedCartData || await fetchCartData();
+      if (!cartData) {
+        console.error('Failed to get cart data');
+        refreshInProgress = false;
+        return;
+      }
+
+      // Update cart-based calculations
+      await updateCartBasedCalculations(cartData);
+      
+      // Refresh discount button states
+      await refreshDiscountButtonStates(cartData);
+      
+      // Update applied discount display
+      await updateAppliedDiscountDisplay(cartData);
+      
+      // Refresh coupon validation
+      await refreshCouponValidation(cartData);
+      
+      // Update order summary
+      await updateOrderSummary(cartData);
+      
+      // Re-initialize event handlers if needed
+      reinitializeEventHandlers();
+      
+      console.log('Complete discount system refresh completed successfully');
+      
+      
+    } catch (error) {
+      console.error('Error in refreshCompleteDiscountSystem:', error);
+    } finally {
+      refreshInProgress = false;
+    }
+  }
+
+  // Fetch fresh cart data using CartDataManager
+  async function fetchCartData() {
+    try {
+      return window.CartDataManager 
+        ? await window.CartDataManager.getCart() 
+        : await fetch('/cart.js').then(res => res.json());
+    } catch (error) {
+      console.error('Error fetching cart data:', error);
+      return null;
+    }
+  }
+
+  // Update cart-based calculations (quantities, totals, collections)
+  async function updateCartBasedCalculations(cartData) {
+    // Recalculate cart totals and quantities
+    const cartTotal = cartData.total_price / 100;
+    const cartQuantity = cartData.item_count;
+    
+    // Update cart collections
+    let cartCollections = "";
+    cartData.items.forEach(item => {
+      if (item.product && item.product.collections) {
+        item.product.collections.forEach(col => {
+          if (!cartCollections.includes(col.id)) {
+            cartCollections += col.id + ",";
+          }
+        });
+      }
+    });
+
+    // Store updated values globally for discount validation
+    window.cartDiscountData = {
+      total: cartTotal,
+      quantity: cartQuantity,
+      collections: cartCollections,
+      items: cartData.items
+    };
+
+    console.log('Updated cart calculations:', window.cartDiscountData);
+  }
+
+  // Refresh all discount button states based on current cart
+  async function refreshDiscountButtonStates(cartData) {
+    const discountButtons = document.querySelectorAll('.apply-discount-button');
+    const cartTotal = cartData.total_price / 100;
+    const cartQuantity = cartData.item_count;
+    
+    // Get cart collections
+    let cartCollections = "";
+    cartData.items.forEach(item => {
+      if (item.product && item.product.collections) {
+        item.product.collections.forEach(col => {
+          if (!cartCollections.includes(col.id)) {
+            cartCollections += col.id + ",";
+          }
+        });
+      }
+    });
+
+    // Get currently applied discount
+    const appliedDiscount = await getCurrentAppliedDiscount(cartData);
+    
+    discountButtons.forEach(button => {
+      const buttonCode = button.dataset.discountCode || button.dataset.code;
+      const minQuantity = parseInt(button.dataset.minQuantity) || 0;
+      const minValue = parseFloat(button.dataset.minValue) || 0;
+      
+      // Check if this button's discount is currently applied
+      const isCurrentlyApplied = buttonCode === appliedDiscount;
+      
+      // Validate discount eligibility
+      let isValid = true;
+      let disableReason = '';
+      
+      // Quantity validation
+      if (minQuantity > 0 && cartQuantity < minQuantity) {
+        isValid = false;
+        disableReason = `Minimum ${minQuantity} items required`;
+      }
+      
+      // Value validation
+      if (minValue > 0 && cartTotal < minValue) {
+        isValid = false;
+        disableReason = `Minimum ₹${minValue} required`;
+      }
+      
+      // Collection validation (if applicable)
+      // This would need to be implemented based on your collection validation logic
+      
+      // Update button state
+      updateIndividualButtonState(button, isCurrentlyApplied, isValid, disableReason);
+    });
+
+    console.log('Refreshed all discount button states');
+  }
+
+  // Update individual button state
+  function updateIndividualButtonState(button, isApplied, isValid, disableReason) {
+    if (isApplied) {
+      // No need to update button state because it getting refresh on remove coupon
+    } else if (!isValid) {
+      button.textContent = "Invalid";
+      button.dataset.buttonState = "invalid";
+      button.disabled = true;
+      button.style.opacity = "0.5";
+      button.title = disableReason;
+      button.classList.add('disable-invalid');
+    } else {
+      button.textContent = "Apply";
+      button.dataset.buttonState = "apply";
+      button.disabled = false;
+      button.style.opacity = "1";
+      button.title = "";
+      button.classList.remove('disable-invalid');
+    }
+  }
+
+  // Get currently applied discount from cart or GraphQL
+  async function getCurrentAppliedDiscount(cartData) {
+    // Check stored code first (most reliable)
+    const cartHasDiscount = cartData.total_discount > 0 || 
+    (cartData.discount_applications && cartData.discount_applications.length > 0);
+  
+    if (window.currentAppliedDiscountCode && cartHasDiscount) {
+      return window.currentAppliedDiscountCode;
+    }
+    
+    // If cart has no discount, clear the stored code
+    if (!cartHasDiscount) {
+      window.currentAppliedDiscountCode = '';
+      return '';
+    }
+    
+    // Check cart data for discount
+    if (cartData.total_discount > 0 && cartData.discount_applications && cartData.discount_applications.length > 0) {
+      const discountApp = cartData.discount_applications[0];
+      const code = discountApp.code || discountApp.title || '';
+      if (code) {
+        window.currentAppliedDiscountCode = code;
+        return code;
+      }
+    }
+
+    // Fallback to GraphQL query
+    try {
+      const cartToken = cartData.token;
+      const response = await fetch(`https://${config.shopDomain}/api/2024-10/graphql.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-shopify-storefront-access-token": config.storefrontAccessToken,
+        },
+        body: JSON.stringify({
+          query: `
+            query {
+              cart(id: "gid://shopify/Cart/${cartToken}") {
+                discountCodes {
+                  code
+                  applicable
+                }
+              }
+            }
+          `,
+        }),
+      });
+      
+      const result = await response.json();
+      const discountCode = result?.data?.cart?.discountCodes?.[0]?.code || "";
+      if (discountCode) {
+        window.currentAppliedDiscountCode = discountCode;
+      }
+      return discountCode;
+      
+    } catch (error) {
+      console.error("Error fetching applied discount from GraphQL:", error);
+      return '';
+    }
+  }
+
+  // Update the applied discount display UI
+  async function updateAppliedDiscountDisplay(cartData) {
+    const appliedDiscount = await getCurrentAppliedDiscount(cartData);
+    currentAppliedDiscount = appliedDiscount;
+    
+    if (window.updateDiscountDisplayUI) {
+      window.updateDiscountDisplayUI(appliedDiscount);
+      console.log('Updated applied discount display:', appliedDiscount);
+    }
+  }
+
+  // Refresh coupon validation for manual input
+  async function refreshCouponValidation(cartData) {
+    const manualInput = document.getElementById('manualCouponInput');
+    const manualApplyBtn = document.querySelector('#manualCouponInput + .apply-discount-button');
+    
+    if (manualInput && manualApplyBtn && manualInput.value.trim()) {
+      const couponCode = manualInput.value.trim();
+      const isValid = await validateCouponForCart(couponCode, cartData);
+      
+      if (isValid.valid) {
+        manualApplyBtn.textContent = "Apply";
+        manualApplyBtn.dataset.buttonState = "apply";
+        manualApplyBtn.disabled = false;
+        manualApplyBtn.style.opacity = "1";
+        manualApplyBtn.title = "";
+      } else {
+        manualApplyBtn.textContent = "Invalid";
+        manualApplyBtn.dataset.buttonState = "invalid";
+        manualApplyBtn.disabled = true;
+        manualApplyBtn.style.opacity = "0.5";
+        manualApplyBtn.title = isValid.reason;
+      }
+    }
+  }
+
+  // Validate coupon against current cart state
+  async function validateCouponForCart(couponCode, cartData) {
+    if (cartData.items.some(item => item.discount_allocations && item.discount_allocations.length > 0)) {
+      return { valid: false, reason: 'Cannot combine with already-discounted items' };
+    }
+    const cartTotal = cartData.total_price / 100;
+    const cartQuantity = cartData.item_count;
+    
+    // Find the discount button for this code to get requirements
+    const discountButton = document.querySelector(`[data-discount-code="${couponCode.toUpperCase()}"]`);
+    
+    if (!discountButton) {
+      return { valid: false, reason: 'Coupon code not found' };
+    }
+    
+    const minQuantity = parseInt(discountButton.dataset.minQuantity) || 0;
+    const minValue = parseFloat(discountButton.dataset.minValue) || 0;
+    
+    if (minQuantity > 0 && cartQuantity < minQuantity) {
+      return { valid: false, reason: `Minimum ${minQuantity} items required` };
+    }
+    
+    if (minValue > 0 && cartTotal < minValue) {
+      return { valid: false, reason: `Minimum ₹${minValue} required` };
+    }
+    
+    return { valid: true, reason: '' };
+  }
+
+  // Update order summary with current cart data
+  async function updateOrderSummary(cartData) {
+    if (window.updateDiscountSummaryFromCart) {
+      window.updateDiscountSummaryFromCart(cartData);
+    }
+    
+    if (window.forceUpdateOrderSummary) {
+      window.forceUpdateOrderSummary(cartData);
+    }
+    
+    console.log('Updated order summary');
+  }
+
+  // Re-initialize event handlers to ensure they work after DOM updates
+  function reinitializeEventHandlers() {
+    // Remove existing event listeners to prevent duplicates
+    const discountButtons = document.querySelectorAll('.apply-discount-button');
+    
+    discountButtons.forEach(button => {
+      // Clone button to remove all event listeners
+      const newButton = button.cloneNode(true);
+      button.parentNode.replaceChild(newButton, button);
+      
+      // Add fresh event listener
+      newButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        const state = this.dataset.buttonState;
+        const code = this.dataset.discountCode || this.dataset.code;
+        
+        if (state === 'invalid') {
+          return; // Don't process invalid buttons
+        }
+        
+        if (window.applyDiscountCode) {
+          const discountCode = state === "apply" ? code : "";
+          const currentCode = state === "remove" ? code : "";
+          window.applyDiscountCode(discountCode, this, currentCode);
+        }
+      });
+    });
+
+    // Re-initialize manual input handler
+    const manualApplyBtn = document.querySelector('#manualCouponInput + .apply-discount-button');
+    if (manualApplyBtn) {
+      const newManualBtn = manualApplyBtn.cloneNode(true);
+      manualApplyBtn.parentNode.replaceChild(newManualBtn, manualApplyBtn);
+      
+      newManualBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const manualInput = document.getElementById('manualCouponInput');
+        const code = manualInput ? manualInput.value.trim() : '';
+        
+        if (code && window.applyDiscountCode) {
+          const state = this.dataset.buttonState;
+          const discountCode = state === "apply" ? code : "";
+          const currentCode = state === "remove" ? code : "";
+          window.applyDiscountCode(discountCode, this, currentCode);
+        }
+      });
+    }
+
+    console.log('Re-initialized event handlers');
+  }
+
+  // Force refresh function that can be called externally
+  window.forceRefreshDiscountSystem = function() {
+    console.log('Force refreshing discount system...');
+    refreshCompleteDiscountSystem();
+  };
+
+  // Enhanced cart update detection with mutation observer
+  function setupEnhancedCartDetection() {
+    // Watch for cart drawer updates
+    const cartDrawer = document.querySelector('#CartDrawer, .cart-drawer, [data-cart-drawer]');
+    if (cartDrawer) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            console.log('Cart drawer updated, refreshing discount system...');
+            setTimeout(() => {
+              refreshCompleteDiscountSystem();
+            }, config.refreshDelay);
+          }
+        });
+      });
+      
+      observer.observe(cartDrawer, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    // Watch for quantity input changes
+    const quantityInputs = document.querySelectorAll('input[name="quantity"], input[data-quantity-input]');
+    quantityInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        console.log('Quantity changed, will refresh discount system after cart update...');
+      });
+    });
+  }
+
+  // Initialize on DOM ready
+  function initializeDiscountRefreshSystem() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        setupEnhancedCartDetection();
+        console.log('Discount refresh system initialized');
+      });
+    } else {
+      setupEnhancedCartDetection();
+      console.log('Discount refresh system initialized');
+    }
+  }
+
+  // Start the system
+  initializeDiscountRefreshSystem();
+
+  // Expose key functions globally for debugging
+  window.discountRefreshSystem = {
+    refresh: refreshCompleteDiscountSystem,
+    getCurrentDiscount: getCurrentAppliedDiscount,
+    validateCoupon: validateCouponForCart,
+    getCartData: window.cartDiscountData,
+    isRefreshing: () => refreshInProgress
+  };
+
+})();
+</script>

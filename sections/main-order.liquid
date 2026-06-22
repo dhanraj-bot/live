@@ -1,0 +1,697 @@
+
+{% render 'quickreturns_block' %}
+
+<!-- put this at top of the file -->
+<!-- start Cancellable app code, this is for checking the order financial status and time limit for cancellation -->
+{% assign uncancellable_finance_status = "refunded,partially_refunded,voided" | split:"," %}
+{% assign uncancellable_fulfillment_status = "fulfilled,partial" | split:"," %}
+{% assign cancellable_today_time = 'now' | date: '%s' %}
+{% assign cancellable_today_timestamp = 'now' | date: '%s' | plus: 0 %}
+{% assign time_limit_seconds = shop.metafields.cancellable.time_limit_seconds.value | plus: 0 %}
+<!-- end Cancellable app code -->
+
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+{%- style -%}
+  .customer__header svg { transform: rotate(180deg); }
+{%- endstyle -%}
+
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+
+<style>
+.order-details-container { display: grid; grid-template-columns: 2fr 1fr; gap: 38px; }
+.order-header span { position: relative; font-size: 13px; display: inline-block; font-weight: 500; color: #75777d; }
+.order-details-container .product-item { display: flex; gap: 15px; margin-bottom: 28px; margin-top: 20px; }
+.order-details-container .product-item img { width: 66px; height: 100%; border-radius: 2px; }
+.order-details-container .product-info h4 { font-size: 14px; font-weight: 600; padding-bottom: 8px; padding-top: 8px; }
+.order-details-container .product-info p { margin: 2px 0; font-size: 12px; }
+.order-details-container .sale-note { color: #d93025; font-size: 12px; }
+.order-details-container .tracking-status { padding: 20px 0 30px; border-bottom: 1px solid #efefef; }
+.status { padding: 5px 10px; border-radius: 20px; font-weight: bold; }
+.status.ordered { background: #e0f7e9; color: #2d8a4f; }
+.status.cancelled { background: #fdecea; color: #d93025; }
+.summary-box { display: block; width: auto; margin-top: 50px; padding-left: 66px; border-left: 1px solid #efefef; height: 100%; }
+.summary-box h3 { display: block; color: #252931; font-size: 16px; font-weight: 600; margin-bottom: 40px; }
+.summary-box p { display: flex; justify-content: space-between; margin: 5px 0; }
+.delivery-box { margin-top: 25px; display: flex; gap: 20px; }
+.delivery-box h3 { margin-bottom: 5px; display: block; color: #252931; font-size: 16px; font-weight: 600; }
+.order-header h1.customer__title span { font-size: 24px; margin-bottom: 10px; font-weight: 600; color: #111d2d; line-height: normal; }
+.details_aligned_ctmdata { opacity: .72; color: #252931; font-size: 12px; font-weight: 500; display: flex; align-items: center; line-height: normal; }
+.order-header { margin-bottom: 40px; line-height: normal; }
+.delivery-box p { color: #252931; font-size: 14px; }
+p.contact_details_order { font-weight: 600; }
+.delivery_payment_info, .delivery_type_info { width: 50%; }
+.details_aligned_ctmdata span {margin: 0px 4px;}
+.inline-swatch { display:inline-block; width:15px; height:15px; border-radius:2px; border:none; box-shadow: 0 0 0 1px #c2c2c280; margin-left: 2px; }
+.order-actions-btns {margin-top: 30px;}
+.order-actions-btns a {font-size: 100%;}
+/* Mobile & small tablet adjustments */
+@media (max-width: 1024px) {
+  .order-details-container {
+    grid-template-columns: 1fr;
+    gap: 0px;
+  }
+  .summary-box {
+    padding-left: 0;
+    border-left: none;
+    margin-top: 20px;
+  }
+
+  .delivery-box {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .delivery_payment_info,
+  .delivery_type_info {
+    width: 100%;
+  }
+}
+
+/* Smaller mobile phones */
+@media (max-width: 767px) {
+.order-header h1.customer__title span {
+  font-size: 20px;
+}
+.order-header span {
+  font-size: 12px;
+  {% comment %} display: block; {% endcomment %}
+  margin-top: 5px;
+}
+.order-details-container .product-item img {
+  max-width: 60px;
+  height: auto;
+}
+.order-details-container .product-info h4 {
+  font-size: 12px;
+  padding-top: 0;
+  line-height: normal;
+}
+.details_aligned_ctmdata {
+  font-size: 11px;
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+.order-details-container .tracking-status {
+  padding: 10px 0 20px;
+}
+.summary-box p {
+  font-size: 13px;
+}
+.summary-box h3,
+.delivery-box h3 {
+  font-size: 15px;
+}
+.tracking-status {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.order-actions-btns a { 
+  padding: 0 20px;
+}
+}
+</style>
+
+<div class="customer order section section--padding" style="--section-padding-top: {{ section.settings.padding_top }}px;--section-padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="page-width">
+    <div class="order-details-container">
+  
+      <!-- Left Column -->
+      <div>
+        <!-- Order Header -->
+        <div class="order-header">
+          <h1 class="customer__title">
+            <span>Order Details</span>
+            <td>
+              {% unless order.cancelled %}
+              <a target='_blank' 
+                href='/apps/download-pdf/orders/d7bfea227c4cb4d3b84c/{{ order.id | times: 6664 }}/{{ order.name | handleize }}.pdf'
+              >Download Invoice</a>
+            {% endunless %}
+            </td>
+          </h1>
+          <span>Ordered on {{ order.created_at | date: "%d %b, %Y" }} &nbsp;|&nbsp; Order ID {{ order.name }}</span>
+        </div>
+          {% assign tracking_num = '' %}
+                    {%- for line_item in order.line_items -%}
+                      {%- if line_item.fulfillment.tracking_number -%}
+                        {% assign tracking_num = line_item.fulfillment.tracking_number %}
+                        {%- endif -%}
+              {%- endfor -%}
+            
+          {% if tracking_num != '' %}
+            <iframe
+              width="100%"
+              height="450"
+              src="https://powerlook.clickpost.ai/?app_only=true&waybill={{ tracking_num }}"
+              title="ClickPost"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            ></iframe>
+
+          {% endif %}
+
+        <!-- Product List -->
+        {% for item in order.line_items %}
+          {% assign size_value = '' %}
+          {% assign color_value = '' %}
+          {% assign other_pairs = '' %}
+          {% for opt_name in item.product.options %}
+            {% capture opt_val %}
+              {% if forloop.index == 1 %}{{ item.variant.option1 }}
+              {% elsif forloop.index == 2 %}{{ item.variant.option2 }}
+              {% else %}{{ item.variant.option3 }}{% endif %}
+            {% endcapture %}
+            {% assign dn = opt_name | downcase %}
+            {% assign ov = opt_val | strip %}
+            {% if ov != blank %}
+              {% if dn contains 'size' %}
+                {% assign size_value = ov %}
+              {% elsif dn contains 'color' or dn contains 'colour' %}
+                {% assign color_value = ov %}
+              {% else %}
+                {% if other_pairs == '' %}
+                  {% assign other_pairs = opt_name | append: ': ' | append: ov %}
+                {% else %}
+                  {% assign other_pairs = other_pairs | append: ' · ' | append: opt_name | append: ': ' | append: ov %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          <div class="product-item">
+            {% if item.image %}
+              <a href="{{ item.url }}"><img src="{{ item.image | img_url: '200x' }}" alt="{{ item.product.title }}" width="" height=""></a>
+            {% endif %}
+            <div class="product-info">
+              <a href="{{ item.url }}"><h4>{{ item.product.title }}</h4></a>
+
+              <div class="details_aligned_ctmdata">
+                {{ item.final_line_price | money }}
+                {% if color_value != blank %}
+                  <span>·</span>
+                  Color: <span class="inline-swatch" style="background: {{ color_value }};"></span>
+                {% endif %}
+                {% if size_value != blank %}
+                  <span>·</span>Size: {{ size_value }}
+                {% endif %}
+                {% if other_pairs != blank %}
+                  <span>·</span> {{ other_pairs }}
+                {% endif %}
+                {% if item.quantity %}
+                  <span>·</span>{{ item.quantity }} Item(s) 
+                {% endif %}
+                {% if item.sku %}
+                  <span>·</span> SKU: {{ item.sku }}
+                {% endif %}
+              </div>
+
+              {% if item.properties._no_return_exchange == 'true' %}
+                <p class="order_sale-note" style="color:red;">This is a sale item and cannot be returned or exchanged.</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+
+        <!-- Tracking Status -->
+        <div class="tracking-status">
+{% if order.financial_status == 'refunded' or order.financial_status == 'partially_refunded' or order.fulfillment_status == 'returned' %}
+  <span class="btn btn--primary">Order returned</span> 
+{% else %}
+           {% if order.cancelled %}
+            <span class="btn btn--primary">Order Cancelled</span>
+          {% else %}
+ {% assign tracking = false %}
+          {%- for line_item in order.line_items -%}
+            {%- if line_item.fulfillment.tracking_number -%}
+               {% assign tracking = true %}
+               {%- endif -%}
+    {%- endfor -%}
+    {% if tracking %}
+  <a class="OrderListItems_tracks btn btn--primary" target="_blank" href="https://powerlook.clickpost.ai/my-order?order_id={{ order.name | remove:'#' }}">
+    <img alt="Track Order" loading="lazy" src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/location_9989d91e-ec82-4307-b4db-53264a0e2df7.svg?v=1755166151">
+    <span>Track order</span>
+  </a>
+  {% endif %}
+  {% endif %}
+ {% endif %}
+        </div>
+
+        <!-- Delivery Address + Payment Method -->
+        <div class="delivery-box">
+          <div class="delivery_type_info">
+            <h3>Delivery Address</h3>
+            {{ order.shipping_address | format_address }}
+            {% if order.customer.phone %}
+              <p class="contact_details_order">Contact: {{ order.customer.phone }}</p>
+            {% endif %}
+          </div>
+          <div class="delivery_payment_info">
+            <h3>Payment Method</h3>
+            <p style="min-height: 30px;">
+            {% if order.unique_gateways %}
+            {% for gateway in order.unique_gateways %}
+            
+            {% case gateway %}
+            {% when "cash_on_delivery" %}
+            Cash on Delivery
+            {% when "razorpay" %}
+            Razorpay
+            {% when "manual" %}
+            Manual Payment
+            {% else %}
+            {{ gateway | replace: "_", " " | capitalize }}
+            {% endcase %}
+            
+            {% endfor %}
+            {% endif %} 
+            </p>
+
+             {% if tracking_num != '' %}
+              <div class="tracking_number_info">
+              <p class="contact_details_order">Tracking Number:  {{ tracking_num }}</p> 
+              </div>
+              {% endif %}
+
+          </div>
+         
+        </div>
+      </div>
+
+      <!-- Right Column: Order Summary -->
+      <div class="summary-box">
+        <h3>Order Summary</h3>
+
+        <p><span>Total MRP</span> <span>{{ order.line_items_subtotal_price | money }}</span></p>
+
+        {% if order.total_discounts > 0 %}
+          <p><span>Discount</span> <span>-{{ order.total_discounts | money }}</span></p>
+        {% endif %}
+
+        {% assign total_tax = 0 %}
+        {% for tax in order.tax_lines %}
+          {% assign total_tax = total_tax | plus: tax.price %}
+        {% endfor %}
+        <p><span>Estimated Tax</span> <span>{{ total_tax | divided_by: 100.0 | round: 2 }}</span></p>
+
+        {% assign shipping_total = 0 %}
+        {% for m in order.shipping_methods %}
+          {% assign shipping_total = shipping_total | plus: m.price %}
+        {% endfor %}
+        {% if shipping_total > 0 %}
+          <p><span>Shipping Fee</span> <span>{{ shipping_total | money }}</span></p>
+        {% endif %}
+
+        {% if order.total_duties %}
+          <p><span>Duties</span> <span>{{ order.total_duties | money }}</span></p>
+        {% endif %}
+
+        {% if gateways contains 'Cash on Delivery' %}
+          <p><span>COD Fee</span><span>{{ 100 | money }}</span></p>
+        {% endif %}
+        
+        <p><strong>Order Total</strong> <strong>{{ order.total_price | money_with_currency }}</strong></p>
+ 
+          {% unless order.cancelled %}
+          <div class="order-actions-btns"> 
+            <!-- start Cancellable app code -->
+            {% assign cancellable_cutoff_time = order.metafields.cancellable.cutoff_timestamp | date: '%s' %}
+            {% if uncancellable_finance_status contains order.financial_status or uncancellable_fulfillment_status contains order.fulfillment_status or order.cancelled or order.tags contains 'cannot-cancel' or cancellable_today_time > cancellable_cutoff_time %}
+              {% assign can_cancel = false %}
+            {% elsif time_limit_seconds > 0 %}
+              {% assign limit_time = order.created_at | date: '%s' | plus: time_limit_seconds %}
+              {% if cancellable_today_timestamp > limit_time %}
+                {% assign can_cancel = false %}
+              {% else %}
+                {% assign can_cancel = true %}
+              {% endif %}
+            {% else %}
+              {% assign can_cancel = true %}
+            {% endif %}
+
+
+            {% if can_cancel %}
+              {% comment %} Hide cancel button for exchange orders {% endcomment %}
+              {% assign has_exchange_order_tag = false %}
+              {% for tag in order.tags %}
+                {% if tag contains 'EXCHANGE_ORDER' %}
+                  {% assign has_exchange_order_tag = true %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+              {% unless has_exchange_order_tag %}
+              <div id="cancellable-button-rows" style="display: inline-block;">
+                <!-- the cancel button -->
+              {% unless order.fulfillment_status == 'shipped' %}
+                <button class="button btn btn--primary cstm-order-cancel" aria-label="Cancel order" data-action="cancel" data-order="{{ order.id }}" data-shop="{{ shop.permanent_domain }}" onclick="window.cancellable_product_ids = '{{ order.line_items | map: 'product_id' | join: ','}}'; window.cancellable_token = '{{ order.confirmation_number }}'; window.cancellable_customer_id = '{{ customer.id }}'; window.cancellable_order_id = '{{ order.id }}'; cancellable_show_cancel_modal();">Cancel Order</button>
+              {% endunless %}
+              </div>
+              {% endunless %}
+            {% elsif order.cancelled %}
+            <span>Cancelled</span>
+            {% endif %}
+          <!-- end Cancellable app code -->
+
+ {% comment %} {% unless order.financial_status == 'refunded' or order.financial_status == 'partially_refunded' or order.fulfillment_status == 'returned' %}         
+ <!-- Return/Exchange code -->
+ {% if order.fulfillment_status == 'fulfilled' %}
+  {% assign return_base_date = '' %}
+  {% assign has_delivery_tag = false %}
+  
+  {% comment %} Check for delivery date in order tags {% endcomment %}
+  {% for tag in order.tags %}
+    {% if tag contains 'Deliverydate_' %}
+      {% assign has_delivery_tag = true %}
+      {% assign delivery_date_string = tag | remove: 'Deliverydate_' %}
+      {% assign return_base_date = delivery_date_string | date: "%s" | times: 1 %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+  
+  {% comment %} If no delivery date tag, use fulfillment date {% endcomment %}
+  {% if has_delivery_tag == false %}
+    {% for line_item in order.line_items %}
+      {% if line_item.fulfillment %}
+        {% assign return_base_date = line_item.fulfillment.created_at | date: "%s" | times: 1 %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  
+  {% comment %} Calculate 10 days period and check if button should be shown {% endcomment %}
+  {% if return_base_date != '' %}
+    {% assign seven_days_later = return_base_date | plus: 864000 %}
+    {% assign current_time = 'now' | date: "%s" | times: 1 %}
+    
+    {% if current_time <= seven_days_later %}
+      <button onclick="requestReturn(this, '{{ shop.domain }}', '{{ order.id }}', '{{ customer.id }}')" 
+              class="return-btn button btn btn--primary" 
+              data-order='{{ order.id }}'>
+        Return / Exchange
+      </button>
+    {% else %}
+      <p class="return_exchange_messages">Return / Exchange period has expired.</p>
+    {% endif %}
+  {% endif %}
+{% endif %}
+ <!-- Return/Exchange code -->
+  {% endunless %} {% endcomment %}
+
+  {% unless order.financial_status == 'refunded' or order.financial_status == 'partially_refunded' or order.fulfillment_status == 'returned' %}
+  <!-- Return/Exchange code -->
+  {% if order.fulfillment_status == 'fulfilled' %}
+
+    {% assign delivered_date = blank %}
+    {% assign history = order.metafields.appbrew.history %}
+
+    {% if history != blank %}
+
+      {% comment %} Split history into individual lines/entries {% endcomment %}
+      {% assign history_string = history | append: '' %}
+      {% assign history_lines = history_string | newline_to_br | split: '<br />' %}
+
+      {% comment %} Loop through all lines and capture the LATEST DELIVERED entry {% endcomment %}
+      {% for line in history_lines %}
+      {% if line contains 'DELIVERED' %}
+      {% assign cleaned_line = line | strip | replace: '	', ' ' %}
+      {% assign parts = cleaned_line | split: ' ' %}
+
+      {% comment %} The timestamp is the last non-empty part of the line {% endcomment %}
+          {% for part in parts reversed %}
+              {% assign trimmed = part | strip %}
+                {% if trimmed contains 'T' and trimmed contains 'Z' %}
+                  {% assign delivered_date = trimmed %}
+                {% break %}
+              {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+
+    {% endif %}
+
+    {% comment %} Only proceed if we found a DELIVERED entry with a valid date {% endcomment %}
+    {% if delivered_date != blank %}
+
+      {% assign delivered_timestamp = delivered_date | date: "%s" | plus: 0 %}
+      {% assign expiry_timestamp = delivered_timestamp | plus: 864000 %}
+      {% assign now_timestamp = 'now' | date: "%s" | plus: 0 %}
+
+      {% if now_timestamp <= expiry_timestamp %}
+        <button onclick="requestReturn(this, '{{ shop.domain }}', '{{ order.id }}', '{{ customer.id }}')" class="return-btn button btn btn--primary" data-order='{{ order.id }}'>
+          Return / Exchange
+        </button>
+      {% else %}
+        <p class="return_exchange_messages">The return/exchange period has expired.</p>
+      {% endif %}
+
+    {% endif %} 
+  {% endif %}
+<!-- Return/Exchange code -->
+{% endunless %}
+
+          </div>
+          {% endunless %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- put this at bottom of the file -->
+<!-- start Cancellable app code, for styling the modal, and calling the cancel order API -->
+{{ 'cancellation-app-style.css' | asset_url | stylesheet_tag }}
+
+<script type="text/javascript">
+   window.cancellable_order_url = "{{ order.customer_url }}?t=" + "{{ 'now' | date: "%s"}}";
+</script>
+
+<script type="text/javascript" async="" src="https://d103801a0zw0tj.cloudfront.net/cleaned_embed.js?shop={{ shop.permanent_domain }}"></script>
+<script type="text/javascript">
+  fetch('https://app.cancellable.app/api/shops/' + window.Shopify.shop + '/preference', {
+    method: 'GET',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+  })
+  .then(function(response) {
+    return response.json(); // pass the data as promise to next then block
+  }).then(function(data) {
+    cancellable_preference = data.preference;
+    // add required tailwind styling
+    let tailwind = document.createElement('style');
+    tailwind.innerHTML = `svg{display:block;vertical-align:middle}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.bg-white{--tw-bg-opacity:1;background-color:rgba(255,255,255,var(--tw-bg-opacity))}.bg-gray-500{--tw-bg-opacity:1;background-color:rgba(107,114,128,var(--tw-bg-opacity))}.bg-yellow-100{--tw-bg-opacity:1;background-color:rgba(254,243,199,var(--tw-bg-opacity))}.bg-yellow-600{--tw-bg-opacity:1;background-color:rgba(217,119,6,var(--tw-bg-opacity))}.hover-bg-gray-50:hover{--tw-bg-opacity:1;background-color:rgba(249,250,251,var(--tw-bg-opacity))}.hover-bg-yellow-700:hover{--tw-bg-opacity:1;background-color:rgba(180,83,9,var(--tw-bg-opacity))}.border-transparent{border-color:transparent}.border-gray-300{--tw-border-opacity:1;border-color:rgba(209,213,219,var(--tw-border-opacity))}.focus-border-indigo-500:focus{--tw-border-opacity:1;border-color:rgba(99,102,241,var(--tw-border-opacity))}.rounded-md{border-radius:.375rem}.rounded-lg{border-radius:.5rem}.rounded-full{border-radius:9999px}.box-border{box-sizing: border-box}.border{border-width:1px;border-style: solid}.block{display:block}.inline-block{display:inline-block}.inline-flex{display:inline-flex}.contents{display:contents}.hidden{display:none}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.flex-shrink-0{flex-shrink:0}.font-medium{font-weight:500}.h-6{height:1.5rem}.h-12{height:3rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-lg{font-size:1.125rem}.text-lg{line-height:1.75rem}.leading-6{line-height:1.5rem}.mx-auto{margin-left:auto;margin-right:auto}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.min-h-screen{min-height:100vh}.opacity-0{opacity:0}.opacity-75{opacity:.75}.opacity-100{opacity:1}.focus-outline-none:focus{outline:2px solid transparent;outline-offset:2px}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.py-2{padding-top:.5rem;padding-bottom:.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.pl-3{padding-left:.75rem}.pt-4{padding-top:1rem}.pr-4{padding-right:1rem}.pb-4{padding-bottom:1rem}.pt-5{padding-top:1.25rem}.pr-10{padding-right:2.5rem}.pb-20{padding-bottom:5rem}.fixed{position:fixed}.absolute{position:absolute}.inset-0{top:0;right:0;bottom:0;left:0}.top-0{top:0}.right-0{right:0}*{--tw-shadow:0 0 transparent}.shadow-sm{--tw-shadow:0 1px 2px 0 rgba(0,0,0,0.05)}.shadow-sm{box-shadow:var(--tw-ring-offset-shadow,0 0 transparent),var(--tw-ring-shadow,0 0 transparent),var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04)}.shadow-xl{box-shadow:var(--tw-ring-offset-shadow,0 0 transparent),var(--tw-ring-shadow,0 0 transparent),var(--tw-shadow)}*{--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,0.5);--tw-ring-offset-shadow:0 0 transparent;--tw-ring-shadow:0 0 transparent}.focus-ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color)}.focus-ring-2:focus{box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 transparent)}.focus-ring-offset-2:focus{--tw-ring-offset-width:2px}.focus-ring-yellow-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgba(245,158,11,var(--tw-ring-opacity))}.focus-ring-indigo-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgba(99,102,241,var(--tw-ring-opacity))}.text-left{text-align:left}.text-center{text-align:center}.text-white{--tw-text-opacity:1;color:rgba(255,255,255,var(--tw-text-opacity))}.text-gray-400{--tw-text-opacity:1;color:rgba(156,163,175,var(--tw-text-opacity))}.text-gray-500{--tw-text-opacity:1;color:rgba(107,114,128,var(--tw-text-opacity))}.text-gray-700{--tw-text-opacity:1;color:rgba(55,65,81,var(--tw-text-opacity))}.text-gray-900{--tw-text-opacity:1;color:rgba(17,24,39,var(--tw-text-opacity))}.text-yellow-600{--tw-text-opacity:1;color:rgba(217,119,6,var(--tw-text-opacity))}.hover-text-gray-500:hover{--tw-text-opacity:1;color:rgba(107,114,128,var(--tw-text-opacity))}.align-bottom{vertical-align:bottom}.w-6{width:1.5rem}.w-12{width:3rem}.z-10{z-index:10}.transform{transform:translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1}.translate-y-0{--tw-translate-y:0px}.translate-y-4{--tw-translate-y:1rem}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.ease-in{transition-timing-function:cubic-bezier(.4,0,1,1)}.ease-out{transition-timing-function:cubic-bezier(0,0,.2,1)}.duration-200{transition-duration:.2s}.duration-300{transition-duration:.3s}@-webkit-keyframes spin{to{transform:rotate(1turn)}}@keyframes spin{to{transform:rotate(1turn)}}@-webkit-keyframes ping{75%,to{transform:scale(2);opacity:0}}@keyframes ping{75%,to{transform:scale(2);opacity:0}}@-webkit-keyframes pulse{50%{opacity:.5}}@keyframes pulse{50%{opacity:.5}}@-webkit-keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:none;-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:none;-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}select{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");background-position:right .5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;-webkit-appearance:none;-moz-appearance:none;appearance:none;border-width:2px}@media (min-width:640px){.sm-block{display:block}.sm-inline-block{display:inline-block}.sm-flex{display:flex}.sm-flex-row-reverse{flex-direction:row-reverse}.sm-items-start{align-items:flex-start}.sm-h-10{height:2.5rem}.sm-h-screen{height:100vh}.sm-text-sm{font-size:.875rem;line-height:1.25rem}.sm-mx-0{margin-left:0;margin-right:0}.sm-my-8{margin-top:2rem;margin-bottom:2rem}.sm-mt-0{margin-top:0}.sm-ml-3{margin-left:.75rem}.sm-mt-4{margin-top:1rem}.sm-ml-4{margin-left:1rem}.sm-max-w-lg{max-width:32rem}.sm-p-0{padding:0}.sm-p-6{padding:1.5rem}.sm-text-left{text-align:left}.sm-align-middle{vertical-align:middle}.sm-w-10{width:2.5rem}.sm-w-auto{width:auto}.sm-w-full{width:100%}.sm-scale-95{--tw-scale-x:.95;--tw-scale-y:.95}.sm-scale-100{--tw-scale-x:1;--tw-scale-y:1}.sm-translate-y-0{--tw-translate-y:0px}}`
+    document.body.insertBefore(tailwind, document.body.firstChild);
+  })
+</script>
+<!-- End Cancellable app code -->
+
+<!-- MoEngage Event Tracking for Order Cancellation -->
+<script type="text/javascript">
+  {% comment %} function trackMoEngageOrderCancelled() {
+    // Check if MoEngage is available
+    if (typeof Moengage !== 'undefined' && Moengage.track_event) {
+      // Get the cancellation reason from the modal dropdown
+      let cancellationReason = 'User initiated cancellation'; // Default fallback
+      const cancelReasonSelect = document.getElementById('cancel_reason');
+      //console.log('Cancel reason select element:', cancelReasonSelect);
+      //console.log('Cancel reason select value:', cancelReasonSelect ? cancelReasonSelect.value : 'Element not found');
+      if (cancelReasonSelect && cancelReasonSelect.value) {
+        cancellationReason = cancelReasonSelect.value;
+      //  console.log('Selected cancellation reason:', cancellationReason);
+        
+        // If "Others" is selected, get the custom reason from input field
+        if (cancelReasonSelect.value === 'Others') {
+          const otherReasonInput = document.getElementById('other_cancel_reason');
+          if (otherReasonInput && otherReasonInput.value.trim()) {
+          //  console.log('Other reason input element:', otherReasonInput);
+        //  console.log('Other reason input value:', otherReasonInput ? otherReasonInput.value : 'Element not found');
+            cancellationReason = otherReasonInput.value.trim();
+           // console.log('Custom cancellation reason:', cancellationReason);
+          }
+        }
+      } else {
+      //  console.log('No cancellation reason selected or element not found');
+      }
+
+      // Prepare product details
+      const productDetails = [];
+      {% for item in order.line_items %}
+        console.log('item.sku', item.sku, item);
+        productDetails.push({
+          product_id: {{ item.sku | escape }},
+          product_title: "{{ item.product.title | escape }}",
+          variant_id: {{ item.variant_id }},
+          quantity: {{ item.quantity }},
+          price: {{ item.final_line_price | divided_by: 100.0 }}
+        });
+      {% endfor %}
+
+      // Track the event with all required attributes
+      Moengage.track_event('Order Cancelled', {
+        'Cancellation Reason': cancellationReason,
+        'Order Amount': {{ order.total_price | divided_by: 100.0 }},
+        'Product Details': productDetails,
+        'Order ID': '{{ order.name }}',
+        'Order Date': '{{ order.created_at | date: "%Y-%m-%d" }}',
+        'Customer ID': '{{ customer.id }}',
+        'Currency': '{{ order.currency }}',
+        'Total Items': {{ order.line_items.size }},
+        'Financial Status': '{{ order.financial_status }}',
+        'Fulfillment Status': '{{ order.fulfillment_status }}'
+      });
+    } else {
+    //  console.log('MoEngage not available for tracking order cancellation');
+    }
+  }
+
+  // Function to track cancellation when proceed button is clicked
+  function trackCancellationOnProceed() {
+    // Try multiple times to get the values as the modal might be in different states
+    let attempts = 0;
+    const maxAttempts = 5;
+    const tryToTrack = () => {
+      attempts++;
+      //console.log(`Attempt ${attempts} to track cancellation reason`);
+      const cancelReasonSelect = document.getElementById('cancel_reason');
+      if (cancelReasonSelect && cancelReasonSelect.value && cancelReasonSelect.value !== '') {
+       // console.log('Found cancellation reason, proceeding with tracking');
+        trackMoEngageOrderCancelled();
+      } else if (attempts < maxAttempts) {
+       // console.log(`Attempt ${attempts} failed, retrying in 200ms...`);
+        setTimeout(tryToTrack, 200);
+      } else {
+       // console.log('Max attempts reached, tracking with default reason');
+        trackMoEngageOrderCancelled();
+      }
+    };
+    tryToTrack();
+  }
+
+  // Override the cancellable_cancel_clicked function to add tracking
+  if (typeof cancellable_cancel_clicked !== 'undefined') {
+    const originalCancellableCancelClicked = cancellable_cancel_clicked;
+    cancellable_cancel_clicked = function() {
+      // Track the MoEngage event first
+      trackCancellationOnProceed();
+      // Then call the original function
+      return originalCancellableCancelClicked.apply(this, arguments);
+    };
+  } else {  
+  } {% endcomment %}
+
+ function trackMoEngageOrderCancelled() {
+  if (typeof Moengage !== 'undefined' && Moengage.track_event) {
+    let cancellationReason = 'User initiated cancellation';
+    const cancelReasonSelect = document.getElementById('cancel_reason');
+    if (cancelReasonSelect && cancelReasonSelect.value) {
+      cancellationReason = cancelReasonSelect.value;
+      if (cancelReasonSelect.value === 'Others') {
+        const otherReasonInput = document.getElementById('other_cancel_reason');
+        if (otherReasonInput && otherReasonInput.value.trim()) {
+          cancellationReason = otherReasonInput.value.trim();
+        }
+      }
+    }
+
+    console.log("MoEngage Order Cancelled Event Firing:", cancellationReason);
+
+    const productDetails = [];
+    {% for item in order.line_items %}
+      productDetails.push({
+        product_id: "{{ item.sku | escape }}",
+        product_title: "{{ item.product.title | escape }}",
+        variant_id: {{ item.variant_id }},
+        quantity: {{ item.quantity }},
+        price: {{ item.final_line_price | divided_by: 100.0 }}
+      });
+    {% endfor %}
+
+    Moengage.track_event('Order Cancelled', {
+      'Cancellation Reason': cancellationReason,
+      'Order Amount': {{ order.total_price | divided_by: 100.0 }},
+      'Product Details': productDetails,
+      'Order ID': '{{ order.name }}',
+      'Order Date': '{{ order.created_at | date: "%Y-%m-%d" }}',
+      'Customer ID': '{{ customer.id }}',
+      'Currency': '{{ order.currency }}',
+      'Total Items': {{ order.line_items.size }},
+      'Financial Status': '{{ order.financial_status }}',
+      'Fulfillment Status': '{{ order.fulfillment_status }}'
+    });
+  }
+}
+
+function trackCancellationOnProceed() {
+  let attempts = 0;
+  const maxAttempts = 5;
+  const tryToTrack = () => {
+    attempts++;
+    const cancelReasonSelect = document.getElementById('cancel_reason');
+    if (cancelReasonSelect && cancelReasonSelect.value && cancelReasonSelect.value !== '') {
+      trackMoEngageOrderCancelled();
+    } else if (attempts < maxAttempts) {
+      setTimeout(tryToTrack, 200);
+    } else {
+      trackMoEngageOrderCancelled();
+    }
+  };
+  tryToTrack();
+}
+
+window.addEventListener("load", function() {
+  if (typeof cancellable_cancel_clicked !== 'undefined') {
+    const originalCancellableCancelClicked = cancellable_cancel_clicked;
+    cancellable_cancel_clicked = function() {
+      trackCancellationOnProceed();
+      return originalCancellableCancelClicked.apply(this, arguments);
+    };
+  }
+});
+ 
+
+// Return order Event  
+  const orderDetails = [
+    {% for item in order.line_items %}
+      {
+        product_id: "{{ item.sku | escape }}",
+        product_title: "{{ item.product.title | escape }}",
+        variant_id: "{{ item.variant_id }}",
+        quantity: {{ item.quantity }},
+        price: {{ item.final_line_price | divided_by: 100.0 }}
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+
+  // Attach click listener to all return buttons
+  document.querySelectorAll(".return-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (typeof Moengage !== "undefined" && Moengage.track_event) {
+        Moengage.track_event('Refund Initiated', { 
+          "Order Amount": {{ order.total_price | divided_by: 100.0 }},
+          "Product Details": orderDetails,
+          "Order ID": "{{ order.name }}",
+          "Order Date": "{{ order.created_at | date: "%Y-%m-%d" }}",
+          "Customer ID": "{{ customer.id }}",
+          "Currency": "{{ order.currency }}",
+          "Total Items": {{ order.line_items.size }},
+          "Financial Status": "{{ order.financial_status }}",
+          "Fulfillment Status": "{{ order.fulfillment_status }}"
+        });
+        return;
+      } else {
+        //alert("MoEngage not available for tracking Refund Initiated");
+      }
+    });
+  });
+</script>
+
+
+{% schema %}
+{
+  "name": "t:sections.main-order.name",
+  "settings": [
+    { "type": "header", "content": "t:sections.all.padding.section_padding_heading" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "t:sections.all.padding.padding_top", "default": 100 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "t:sections.all.padding.padding_bottom", "default": 100 }
+  ]
+}
+{% endschema %}

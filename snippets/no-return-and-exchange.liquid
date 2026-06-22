@@ -1,0 +1,13 @@
+
+{% for collection in product.collections %}
+  {% if collection.metafields.custom.prepaid_payment_note == true %}
+    <p class="prepaid_payment_note" style="color:red;">DOTD Sale | Offer valid on prepaid orders only</p>
+  {% endif %}
+{% endfor %}
+
+{% for collection in product.collections %}
+  {% if collection.metafields.custom.no_return_exchange == true %}
+    <p style="color:red;">This is a Deal of the day item and can not be returned or exchange.</p>
+  {% endif %}
+{% endfor %}
+

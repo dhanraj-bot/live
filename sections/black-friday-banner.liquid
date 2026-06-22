@@ -1,0 +1,395 @@
+{%- liquid
+  assign section_id = section.id
+  assign enable_banner = section.settings.enable_banner
+  assign categories = section.settings.categories
+  assign show_banner_on_collection = true
+
+  if categories != blank
+    assign show_banner_on_collection = false
+
+    if collection != blank
+      for selected_category in categories
+        if selected_category.handle == collection.handle
+          assign show_banner_on_collection = true
+          break
+        endif
+      endfor
+    endif
+  endif
+
+  assign end_date = section.settings.end_date
+  assign end_time = section.settings.end_time
+  assign banner_image = section.settings.banner_image
+  assign banner_image_mobile = section.settings.banner_image_mobile
+  assign banner_title = section.settings.banner_title
+  assign banner_subtitle = section.settings.banner_subtitle
+  assign button_text = section.settings.button_text
+  assign button_link = section.settings.button_link
+  assign show_countdown = section.settings.show_countdown
+  assign countdown_label_days = section.settings.countdown_label_days
+  assign countdown_label_hours = section.settings.countdown_label_hours
+  assign countdown_label_minutes = section.settings.countdown_label_minutes
+  assign countdown_label_seconds = section.settings.countdown_label_seconds
+  assign bg_color = section.settings.bg_color
+  assign text_color = section.settings.text_color
+  assign timer_bg_color = section.settings.timer_bg_color
+  assign timer_text_color = section.settings.timer_text_color
+  assign full_width = section.settings.full_width
+  assign banner_height_desktop = section.settings.banner_height_desktop
+  assign banner_height_mobile = section.settings.banner_height_mobile
+  assign content_position = section.settings.content_position
+  assign content_alignment = section.settings.content_alignment
+  assign overlay_opacity = section.settings.overlay_opacity
+-%}
+
+{% if enable_banner and show_banner_on_collection %}
+  {{ 'black-friday-banner.css' | asset_url | stylesheet_tag }}
+
+  <section
+    class="black-friday-banner{% if full_width %} black-friday-banner--full-width{% endif %}"
+    id="black-friday-banner-{{ section_id }}"
+    data-section-id="{{ section_id }}"
+    data-end-date="{{ end_date }}"
+    data-end-time="{{ end_time }}"
+    style="
+      --bf-bg-color: {{ bg_color }};
+      --bf-text-color: {{ text_color }};
+      --bf-timer-bg: {{ timer_bg_color }};
+      --bf-timer-text: {{ timer_text_color }};
+      --bf-overlay-opacity: {{ overlay_opacity | divided_by: 100.0 }};
+      --bf-height-desktop: {{ banner_height_desktop }}px;
+      --bf-height-mobile: {{ banner_height_mobile }}px;
+    "
+  >
+    <div class="black-friday-banner__wrapper">
+      {%- if banner_image != blank or banner_image_mobile != blank -%}
+        <div class="black-friday-banner__image-wrapper">
+          {%- if banner_image != blank -%}
+            <img
+              srcset="
+                {%- if banner_image.width >= 375 -%}{{ banner_image | image_url: width: 375 }} 375w,{%- endif -%}
+                {%- if banner_image.width >= 750 -%}{{ banner_image | image_url: width: 750 }} 750w,{%- endif -%}
+                {%- if banner_image.width >= 1100 -%}{{ banner_image | image_url: width: 1100 }} 1100w,{%- endif -%}
+                {%- if banner_image.width >= 1500 -%}{{ banner_image | image_url: width: 1500 }} 1500w,{%- endif -%}
+                {%- if banner_image.width >= 1780 -%}{{ banner_image | image_url: width: 1780 }} 1780w,{%- endif -%}
+                {%- if banner_image.width >= 2000 -%}{{ banner_image | image_url: width: 2000 }} 2000w,{%- endif -%}
+                {%- if banner_image.width >= 3000 -%}{{ banner_image | image_url: width: 3000 }} 3000w,{%- endif -%}
+                {{ banner_image | image_url }} {{ banner_image.width }}w
+              "
+              src="{{ banner_image | image_url: width: 1500 }}"
+              sizes="100vw"
+              alt="{{ banner_image.alt | escape }}"
+              class="black-friday-banner__image black-friday-banner__image--desktop"
+              loading="eager"
+              width="{{ banner_image.width }}"
+              height="{{ banner_image.height }}"
+            >
+          {%- endif -%}
+          
+          {%- if banner_image_mobile != blank -%}
+            <img
+              srcset="
+                {%- if banner_image_mobile.width >= 375 -%}{{ banner_image_mobile | image_url: width: 375 }} 375w,{%- endif -%}
+                {%- if banner_image_mobile.width >= 750 -%}{{ banner_image_mobile | image_url: width: 750 }} 750w,{%- endif -%}
+                {{ banner_image_mobile | image_url }} {{ banner_image_mobile.width }}w
+              "
+              src="{{ banner_image_mobile | image_url: width: 750 }}"
+              sizes="100vw"
+              alt="{{ banner_image_mobile.alt | escape }}"
+              class="black-friday-banner__image black-friday-banner__image--mobile"
+              loading="eager"
+              width="{{ banner_image_mobile.width }}"
+              height="{{ banner_image_mobile.height }}"
+            >
+          {%- endif -%}
+          
+          <div class="black-friday-banner__overlay"></div>
+        </div>
+      {%- endif -%}
+
+      <div class="black-friday-banner__content black-friday-banner__content--{{ content_position }} black-friday-banner__content--{{ content_alignment }}">
+        <div class="{% unless full_width %}container{% endunless %}">
+          <div class="black-friday-banner__content-inner">
+            {%- if banner_title != blank -%}
+              <h2 class="black-friday-banner__title">{{ banner_title }}</h2>
+            {%- endif -%}
+
+            {%- if banner_subtitle != blank -%}
+              <div class="black-friday-banner__subtitle">{{ banner_subtitle }}</div>
+            {%- endif -%}
+
+            {%- if show_countdown -%}
+              <div class="black-friday-banner__countdown" id="countdown-{{ section_id }}">
+                <div class="countdown__item">
+                  <span class="countdown__value" data-days>00</span>
+                  <span class="countdown__label">{{ countdown_label_days }}</span>
+                </div>
+                <div class="countdown__separator">:</div>
+                <div class="countdown__item">
+                  <span class="countdown__value" data-hours>00</span>
+                  <span class="countdown__label">{{ countdown_label_hours }}</span>
+                </div>
+                <div class="countdown__separator">:</div>
+                <div class="countdown__item">
+                  <span class="countdown__value" data-minutes>00</span>
+                  <span class="countdown__label">{{ countdown_label_minutes }}</span>
+                </div>
+                <div class="countdown__separator">:</div>
+                <div class="countdown__item">
+                  <span class="countdown__value" data-seconds>00</span>
+                  <span class="countdown__label">{{ countdown_label_seconds }}</span>
+                </div>
+              </div>
+            {%- endif -%}
+
+            {%- if button_text != blank and button_link != blank -%}
+              <div class="black-friday-banner__button-wrapper">
+                <a href="{{ button_link }}" class="black-friday-banner__button">
+                  {{ button_text }}
+                </a>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="{{ 'black-friday-banner.js' | asset_url }}" defer></script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Black Friday Banner",
+  "tag": "section",
+  "class": "section-black-friday-banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Visibility Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_banner",
+      "label": "Enable Banner",
+      "default": true,
+      "info": "Show or hide the Black Friday banner"
+    },
+    {
+      "type": "collection_list",
+      "id": "categories",
+      "label": "Categories",
+      "info": "Select the collection/category pages where this banner should be visible. Leave empty to show on all collection pages."
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "End Date",
+      "default": "2025-11-28",
+      "info": "Format: YYYY-MM-DD (e.g., 2025-11-28)"
+    },
+    {
+      "type": "text",
+      "id": "end_time",
+      "label": "End Time",
+      "default": "23:59:59",
+      "info": "Format: HH:MM:SS (e.g., 23:59:59). Use 24-hour format."
+    },
+    {
+      "type": "header",
+      "content": "Banner Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Desktop Banner Image",
+      "info": "Recommended: 2000x600px. Displayed on desktop and tablet devices."
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_mobile",
+      "label": "Mobile Banner Image",
+      "info": "Recommended: 750x800px. Displayed on mobile devices. If not set, desktop image will be used."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "banner_title",
+      "label": "Banner Title",
+      "default": "BLACK FRIDAY SALE"
+    },
+    {
+      "type": "richtext",
+      "id": "banner_subtitle",
+      "label": "Banner Subtitle",
+      "default": "<p>Get <strong>50% OFF</strong> on all products!</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "header",
+      "content": "Countdown Timer"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Show Countdown Timer",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "countdown_label_days",
+      "label": "Days Label",
+      "default": "Days"
+    },
+    {
+      "type": "text",
+      "id": "countdown_label_hours",
+      "label": "Hours Label",
+      "default": "Hours"
+    },
+    {
+      "type": "text",
+      "id": "countdown_label_minutes",
+      "label": "Minutes Label",
+      "default": "Minutes"
+    },
+    {
+      "type": "text",
+      "id": "countdown_label_seconds",
+      "label": "Seconds Label",
+      "default": "Seconds"
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full Width Banner",
+      "default": true,
+      "info": "Make the banner span the full width of the screen"
+    },
+    {
+      "type": "range",
+      "id": "banner_height_desktop",
+      "min": 300,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "Banner Height (Desktop)",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "banner_height_mobile",
+      "min": 100,
+      "max": 700,
+      "step": 50,
+      "unit": "px",
+      "label": "Banner Height (Mobile)",
+      "default": 500
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content Position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Color Settings"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#000000",
+      "info": "Used when no image is set"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "timer_bg_color",
+      "label": "Timer Background Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "timer_text_color",
+      "label": "Timer Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Image Overlay Opacity",
+      "default": 30,
+      "info": "Adds a dark overlay on the image for better text readability"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Black Friday Banner",
+      "category": "Promotional"
+    }
+  ]
+}
+{% endschema %}

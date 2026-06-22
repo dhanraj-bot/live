@@ -1,0 +1,1308 @@
+{% comment %}theme-check-disable UndefinedObject{% endcomment %}
+<script src="{{ 'footer.js' | asset_url }}" defer="defer"></script>
+{%- liquid
+  assign socials = 'facebook,instagram,youtube,tiktok,twitter,pinterest,snapchat,tumblr,vimeo'
+  assign socials_arr = socials | split: ','
+  assign has_social_icons = false
+  for social in socials_arr
+    assign setting_key = 'social_' | append: social | append: '_link'
+    if settings[setting_key] != blank
+      assign has_social_icons = true
+      break
+    endif
+  endfor
+  assign motion_delay = 50
+-%}
+<footer class="footer color-{{ section.settings.color_scheme }}">
+  {% comment %} {% render 'divider',
+    show_divider: section.settings.show_section_divider,
+    divider_width: section.settings.divider_width
+  %} {% endcomment %}
+  <div class="footer__wrapper ">
+    <div class="footer-content-container">
+      {%- if section.blocks.size > 0 -%}
+        <div class="footer__top ">
+          <div class="footer__top-wrapper f-flex">
+            {%- if section.blocks.size > 0 -%}
+              {%- for block in section.blocks -%}
+                <div
+                  class="footer-block footer-block--{{ block.type }} f-column w-full{% if block.type == 'newsletter' %} lg:order-none{% if block.settings.order_first %} order-first{% else %} order-last{% endif %}{% endif %}{% if block.settings.show_divider %} has-border relative{% endif %}"
+                  style="--col-width:{{ block.settings.block_width }}%;{% if block.type == 'newsletter' %}--form-width: {{ block.settings.form_width }}px;{% endif %}"
+                  {{ block.shopify_attributes }}
+                >
+                  <motion-element class="block" data-motion="fade-up" data-motion-delay="{{ motion_delay }}">
+                    {%- case block.type -%}
+                      {%- when 'contact_information' -%}
+                        {% liquid
+                          assign address = block.settings.address
+                          assign working_hours = block.settings.working_hours
+                          assign email = block.settings.email
+                          assign phone = block.settings.phone
+                          assign content_empty = false
+                          if address == blank and working_hours == blank and email == blank and phone == blank
+                            assign content_empty = true
+                          endif
+
+                          assign tag = 'div'
+                          if block.settings.heading != blank
+                            assign tag = 'details'
+                          endif
+                        %}
+                        {% if content_empty != true %}
+                          <{{ tag }}
+                            id="Details-{{ block.id }}-{{ section.id }}"
+                            {% if tag == 'details' %}
+                              is="footer-details"
+                              open
+                              data-open-default="{{ block.settings.open_default }}"
+                            {% endif %}
+                            class="accordion-details footer-accordion-details"
+                          >
+                            {%- if block.settings.heading != blank -%}
+                              <summary class="accordion-details__summary flex items-center justify-between gap-2 footer-plus-icon">
+                                <h3 class="footer-block__heading inline-richtext {{ block.settings.heading_size }}">
+                                  {{- block.settings.heading -}}
+                                </h3>
+                                <span class="flex items-center lg:hidden">{%- render 'icon-plus-toggle' -%}</span>
+                              </summary>
+                            {%- endif -%}
+                            <div class="accordion-details__content footer-block__contact-info footer-info pl-4 border-footer">
+                              {% unless address == blank %}
+                                <div class="footer-info__item footer-info__address">
+                                  <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 20 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path d="M10 10.625C11.3807 10.625 12.5 9.50571 12.5 8.125C12.5 6.74429 11.3807 5.625 10 5.625C8.61929 5.625 7.5 6.74429 7.5 8.125C7.5 9.50571 8.61929 10.625 10 10.625Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M16.25 8.125C16.25 13.75 10 18.125 10 18.125C10 18.125 3.75 13.75 3.75 8.125C3.75 6.4674 4.40848 4.87769 5.58058 3.70558C6.75269 2.53348 8.3424 1.875 10 1.875C11.6576 1.875 13.2473 2.53348 14.4194 3.70558C15.5915 4.87769 16.25 6.4674 16.25 8.125Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                  </svg>
+                                  <span>{{ address }}</span>
+                                </div>
+                              {% endunless %}
+                              {% unless phone == blank %}
+                                <div class="footer-info__item footer-info__phone">
+                                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M19.9272 15.0458C19.774 16.2102 19.2021 17.2791 18.3184 18.0528C17.4346 18.8264 16.2995 19.2519 15.125 19.2498C8.30157 19.2498 2.75001 13.6983 2.75001 6.87483C2.7479 5.70031 3.17341 4.56519 3.94706 3.68147C4.72071 2.79775 5.78959 2.22587 6.95407 2.07264C7.24854 2.03668 7.54674 2.09693 7.80415 2.24437C8.06157 2.39182 8.26439 2.61857 8.38235 2.89076L10.1974 6.94272V6.95303C10.2877 7.16139 10.325 7.38887 10.3059 7.61516C10.2869 7.84144 10.2121 8.05949 10.0882 8.24983C10.0727 8.27303 10.0564 8.29451 10.0392 8.316L8.25001 10.4369C8.89368 11.7449 10.2618 13.101 11.587 13.7464L13.6787 11.9666C13.6992 11.9494 13.7207 11.9333 13.7431 11.9185C13.9333 11.7917 14.1521 11.7142 14.3797 11.6932C14.6074 11.6722 14.8366 11.7083 15.0468 11.7982L15.058 11.8033L19.1065 13.6175C19.3792 13.735 19.6065 13.9377 19.7544 14.1951C19.9023 14.4526 19.963 14.751 19.9272 15.0458Z" fill="#F6F6F6"/>
+                                  </svg>
+                                  <a class="footer-content-text" href="tel:{{ phone }}">{{ phone }}</a>
+                                </div>
+                              {% endunless %}
+                              {% unless email == blank %}
+                                <div class="footer-info__item footer-info__email">
+                                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M19.25 4.125H2.75C2.56766 4.125 2.3928 4.19743 2.26386 4.32636C2.13493 4.4553 2.0625 4.63016 2.0625 4.8125V16.5C2.0625 16.8647 2.20737 17.2144 2.46523 17.4723C2.72309 17.7301 3.07283 17.875 3.4375 17.875H18.5625C18.9272 17.875 19.2769 17.7301 19.5348 17.4723C19.7926 17.2144 19.9375 16.8647 19.9375 16.5V4.8125C19.9375 4.63016 19.8651 4.4553 19.7361 4.32636C19.6072 4.19743 19.4323 4.125 19.25 4.125ZM18.5625 16.5H3.4375V6.3757L10.5351 12.882C10.6619 12.9985 10.8278 13.0631 11 13.0631C11.1722 13.0631 11.3381 12.9985 11.4649 12.882L18.5625 6.3757V16.5Z" fill="#F6F6F6"/>
+                                  </svg>
+                                  <a class="footer-content-text" href="mailto:{{ email }}">{{ email }}</a>
+                                </div>
+                              {% endunless %}
+                              {% unless working_hours == blank %}
+                                <div class="footer-info__item footer-info__working-hours">
+                                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M11 2.0625C9.23233 2.0625 7.50436 2.58668 6.0346 3.56874C4.56483 4.55081 3.41929 5.94665 2.74283 7.57977C2.06637 9.21288 1.88938 11.0099 2.23424 12.7436C2.57909 14.4773 3.43031 16.0698 4.68024 17.3198C5.93017 18.5697 7.52268 19.4209 9.25638 19.7658C10.9901 20.1106 12.7871 19.9336 14.4202 19.2572C16.0534 18.5807 17.4492 17.4352 18.4313 15.9654C19.4133 14.4956 19.9375 12.7677 19.9375 11C19.935 8.6304 18.9926 6.35856 17.317 4.683C15.6414 3.00743 13.3696 2.065 11 2.0625ZM15.8125 11.6875H11C10.8177 11.6875 10.6428 11.6151 10.5139 11.4861C10.3849 11.3572 10.3125 11.1823 10.3125 11V6.1875C10.3125 6.00516 10.3849 5.8303 10.5139 5.70136C10.6428 5.57243 10.8177 5.5 11 5.5C11.1823 5.5 11.3572 5.57243 11.4861 5.70136C11.6151 5.8303 11.6875 6.00516 11.6875 6.1875V10.3125H15.8125C15.9948 10.3125 16.1697 10.3849 16.2986 10.5139C16.4276 10.6428 16.5 10.8177 16.5 11C16.5 11.1823 16.4276 11.3572 16.2986 11.4861C16.1697 11.6151 15.9948 11.6875 15.8125 11.6875Z" fill="#F6F6F6"/>
+                                  </svg>
+                                  <span class="footer-content-text">{{ working_hours }}</span>
+                                </div>
+                              {% endunless %}
+                            </div>
+                          </{{ tag }}>
+                        {% endif %}
+                        {%- assign motion_delay = motion_delay | plus: 50 -%}
+                      {%- when 'menu' -%}
+                        {% liquid
+                          assign block_title = block.settings.heading
+                          if block_title == blank
+                            assign block_title = linklists[block.settings.menu].title
+                          endif
+
+                          assign tag = 'div'
+                          if block_title != blank
+                            assign tag = 'details'
+                          endif
+                        %}
+                        {%- if block.settings.menu != blank -%}
+                          <{{ tag }}
+                            id="Details-{{ block.id }}-{{ section.id }}"
+                            {% if tag == 'details' %}
+                              is="footer-details"
+                              open
+                              data-open-default="{{ block.settings.open_default }}"
+                            {% endif %}
+                            class="accordion-details footer-accordion-details"
+                          >
+                            {%- if block_title != blank -%}
+                              <summary class="accordion-details__summary flex items-center justify-between gap-2">
+                                <h3 class="footer-block__heading inline-richtext {{ block.settings.heading_size }}">
+                                  {{- block_title -}}
+                                </h3>
+                                <span class="flex items-center lg:hidden footer-plus-icon">{%- render 'icon-plus-toggle' -%}</span>
+                              </summary>
+                            {%- endif -%}
+                            <ul class="accordion-details__content linklist linklist--vertical list-unstyled pl-4 border-footer">
+                              {%- for link in block.settings.menu.links -%}
+                                <li>
+                                  <a
+                                    href="{{ link.url }}"
+                                    class="reversed-link footer-content-text"
+                                  >
+                                    {{ link.title }}
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          </{{ tag }}>
+                        {%- endif -%}
+                        {%- assign motion_delay = motion_delay | plus: 50 -%}
+                      {%- when 'image_text' -%}
+                        {%- liquid
+                          assign tag = 'div'
+                          if block.settings.heading != blank
+                            assign tag = 'details'
+                          endif
+                        -%}
+                        <{{ tag }}
+                          id="Details-{{ block.id }}-{{ section.id }}"
+                          {% if tag == 'details' %}
+                            is="footer-details"
+                            open
+                            data-open-default="{{ block.settings.open_default }}"
+                          {% endif %}
+                          class="accordion-details footer-accordion-details"
+                        >
+                          {%- if block.settings.heading != blank -%}
+                            <summary class="accordion-details__summary flex items-center justify-between gap-2 footer-plus-icon">
+                              <h3 class="footer-block__heading inline-richtext {{ block.settings.heading_size }}">
+                                {{- block.settings.heading -}}
+                              </h3>
+                              <span class="flex items-center lg:hidden">{%- render 'icon-plus-toggle' -%}</span>
+                            </summary>
+                          {%- endif -%}
+                          <div class="accordion-details__content footer-image-box">
+                            {% if block.settings.image != blank %}
+                              <div
+                                class="footer-image-box__image media-wrapper"
+                                style="width: {{ block.settings.image_width }}px"
+                              >
+                                {{
+                                  block.settings.image
+                                  | image_url: width: 1100
+                                  | image_tag:
+                                    loading: 'lazy',
+                                    class: 'motion-reduce',
+                                    widths: '165, 360, 535, 750, 940, 1100',
+                                    is: 'image-lazy'
+                                }}
+                              </div>
+                            {% endif %}
+                            {%- if block.settings.text != blank -%}
+                              <div class="footer-image-box__text rte footer-content-text border-footer pl-4">
+                                {{ block.settings.text }}
+                              </div>
+                            {%- endif -%}
+                            {%- if block.settings.button_label != blank -%}
+                              <div class="footer-image-box__btn">
+                                <a
+                                  {% if block.settings.button_link != blank %}
+                                    href="{{ block.settings.button_link }}"
+                                  {% else %}
+                                    role="link" aria-disabled="true"
+                                  {% endif %}
+                                  class="btn btn--underline"
+                                >
+                                  {{- block.settings.button_label -}}
+                                </a>
+                              </div>
+                            {%- endif -%}
+                          </div>
+                        </{{ tag }}>
+                        {%- assign motion_delay = motion_delay | plus: 50 -%}
+                      {%- when 'newsletter' -%}
+                        <div class="footer-newsletter text-{{ block.settings.newsletter_text_alignment }}">
+                          {%- if block.settings.heading != blank -%}
+                            <h3 class="footer-block__heading inline-richtext {{ block.settings.heading_size }}">
+                              {{- block.settings.heading -}}
+                            </h3>
+                          {%- endif -%}
+                          {%- if block.settings.newsletter_description != blank -%}
+                            <div class="footer-newsletter__description rte">
+                              {{ block.settings.newsletter_description }}
+                            </div>
+                          {%- endif -%}
+                          <div class="footer-newsletter__form">
+                            {% render 'newsletter-form', custom_id: block.id %}
+                          </div>
+                          {%- if block.settings.newsletter_term != blank -%}
+                            <div class="footer-newsletter__term text-sm rte">{{ block.settings.newsletter_term }}</div>
+                          {%- endif -%}
+                        </div>
+                        {%- assign motion_delay = motion_delay | plus: 50 -%}
+                    {%- endcase -%}
+                  </motion-element>
+                </div>
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        </div>
+
+        <div class=" container FooterLink_appLinksContainer__p5QXB">
+          <p class="footer-content-text">Experience The Powerlook App</p>
+          <a target="_blank" href="https://play.google.com/store/apps/details?id=com.powerlook.in.android"
+            ><img
+              alt="playstore"
+              loading="lazy"
+              width="130"
+              height="40"
+              decoding="async"
+              data-nimg="1"
+              style="color:transparent"
+              srcset="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/play-store_3e864c22-7834-440d-b7a5-ffdfcc0b1b47.png?v=1773654049 1x, https://cdn.shopify.com/s/files/1/0750/2685/8234/files/play-store_3e864c22-7834-440d-b7a5-ffdfcc0b1b47.png?v=1773654049 2x"
+              src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/play-store_3e864c22-7834-440d-b7a5-ffdfcc0b1b47.png?v=1773654049"
+          ></a>
+          <a target="_blank" href="https://apps.apple.com/in/app/powerlook-mens-fashion/id6504237550"
+            ><img
+              alt="appstore"
+              loading="lazy"
+              width="130"
+              height="40"
+              decoding="async"
+              data-nimg="1"
+              style="color:transparent"
+              srcset="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/app-store_79c13242-af22-4fc7-888c-8b157eeaf85c.png?v=1773654005 1x, https://cdn.shopify.com/s/files/1/0750/2685/8234/files/app-store_79c13242-af22-4fc7-888c-8b157eeaf85c.png?v=1773654005 2x"
+              src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/app-store_79c13242-af22-4fc7-888c-8b157eeaf85c.png?v=1773654005"
+          ></a>
+        </div>
+        <p class="FooterLink_borderBottom__U9C94" style="display:block;"></p>
+        <div class=" container FooterLink_socialContainer__MHNrm">
+          <div class="FooterLink_subContainer__gJ0AU black-theme">
+            <p class="footer-content-text">100% Secure Payment:</p>
+            <img
+              alt=""
+              loading="lazy"
+	              width="132"
+	              height="24"
+              decoding="async"
+              data-nimg="1"
+              style="color:transparent"
+	              srcset="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/download_6_b8308b47-7ca6-46f9-b48a-9098a19233a2.png?v=1773404502 1x, https://cdn.shopify.com/s/files/1/0750/2685/8234/files/download_6_b8308b47-7ca6-46f9-b48a-9098a19233a2.png?v=1773404502 2x"
+	              src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/download_6_b8308b47-7ca6-46f9-b48a-9098a19233a2.png?v=1773404502"
+            >
+          </div>
+          <div class="FooterLink_subContainer__gJ0AU FooterLink_socialSubContainer__2sqwA">
+            <p>Follow us on:</p>
+            <div class="FooterLink_iconsContainer__XEVV_ footer_social_icons">
+              <a target="_blank" href="https://www.facebook.com/powerlookofficial"
+                ><img
+                  alt="Facebook"
+                  loading="lazy"
+                  width="18"
+                  height="18"
+                  decoding="async"
+                  data-nimg="1"
+                  style="color:transparent"
+                  srcset="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/fb.png?v=1773405503 1x, https://cdn.shopify.com/s/files/1/0750/2685/8234/files/fb.png?v=1773405503 2x"
+                  src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/fb.png?v=1773405503"></a
+              ><a target="_blank" href="https://www.instagram.com/powerlookofficial"
+                ><img
+                  alt="Instagram"
+                  loading="lazy"
+                  width="18"
+                  height="18"
+                  decoding="async"
+                  data-nimg="1"
+                  style="color:transparent"
+                  srcset="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/insta.png?v=1773405288 1x, https://cdn.shopify.com/s/files/1/0750/2685/8234/files/insta.png?v=1773405288 2x"
+                  src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/insta.png?v=1773405288"></a
+              >
+                {% comment %} <a target="_blank" href="https://in.pinterest.com/POWERLOOKPinterest/"
+                ><img
+                  alt="Pinterest"
+                  loading="lazy"
+                  width="18"
+                  height="18"
+                  decoding="async"
+                  data-nimg="1"
+                  style="color:transparent;"
+                  srcset="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Pinterest_alt_1.png?v=1773652238 1x, https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Pinterest_alt_1.png?v=1773652238 2x"
+                  src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Pinterest_alt_1.png?v=1773652238"></a
+              > {% endcomment %}
+                <a target="_blank" href="https://www.youtube.com/@powerlook6252"
+                ><img
+                  alt="Youtube"
+                  loading="lazy"
+                  width="24"
+                  height="24"
+                  decoding="async"
+                  data-nimg="1"
+                  style="color:transparent; margin-bottom:2px;"
+                  srcset="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Youtube_fill_1.png?v=1773652284 1x, https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Youtube_fill_1.png?v=1773652284 2x"
+                  src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Youtube_fill_1.png?v=1773652284"
+              ></a>
+            </div>
+          </div>
+        </div>
+        <p class="FooterLink_borderBottom__U9C94" style="display:block;"></p>
+      {% endif %}
+      <div class="footer__bottom ">
+        {% liquid
+          assign enable_country_selector = false
+          assign enable_language_selector = false
+          assign show_social = false
+
+          if section.settings.enable_country_selector and localization.available_countries.size > 1
+            assign enable_country_selector = true
+          endif
+
+          if section.settings.enable_language_selector and localization.available_languages.size > 1
+            assign enable_language_selector = true
+          endif
+
+          if section.settings.show_social and has_social_icons
+            assign show_social = true
+          endif
+        %}
+        <motion-element class="block two_column_divide" data-motion="fade-up" data-motion-delay="50">
+          <div class="footer__bottom-row flex justify-between items-center">
+            {% comment %}
+              <div class="footer__copyright">
+                <p class="footer__copyright-content">
+                  &copy; {{ 'now' | date: '%Y' }}
+                  <a class="link-underline" href="{{ routes.root_url }}">{{ shop.name }}</a>.
+                  <span>{{ powered_by_link }}</span>
+                </p>
+
+                {%- if shop.features.follow_on_shop? and section.settings.enable_follow_on_shop -%}
+                  <div class="footer__follow-on-shop">
+                    {% comment %} TODO: enable theme-check once `login_button` is accepted as valid filter {% endcomment %}
+                    {% # theme-check-disable %}
+                    {{ shop | login_button: action: 'follow' }}
+                    {% # theme-check-enable %}
+                  </div>
+                {%- endif -%}
+              </div>
+            {% endcomment %}
+            {% comment %}
+              <div class="rb-faq-shopify-section">
+
+                <div class="rb-faq-container">
+
+                    <div class="rb-faq-container-item">
+                        <input style="display:none!important;" type="checkbox" id="tab{{forloop.index}}" class="tab-toggle">
+                        <label for="tab{{forloop.index}}" class="rb-faq-question">Popular Categories</label>
+                        <div class="rb-faq-answer">sssasasaa{{block.settings.answer}}</div>
+                    </div>
+
+                    <div class="rb-faq-container-item">
+                        <input style="display:none!important;" type="checkbox" id="tab{{forloop.index}}" class="tab-toggle">
+                        <label for="tab{{forloop.index}}" class="rb-faq-question">Popular Categories</label>
+                        <div class="rb-faq-answer">sssasasaa{{block.settings.answer}}</div>
+                    </div>
+                    {%for block in section.blocks  limit: 2 %}
+                    {% endfor %}
+                </div>
+              </div>
+            {% endcomment %}
+
+            <div class="expandable-wrapper">
+              {% comment %} <div class="collapsible-section">
+                <button class="toggle-button" data-target="trending-items">
+                  <span class="section-heading">Popular Categories</span>
+                  <span class="expand-indicator">+</span>
+                </button>
+                <div class="collapsible-panel" id="trending-items">
+                  <div class="panel-content">
+                    <!-- Nested Accordion -->
+                    <div class="nested-accordion">
+                      <div class="nested-section">
+                        <button class="nested-toggle" data-nested-target="electronics-sub">
+                          <span class="nested-title">T-Shirts For Men</span>
+                          <span class="nested-indicator">+</span>
+                        </button>
+                        <div class="nested-panel" id="electronics-sub">
+                          <div class="nested-content">
+                          {% assign nav_menu = linklists[section.settings.footmenu] %}
+                            {% if nav_menu.links.size > 0 %} 
+                                {% for section_link in nav_menu.links %}
+                                  {% if section_link.links.size > 0 %}
+                                    <div class="filter-section mb-6">
+                                      <h4 class="filter-heading font-bold mb-2">{{ section_link.title }}</h4>
+                                      <ul class="filter-links flex flex-wrap items-center text-sm text-gray-800">
+                                        {% for sublink in section_link.links %}
+                                          <li>
+                                            <a href="{{ sublink.url }}" class="hover:underline">
+                                              {{ sublink.title }}
+                                            </a>
+                                          </li>
+                                        {% endfor %}
+                                      </ul>
+                                    </div>
+                                  {% endif %}
+                                {% endfor %} 
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="nested-section">
+                        <button class="nested-toggle" data-nested-target="fashion-sub">
+                          <span class="nested-title">Shirts For Men</span>
+                          <span class="nested-indicator">+</span>
+                        </button>
+                        <div class="nested-panel" id="fashion-sub">
+                          <div class="nested-content">
+                            {% assign nav_menu = linklists[section.settings.footmenu1] %}
+                            {% if nav_menu.links.size > 0 %} 
+                                {% for section_link in nav_menu.links %}
+                                  {% if section_link.links.size > 0 %}
+                                    <div class="filter-section mb-6">
+                                      <h4 class="filter-heading font-bold mb-2">{{ section_link.title }}</h4>
+                                      <ul class="filter-links flex flex-wrap items-center text-sm text-gray-800">
+                                        {% for sublink in section_link.links %}
+                                          <li>
+                                            <a href="{{ sublink.url }}" class="hover:underline">
+                                              {{ sublink.title }}
+                                            </a>
+                                          </li>
+                                        {% endfor %}
+                                      </ul>
+                                    </div>
+                                  {% endif %}
+                                {% endfor %} 
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="nested-section">
+                        <button class="nested-toggle" data-nested-target="home-garden-sub">
+                          <span class="nested-title">Bottoms For Men</span>
+                          <span class="nested-indicator">+</span>
+                        </button>
+                        <div class="nested-panel" id="home-garden-sub">
+                          <div class="nested-content">
+                            {% assign nav_menu = linklists[section.settings.footmenu2] %}
+                            {% if nav_menu.links.size > 0 %} 
+                                {% for section_link in nav_menu.links %}
+                                  {% if section_link.links.size > 0 %}
+                                    <div class="filter-section mb-6">
+                                      <h4 class="filter-heading font-bold mb-2">{{ section_link.title }}</h4>
+                                      <ul class="filter-links flex flex-wrap items-center text-sm text-gray-800">
+                                        {% for sublink in section_link.links %}
+                                          <li>
+                                            <a href="{{ sublink.url }}" class="hover:underline">
+                                              {{ sublink.title }}
+                                            </a>
+                                          </li>
+                                        {% endfor %}
+                                      </ul>
+                                    </div>
+                                  {% endif %}
+                                {% endfor %} 
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="nested-section">
+                        <button class="nested-toggle" data-nested-target="sports-sub">
+                          <span class="nested-title">Jackets For Men</span>
+                          <span class="nested-indicator">+</span>
+                        </button>
+                        <div class="nested-panel" id="sports-sub">
+                          <div class="nested-content">
+                              {% assign nav_menu = linklists[section.settings.footmenu3] %}
+                            {% if nav_menu.links.size > 0 %} 
+                                {% for section_link in nav_menu.links %}
+                                  {% if section_link.links.size > 0 %}
+                                    <div class="filter-section mb-6">
+                                      <h4 class="filter-heading font-bold mb-2">{{ section_link.title }}</h4>
+                                      <ul class="filter-links flex flex-wrap items-center text-sm text-gray-800">
+                                        {% for sublink in section_link.links %}
+                                          <li>
+                                            <a href="{{ sublink.url }}" class="hover:underline">
+                                              {{ sublink.title }}
+                                            </a>
+                                          </li>
+                                        {% endfor %}
+                                      </ul>
+                                    </div>
+                                  {% endif %}
+                                {% endfor %} 
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="nested-section">
+                        <button class="nested-toggle" data-nested-target="vests-for-men">
+                          <span class="nested-title">Vests For Men</span>
+                          <span class="nested-indicator">+</span>
+                        </button>
+                        <div class="nested-panel" id="vests-for-men">
+                          <div class="nested-content">
+                            {% assign nav_menu = linklists[section.settings.footmenu4] %}
+                            {% if nav_menu.links.size > 0 %} 
+                                {% for section_link in nav_menu.links %}
+                                  {% if section_link.links.size > 0 %}
+                                    <div class="filter-section mb-6">
+                                      <h4 class="filter-heading font-bold mb-2">{{ section_link.title }}</h4>
+                                      <ul class="filter-links flex flex-wrap items-center text-sm text-gray-800">
+                                        {% for sublink in section_link.links %}
+                                          <li>
+                                            <a href="{{ sublink.url }}" class="hover:underline">
+                                              {{ sublink.title }}
+                                            </a>
+                                          </li>
+                                        {% endfor %}
+                                      </ul>
+                                    </div>
+                                  {% endif %}
+                                {% endfor %} 
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="nested-section">
+                        <button class="nested-toggle" data-nested-target="shackets-for-men">
+                          <span class="nested-title">Shackets For Men</span>
+                          <span class="nested-indicator">+</span>
+                        </button>
+                        <div class="nested-panel" id="shackets-for-men">
+                          <div class="nested-content">
+                            {% assign nav_menu = linklists[section.settings.footmenu5] %}
+                            {% if nav_menu.links.size > 0 %} 
+                                {% for section_link in nav_menu.links %}
+                                  {% if section_link.links.size > 0 %}
+                                    <div class="filter-section mb-6">
+                                      <h4 class="filter-heading font-bold mb-2">{{ section_link.title }}</h4>
+                                      <ul class="filter-links flex flex-wrap items-center text-sm text-gray-800">
+                                        {% for sublink in section_link.links %}
+                                          <li>
+                                            <a href="{{ sublink.url }}" class="hover:underline">
+                                              {{ sublink.title }}
+                                            </a>
+                                          </li>
+                                        {% endfor %}
+                                      </ul>
+                                    </div>
+                                  {% endif %}
+                                {% endfor %} 
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="nested-section">
+                        <button class="nested-toggle" data-nested-target="accessories-for-men">
+                          <span class="nested-title">Accessories For Men</span>
+                          <span class="nested-indicator">+</span>
+                        </button>
+                        <div class="nested-panel" id="accessories-for-men">
+                          <div class="nested-content">
+                            {% assign nav_menu = linklists[section.settings.footmenu6] %}
+                            {% if nav_menu.links.size > 0 %} 
+                                {% for section_link in nav_menu.links %}
+                                  {% if section_link.links.size > 0 %}
+                                    <div class="filter-section mb-6">
+                                      <h4 class="filter-heading font-bold mb-2">{{ section_link.title }}</h4>
+                                      <ul class="filter-links flex flex-wrap items-center text-sm text-gray-800">
+                                        {% for sublink in section_link.links %}
+                                          <li>
+                                            <a href="{{ sublink.url }}" class="hover:underline">
+                                              {{ sublink.title }}
+                                            </a>
+                                          </li>
+                                        {% endfor %}
+                                      </ul>
+                                    </div>
+                                  {% endif %}
+                                {% endfor %} 
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> {% endcomment %}
+            {% if template.name == 'index' %}
+              <div class="collapsible-section">
+                <button class="toggle-button toggle-button-footer" data-target="top-products">
+                  <span class="section-heading">Powerlook’s Power Source: The Foundation Behind Our Offerings</span>
+                  <span class="expand-indicator">+</span>
+                </button>
+                <div class="collapsible-panel" id="top-products">
+                  <div class="panel-content">
+                    <div class="FooterAccordian_content__bqyzP FooterAccordian_active__hdwQr">
+                      <div class="FooterAccordian_titleSubContainer__m6S7Y">
+                        <p class="FooterAccordian_title__A2xdi" style="text-align: justify;">
+                          {{ section.settings.abouttitle }}
+                        </p>
+                      </div>
+                      <div
+                        class="FooterAccordian_content__bqyzP FooterAccordian_active__hdwQr"
+                        style="text-align: justify;"
+                      >
+                        {{ section.settings.abouttext }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}  
+
+              {% if collection.metafields.custom.show_in_footer == true %}
+                
+              <div class="collapsible-section">
+                <button class="toggle-button" data-target="top-products">
+                  <span class="section-heading">{{ collection.metafields.custom.footer_title }}</span>
+                  <span class="expand-indicator">+</span>
+                </button>
+                <div class="collapsible-panel" id="top-products">
+                  <div class="panel-content">{{ collection.metafields.custom.footer_seo_content | metafield_tag }}</div>
+                </div>
+              </div>
+            {% endif %}
+
+
+
+              
+            </div>
+
+            {% if enable_country_selector or enable_language_selector or show_social %}
+              <div class="footer__bottom-row flex">
+                <div class="footer__localization relative z-2 flex items-center">
+                  {%- if enable_language_selector -%}
+                    {% render 'language-selector', position: 'up', plain: true %}
+                  {%- endif -%}
+
+                  {%- if enable_country_selector -%}
+                    {% render 'country-selector', position: 'up', plain: true %}
+                  {%- endif -%}
+                </div>
+
+                {%- if show_social -%}
+                  {%- render 'social-icons', class: 'footer__list-social', size: 'large' -%}
+                {%- endif -%}
+              </div>
+            {% endif %}
+            <div class="footer__info flex items-center">
+              {% if section.settings.footer_bottom_menu != blank %}
+                <ul class="linklist linklist--horizontal list-unstyled">
+                  {% for link in linklists[section.settings.footer_bottom_menu].links %}
+                    <li>
+                      <a href="{{ link.url }}" class="reversed-link">{{ link.title | escape }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              {%- if section.settings.payment_enable -%}
+                <div class="footer__payment">
+                  <span class="visually-hidden">{{ 'sections.footer.payment' | t }}</span>
+                  <ul class="list list-payment" role="list">
+                    {%- for type in shop.enabled_payment_types -%}
+                      <li class="list-payment__item">
+                        {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </motion-element>
+      </div>
+    </div>
+  </div>
+</footer>
+{% schema %}
+{
+  "name": "t:sections.footer.name",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "t:sections.footer.blocks.link_list.name",
+      "settings": [
+        {
+          "type": "range",
+          "id": "block_width",
+          "label": "t:sections.footer.blocks.general.settings.block_width.label",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 25
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Quick links",
+          "label": "t:sections.all.heading.label"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "t:sections.all.text_size.heading.label",
+          "default": "h4",
+          "options": [
+            {
+              "value": "h6",
+              "label": "t:sections.all.text_size.options__h6.label"
+            },
+            {
+              "value": "h5",
+              "label": "t:sections.all.text_size.options__h5.label"
+            },
+            {
+              "value": "h4",
+              "label": "t:sections.all.text_size.options__h4.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:sections.all.text_size.options__h3.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.text_size.options__h2.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.text_size.options__h1.label"
+            },
+            {
+              "value": "hd3",
+              "label": "t:sections.all.text_size.options__hd3.label"
+            },
+            {
+              "value": "hd2",
+              "label": "t:sections.all.text_size.options__hd2.label"
+            },
+            {
+              "value": "hd1",
+              "label": "t:sections.all.text_size.options__hd1.label"
+            }
+          ]
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "default": "footer",
+          "label": "t:sections.footer.blocks.link_list.settings.menu.label",
+          "info": "t:sections.footer.blocks.link_list.settings.menu.info"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.footer.blocks.general.mobile_settings_header"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_default",
+          "label": "t:sections.footer.blocks.general.settings.open_default.label",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_divider",
+          "default": false,
+          "label": "t:sections.all.divider.settings.show_divider.label"
+        }
+      ]
+    },
+    {
+      "type": "contact_information",
+      "limit": 1,
+      "name": "t:sections.footer.blocks.contact_information.name",
+      "settings": [
+        {
+          "type": "range",
+          "id": "block_width",
+          "label": "t:sections.footer.blocks.general.settings.block_width.label",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 25
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "About",
+          "label": "t:sections.all.heading.label"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "t:sections.all.text_size.heading.label",
+          "default": "h4",
+          "options": [
+            {
+              "value": "h6",
+              "label": "t:sections.all.text_size.options__h6.label"
+            },
+            {
+              "value": "h5",
+              "label": "t:sections.all.text_size.options__h5.label"
+            },
+            {
+              "value": "h4",
+              "label": "t:sections.all.text_size.options__h4.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:sections.all.text_size.options__h3.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.text_size.options__h2.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.text_size.options__h1.label"
+            },
+            {
+              "value": "hd3",
+              "label": "t:sections.all.text_size.options__hd3.label"
+            },
+            {
+              "value": "hd2",
+              "label": "t:sections.all.text_size.options__hd2.label"
+            },
+            {
+              "value": "hd1",
+              "label": "t:sections.all.text_size.options__hd1.label"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "address",
+          "default": "382 NE 191st St # 87394 Miami",
+          "label": "t:sections.footer.blocks.contact_information.settings.address.label"
+        },
+        {
+          "type": "text",
+          "id": "working_hours",
+          "default": "9:00am - 6:00pm, Mon to Sun",
+          "label": "t:sections.footer.blocks.contact_information.settings.working_hours.label"
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "default": "hi@yourdomain.com",
+          "label": "t:sections.footer.blocks.contact_information.settings.email.label"
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "default": "+1-202-555-0195",
+          "label": "t:sections.footer.blocks.contact_information.settings.phone.label"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.footer.blocks.general.mobile_settings_header"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_default",
+          "label": "t:sections.footer.blocks.general.settings.open_default.label",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_divider",
+          "default": false,
+          "label": "t:sections.all.divider.settings.show_divider.label"
+        }
+      ]
+    },
+    {
+      "type": "image_text",
+      "name": "t:sections.footer.blocks.image_text.name",
+      "settings": [
+        {
+          "type": "range",
+          "id": "block_width",
+          "label": "t:sections.footer.blocks.general.settings.block_width.label",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 25
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "About",
+          "label": "t:sections.all.heading.label"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "t:sections.all.text_size.heading.label",
+          "default": "h4",
+          "options": [
+            {
+              "value": "h6",
+              "label": "t:sections.all.text_size.options__h6.label"
+            },
+            {
+              "value": "h5",
+              "label": "t:sections.all.text_size.options__h5.label"
+            },
+            {
+              "value": "h4",
+              "label": "t:sections.all.text_size.options__h4.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:sections.all.text_size.options__h3.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.text_size.options__h2.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.text_size.options__h1.label"
+            },
+            {
+              "value": "hd3",
+              "label": "t:sections.all.text_size.options__hd3.label"
+            },
+            {
+              "value": "hd2",
+              "label": "t:sections.all.text_size.options__hd2.label"
+            },
+            {
+              "value": "hd1",
+              "label": "t:sections.all.text_size.options__hd1.label"
+            }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.all.image.label"
+        },
+        {
+          "type": "range",
+          "id": "image_width",
+          "min": 50,
+          "max": 250,
+          "step": 2,
+          "default": 150,
+          "unit": "px",
+          "label": "t:sections.footer.blocks.general.settings.image_width.label"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Share store details, promotions, or brand content with your customers.</p>",
+          "label": "t:sections.all.text.label"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "default": "Button label",
+          "label": "t:sections.all.button.button_label.label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "t:sections.all.button.button_link.label"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.footer.blocks.general.mobile_settings_header"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_default",
+          "label": "t:sections.footer.blocks.general.settings.open_default.label",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_divider",
+          "default": false,
+          "label": "t:sections.all.divider.settings.show_divider.label"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "limit": 1,
+      "name": "t:sections.footer.blocks.newsletter.name",
+      "settings": [
+        {
+          "type": "range",
+          "id": "block_width",
+          "label": "t:sections.footer.blocks.general.settings.block_width.label",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 25
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Subscribe to our emails",
+          "label": "t:sections.all.heading.label"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "t:sections.all.text_size.heading.label",
+          "default": "h2",
+          "options": [
+            {
+              "value": "h6",
+              "label": "t:sections.all.text_size.options__h6.label"
+            },
+            {
+              "value": "h5",
+              "label": "t:sections.all.text_size.options__h5.label"
+            },
+            {
+              "value": "h4",
+              "label": "t:sections.all.text_size.options__h4.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:sections.all.text_size.options__h3.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.text_size.options__h2.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.text_size.options__h1.label"
+            },
+            {
+              "value": "hd3",
+              "label": "t:sections.all.text_size.options__hd3.label"
+            },
+            {
+              "value": "hd2",
+              "label": "t:sections.all.text_size.options__hd2.label"
+            },
+            {
+              "value": "hd1",
+              "label": "t:sections.all.text_size.options__hd1.label"
+            }
+          ]
+        },
+        {
+          "type": "richtext",
+          "id": "newsletter_description",
+          "default": "<p>Subscribe for store updates and discounts.</p>",
+          "label": "t:sections.all.description.label"
+        },
+        {
+          "type": "richtext",
+          "id": "newsletter_term",
+          "label": "t:sections.footer.blocks.newsletter.settings.newsletter_term.label",
+          "default": "<p>By subscribing you agree to the <a href='#'>Terms of Use</a> & <a href='#'>Privacy Policy.</a></p>"
+        },
+        {
+          "type": "select",
+          "id": "newsletter_text_alignment",
+          "label": "t:sections.all.text_alignment.label",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:sections.all.text_alignment.options__1.label"
+            },
+            {
+              "value": "center",
+              "label": "t:sections.all.text_alignment.options__2.label"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "range",
+          "id": "form_width",
+          "label": "t:sections.footer.blocks.newsletter.settings.form_width.label",
+          "min": 450,
+          "max": 800,
+          "step": 5,
+          "default": 500
+        },
+        {
+          "type": "header",
+          "content": "t:sections.footer.blocks.general.mobile_settings_header"
+        },
+        {
+          "type": "checkbox",
+          "id": "order_first",
+          "label": "t:sections.footer.blocks.newsletter.settings.order_first.label",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "[Read How-to](https://foxecom.link/0ordp-)"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.header__9.content",
+      "info": "t:sections.footer.settings.header__9.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_follow_on_shop",
+      "default": true,
+      "label": "t:sections.footer.settings.enable_follow_on_shop.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.header__2.content",
+      "info": "t:sections.footer.settings.header__2.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "default": true,
+      "label": "t:sections.footer.settings.show_social.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.header__3.content",
+      "info": "t:sections.footer.settings.header__4.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "default": true,
+      "label": "t:sections.footer.settings.enable_country_selector.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.header__5.content",
+      "info": "t:sections.footer.settings.header__6.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language_selector",
+      "default": true,
+      "label": "t:sections.footer.settings.enable_language_selector.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.header__7.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "payment_enable",
+      "default": true,
+      "label": "t:sections.footer.settings.payment_enable.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.header__10.content"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_bottom_menu",
+      "label": "t:sections.footer.settings.footer_bottom_menu.label"
+    },
+    {
+      "type": "header",
+      "content": "Popular Categories"
+    },
+     {
+      "type": "link_list",
+      "id": "footmenu", 
+      "label": "T-Shirt Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "footmenu1", 
+      "label": "Shirt Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "footmenu2", 
+      "label": "Bottoms Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "footmenu3", 
+      "label": "Jackets Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "footmenu4", 
+      "label": "Vests Menu"
+    },
+     {
+      "type": "link_list",
+      "id": "footmenu5", 
+      "label": "Shackets Menu"
+    },
+     {
+      "type": "link_list",
+      "id": "footmenu6", 
+      "label": "Accessories Menu"
+    },
+    {
+      "type": "header",
+      "content": "Powerlook Source Content"
+    },
+     {
+      "type": "textarea",
+      "id": "abouttitle", 
+      "label": "Title"
+    },
+      {
+      "type": "richtext",
+      "id": "abouttext", 
+      "label": "Content"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.divider.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section_divider",
+      "default": true,
+      "label": "t:sections.all.divider.settings.show_divider.label"
+    },
+    {
+      "type": "select",
+      "id": "divider_width",
+      "options": [
+        {
+          "value": "fixed",
+          "label": "t:sections.all.container.options__fixed.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.all.container.options__full.label"
+        }
+      ],
+      "default": "full",
+      "label": "t:sections.all.divider.settings.divider_width.label"
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "menu"
+      }
+    ]
+  },
+  "enabled_on": {
+    "groups": ["footer"]
+  }
+}
+{% endschema %}

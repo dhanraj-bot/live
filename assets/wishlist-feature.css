@@ -1,0 +1,39 @@
+/* Guest wishlist login button styling */
+.guest-wishlist-login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  width: 100%;
+  text-align: left;
+  line-height: 2rem;
+  padding: .1rem 0 !important;
+  font-family: var(--font-body-family);
+  font-weight: var(--font-body-weight);
+  font-style: var(--font-body-style);
+  text-transform: capitalize;
+  text-align: left;
+  margin-left: 0;
+  height: auto;
+  text-decoration: none;
+}
+.guest-wishlist-login-btn:hover {
+  text-decoration: none;
+  background: transparent;
+}
+.guest-wishlist-login-btn:focus {
+  outline: none;
+  text-decoration: none;
+  background: transparent;
+}
+.guest-wishlist-text {
+  font-size: calc(var(--font-body-size) * .9);
+}

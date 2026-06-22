@@ -1,0 +1,343 @@
+/* ================================================
+   Shop the Look – Section Styles
+   ================================================ */
+
+.section--shop-the-look .shop-the-look {
+  position: relative;
+}
+
+.shop-the-look-heading{
+  padding: 20px 60px;
+  font-family: 'Bebas Neue';
+  font-weight: 400;
+  font-style: Regular;
+  font-size: 32px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  vertical-align: middle;
+  text-transform: uppercase;
+  background-color: #453D2B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* ---------- Image wrapper ---------- */
+.shop-the-look__image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--blocks-radius, 0.8rem);
+}
+@media (max-width:768px) {
+  .shop-the-look__image-wrapper {
+    padding:0 16px;
+  }
+}
+
+.shop-the-look__image-wrapper .media-wrapper {
+  width: 100%;
+}
+
+.shop-the-look__image-wrapper img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* max-height: 700px; */
+  object-fit: cover;
+}
+
+/* ---------- Product bar strip ---------- */
+.shop-the-look__product-bar {
+  position: absolute;
+  /* top: calc(100% - 110px); */
+  bottom:20px;
+  width:100%; 
+}
+
+.shop-the-look__product-bar-inner {
+  width: 70%;
+  margin:0 auto;
+  background-color: #fff;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+/* ---------- Products list ---------- */
+.shop-the-look__products-list {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex: 1;  
+}
+
+.shop-the-look__products-list::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- Single product item ---------- */
+.shop-the-look__product-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+  min-width: 0;
+  width: calc(50% - 10px);
+}
+.shop-the-look-cta-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 4px 0px;
+  border-top: 1px solid #16232B1A;
+  margin-top:12px;
+  width: 100%;
+}
+.shop-the-look__total-price{
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1;
+  color: #16232B;
+}
+.shop-the-look__product-thumb {
+  position: relative;
+  width: 8rem;
+  height: 8rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.shop-the-look__product-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.shop-the-look__product-thumb .placeholder-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.shop-the-look__product-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.shop-the-look__product-title {
+  margin: 0;
+  max-width: 30rem;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: #202020;
+}
+
+.shop-the-look__product-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.shop-the-look__product-title a:hover {
+  text-decoration: underline;
+}
+
+.shop-the-look__product-price {
+  font-family: 'Montserrat';
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
+}
+.shop-the-look__product-price .f-price{
+   color: #6A6A6A !important;
+}
+
+.shop-the-look__size-selector-wrap {
+  margin-top: 0.6rem;
+}
+
+.shop-the-look__size-selector-wrap.product-form__input--button {
+  margin-bottom: 0;
+}
+.shop-the-look__size-select-mobile{
+  outline: none;
+  box-shadow: none;
+  color: #6A6A6A;
+  background-color: #FBFAF9;
+  border: none;
+  padding: 0.4rem;
+  width: 100%;
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  transition: 0.3s all;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  vertical-align: middle;
+}
+
+.shop-the-look__size-label {
+  /* width: 100%; */
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6A6A6A;
+}
+.shop-the-look-mobile-select-wrapper svg{
+  position: absolute;
+  bottom:50%;
+  right: 1px;
+  width: 12px;
+  height: 12px;
+  transform: translateY(50%);
+  pointer-events: none !important;
+}
+.shop-the-look-mobile-select-wrapper{
+  background-color: #FBFAF9;
+  max-width: 60px !important;
+  min-width: 50px !important;
+}
+
+.shop-the-look__size-selector-wrap--mobile {
+  display: none;
+}
+
+.shop-the-look__size-selector-wrap.product-form__input--button input[type=radio] + label {
+  min-height: 3.6rem;
+  min-width: 3.6rem;
+  font-size: 12px !important;
+}
+
+/* ---------- Divider between items ---------- */
+.shop-the-look__product-item + .shop-the-look__product-item {
+  border-left: 1px solid ;
+  border-image: linear-gradient(
+    180deg,
+    rgba(209, 213, 219, 0) 0%,
+    #D1D5DB 50%,
+    rgba(209, 213, 219, 0) 100%
+  ) 1;
+  padding-left: 1rem;
+}
+
+/* ---------- CTA Buy Button ---------- */
+.shop-the-look__cta {
+  flex-shrink: 0;
+}
+
+.shop-the-look__buy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  letter-spacing: 0.08em;
+  color: #16232B;
+  text-decoration: none;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Bebas Neue',sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  max-height: max-content;
+  line-height: 100%;
+  text-transform: uppercase;
+}
+
+.shop-the-look__buy-btn svg {
+  width:16px;
+  height: 16px;
+}
+.shop-the-look__product-info .product-form__input{
+  margin-top: 6px !important;
+}
+/* ---------- Hotspot pins (reuse lookbook styles) ---------- */
+/* Pin and popup styles are provided by component-lookbook-card.css */
+
+/* ---------- Responsive ---------- */
+@media (max-width: 767.98px) {
+  .shop-the-look__product-bar-inner {
+    width: 90%;
+    margin:0 auto;
+    background-color: #fff;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .shop-the-look-heading{
+    font-family: 'Bebas Neue',sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 130%;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background-color: white;
+    color:#2F2F2F;
+    padding: 0px;
+    padding-bottom: 20px;
+  }
+  .shop-the-look__products-list {
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .shop-the-look__product-thumb {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .shop-the-look__product-title {
+    font-size: 1rem;
+    line-height: 1.1rem;
+  }
+
+  .shop-the-look__product-price {
+    font-size: 1rem;
+  }
+
+  .shop-the-look__size-selector-wrap.product-form__input--button input[type=radio] + label {
+    min-height: 3.2rem;
+    min-width: 3.2rem;
+    font-size: 11px !important;
+  }
+
+  .shop-the-look__size-selector-wrap--desktop {
+    display: none !important;
+  }
+
+  .shop-the-look__size-selector-wrap--mobile {
+    display: flex;
+  }
+
+  .shop-the-look__size-selector-wrap--mobile .select {
+    position: relative;
+  }
+  .shop-the-look__size-selector-wrap {
+    margin-top: 0rem;
+  }
+
+  .shop-the-look__buy-btn {
+    font-size: 1.2rem;
+  }
+  .shop-the-look__total-price{
+    font-size: 12px;
+    line-height: 1;
+  }
+}

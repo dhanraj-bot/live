@@ -1,0 +1,376 @@
+{{ 'component-collection-card.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'continue-browsing.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'product-slider.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign products_limit = section.settings.products_limit
+  assign products_columns = section.settings.products_columns
+  assign products_columns_mobile = section.settings.products_columns_mobile | plus: 0
+  assign products_enable_slider = section.settings.products_enable_slider
+  assign products_enable_swipe_mobile = section.settings.products_swipe_on_mobile
+
+  assign products_columns_tablet = products_columns | minus: 1
+  if products_columns < 3 or request.design_mode
+    assign products_columns_tablet = products_columns
+  endif
+
+  assign product_item_css_class = 'f-column'
+  if products_enable_slider
+    assign product_item_css_class = product_item_css_class | append: ' swiper-slide'
+  endif
+-%}
+
+{%- capture product_image_sizes -%}
+(max-width: 767px) calc((100vw - 30px) / {{ products_columns_mobile }}),
+(max-width: 1023px) calc((100vw - 30px) / {{ products_columns_tablet }}),
+{{ settings.page_width | divided_by: products_columns }}px
+{%- endcapture -%}
+
+{% render 'divider',
+  show_divider: section.settings.show_section_divider,
+  divider_width: section.settings.divider_width
+%}
+
+<continue-browsing
+  data-section-id="{{ section.id }}"
+  data-search-url="{{ routes.search_url }}"
+  data-products-to-show="{{ products_limit }}"
+  data-collections-to-show="{{ section.settings.collections_limit }}"
+  data-show-collections="{{ section.settings.show_collections }}"
+  data-show-products="{{ section.settings.show_products }}"
+>
+  <div
+    class="hidden section section-{{ section.id }} section--padding section--continue-browsing page-width color-{{ section.settings.color_scheme }}"
+    style="--section-padding-top: {{ section.settings.padding_top }}px;--section-padding-bottom: {{ section.settings.padding_bottom }}px;"
+    data-continue-browsing-section
+  >
+    {% render 'section-heading', section_settings: section.settings %}
+
+    <div class="continue-browsing__collections hidden" data-continue-browsing-collections>
+      {%- if section.settings.collections_heading != blank -%}
+        <h3 class="continue-browsing__subheading h4">{{ section.settings.collections_heading }}</h3>
+      {%- endif -%}
+      <div class="continue-browsing__collections-list" data-continue-browsing-collections-list></div>
+    </div>
+
+    <div class="continue-browsing__products hidden" data-continue-browsing-products>
+      {%- if section.settings.products_heading != blank -%}
+        <h3 class="continue-browsing__subheading h4">{{ section.settings.products_heading }}</h3>
+      {%- endif -%}
+
+      <product-slider
+        class="relative swiper-show-nav-on-hover"
+        data-section-id="{{ section.id }}"
+        {% if products_enable_slider %}
+          data-enable-slider="true"
+          data-items="{{ products_columns }}"
+          data-tablet-items="{{ products_columns_tablet }}"
+        {% endif %}
+      >
+        <div class="products-grid-wrap{% if products_enable_slider %} swiper swiper-equal-height{% endif %}{% if products_enable_swipe_mobile %} swipe-mobile swipe-mobile--{{ section.settings.products_columns_mobile }}-cols{% endif %}">
+          <div class="products-grid f-grid f-grid-{{ products_columns_mobile }}-cols md:f-grid-{{ products_columns_tablet }}-cols lg:f-grid-{{ products_columns }}-cols f-grid--gap-{{ section.settings.products_column_gap }} f-grid--row-gap-{{ section.settings.products_row_gap }}{% if products_enable_slider %} swiper-wrapper{% endif %}{% if products_enable_swipe_mobile %} swipe-mobile__inner{% endif %}">
+            {%- liquid
+              assign parsed_terms = search.terms | split: ' OR '
+            -%}
+            {%- for parsed_term in parsed_terms -%}
+              {%- assign id = parsed_term | split: 'id:' | last | times: 1 -%}
+              {%- for product in search.results -%}
+                {%- if product.id == id -%}
+                  <div class="{{ product_item_css_class }}">
+                    {% render 'card-product',
+                      product: product,
+                      image_sizes: product_image_sizes,
+                      image_ratio: section.settings.pcard_image_ratio,
+                      section_index: section.index,
+                      index: forloop.index,
+                      hide_similar_icon: true
+                    %}
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endfor -%}
+          </div>
+        </div>
+
+        {%- if products_enable_slider -%}
+          <div class="swiper-controls swiper-controls--inside hidden md:block">
+            <button class="swiper-button-prev btn" name="previous" aria-label="{{ 'general.slider.previous_slide' | t }}">
+              {% render 'icon-slider-prev' %}
+            </button>
+            <button class="swiper-button-next btn" name="next" aria-label="{{ 'general.slider.next_slide' | t }}">
+              {% render 'icon-slider-next' %}
+            </button>
+          </div>
+        {%- endif -%}
+      </product-slider>
+    </div>
+  </div>
+</continue-browsing>
+
+{% style %}
+  .section--continue-browsing .section__header {
+    padding-bottom: 24px;
+  }
+  .section--continue-browsing .continue-browsing__subheading {
+    margin: 0 0 16px 0;
+    font-family: 'Bebas Neue';
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #453d2b;
+  }
+  .section--continue-browsing .continue-browsing__collections-list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(220px, 1fr);
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .section--continue-browsing .continue-browsing__collection-card {
+    scroll-snap-align: start;
+  }
+  .section--continue-browsing .continue-browsing__products {
+    margin-top: 24px;
+  }
+  @media (max-width: 767.9px) {
+    .section--continue-browsing .continue-browsing__subheading {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Continue browsing",
+  "limit": 1,
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Continue browsing"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "default": "h1",
+      "options": [
+        { "value": "h6", "label": "Small" },
+        { "value": "h5", "label": "Medium" },
+        { "value": "h4", "label": "Large" },
+        { "value": "h3", "label": "X-Large" },
+        { "value": "h2", "label": "2X-Large" },
+        { "value": "h1", "label": "3X-Large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_highlight_style",
+      "label": "Heading highlight style",
+      "default": "none",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "underline", "label": "Underline" },
+        { "value": "circle", "label": "Circle" }
+      ]
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Start browsing from where you left off"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p></p>"
+    },
+    {
+      "type": "header",
+      "content": "Categories"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collections",
+      "label": "Show categories",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "collections_heading",
+      "label": "Categories heading",
+      "default": "Continue browsing categories"
+    },
+    {
+      "type": "range",
+      "id": "collections_limit",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Max categories",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_products",
+      "label": "Show products",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "products_heading",
+      "label": "Products heading",
+      "default": "Continue browsing products"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Max products",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "products_columns",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Desktop columns",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "products_columns_mobile",
+      "label": "Mobile columns",
+      "default": "2",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "products_enable_slider",
+      "label": "Enable product slider",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "products_swipe_on_mobile",
+      "label": "Swipe on mobile",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "products_column_gap",
+      "label": "Column gap",
+      "default": "medium",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "products_row_gap",
+      "label": "Row gap",
+      "default": "inherit",
+      "options": [
+        { "value": "inherit", "label": "Theme default" },
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "pcard_image_ratio",
+      "label": "Product image ratio",
+      "default": "3/4",
+      "options": [
+        { "value": "", "label": "Theme default" },
+        { "value": "1", "label": "Square" },
+        { "value": "3/4", "label": "3/4" },
+        { "value": "4/3", "label": "4/3" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 48
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section_divider",
+      "label": "Show section divider",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "divider_width",
+      "label": "Divider width",
+      "default": "fixed",
+      "options": [
+        { "value": "fixed", "label": "Fixed" },
+        { "value": "full", "label": "Full" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Continue browsing"
+    }
+  ]
+}
+{% endschema %}

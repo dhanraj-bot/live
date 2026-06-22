@@ -1,0 +1,363 @@
+/* ============================================
+   Black Friday Banner Section Styles
+   Mobile-First Responsive Design
+   ============================================ */
+
+/* CSS Custom Properties for dynamic values */
+.black-friday-banner {
+  --bf-bg-color: #000000;
+  --bf-text-color: #ffffff;
+  --bf-timer-bg: #ffffff;
+  --bf-timer-text: #000000;
+  --bf-overlay-opacity: 0.3;
+  --bf-height-desktop: 500px;
+  --bf-height-mobile: 500px;
+  --container-max-width: 1200px;
+  --spacing-mobile: 1rem;
+  --spacing-desktop: 2rem;
+}
+
+/* Base Section Styles */
+.black-friday-banner {
+  position: relative;
+  width: 100%;
+  background-color: var(--bf-bg-color);
+  overflow: hidden;
+  display: block;
+  transition: opacity 0.5s ease, max-height 0.5s ease;
+  margin: 50px 0;
+}
+
+.black-friday-banner.banner-hidden {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.black-friday-banner__wrapper {
+  position: relative;
+  width: 100%;
+  min-height: var(--bf-height-mobile);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Image Container */
+.black-friday-banner__image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.black-friday-banner__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Show/Hide images based on screen size */
+.black-friday-banner__image--desktop {
+  display: none;
+}
+
+.black-friday-banner__image--mobile {
+  display: block;
+}
+
+/* Overlay */
+.black-friday-banner__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, var(--bf-overlay-opacity));
+  z-index: 2;
+}
+
+/* Content Container */
+.black-friday-banner__content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  padding: var(--spacing-mobile);
+  color: var(--bf-text-color);
+}
+
+.black-friday-banner__content .container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-mobile);
+}
+
+.black-friday-banner__content-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Content Positioning */
+.black-friday-banner__content--top {
+  align-items: flex-start;
+}
+
+.black-friday-banner__content--center {
+  align-items: center;
+}
+
+.black-friday-banner__content--bottom {
+  align-items: flex-end;
+}
+
+/* Content Alignment */
+.black-friday-banner__content--left .black-friday-banner__content-inner {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.black-friday-banner__content--center .black-friday-banner__content-inner {
+  align-items: center;
+  text-align: center;
+}
+
+.black-friday-banner__content--right .black-friday-banner__content-inner {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* Typography */
+.black-friday-banner__title {
+  font-size: clamp(1.75rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  animation: fadeInUp 0.8s ease-out;
+  color: var(--bf-text-color);
+}
+
+.black-friday-banner__subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  line-height: 1.5;
+  margin: 0;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.black-friday-banner__subtitle strong {
+  font-weight: 700;
+  font-size: 1.2em;
+}
+
+/* Countdown Timer */
+.black-friday-banner__countdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.countdown__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bf-timer-bg);
+  color: var(--bf-timer-text);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  min-width: 4rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.countdown__item:hover {
+  transform: translateY(-2px);
+}
+
+.countdown__value {
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1;
+  display: block;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown__label {
+  font-size: clamp(.852rem,1.5vw,.75rem);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+  opacity: 0.8;
+}
+
+.countdown__separator {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: var(--bf-text-color);
+  line-height: 1;
+  margin: 0 0.25rem;
+}
+
+/* Button */
+.black-friday-banner__button-wrapper {
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.black-friday-banner__button {
+  display: inline-flex;
+  padding: 1rem 2.5rem;
+  background-color: var(--bf-text-color);
+  color: var(--bf-bg-color);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2vw, 1.125rem);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  border: 2px solid var(--bf-text-color);
+  cursor: pointer;
+}
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.countdown__value {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* Tablet Styles (min-width: 768px) */
+@media screen and (min-width: 767.98px) {
+  .black-friday-banner__wrapper {
+    min-height: var(--bf-height-desktop);
+  }
+
+  .black-friday-banner__content {
+    padding: var(--spacing-desktop);
+  }
+
+  .black-friday-banner__content .container {
+    padding: 0 var(--spacing-desktop);
+  }
+
+  .black-friday-banner__content-inner {
+    gap: 2rem;
+  }
+
+  .countdown__item {
+    padding: 1rem 1.5rem;
+    min-width: 5rem;
+  }
+
+  .black-friday-banner__countdown {
+    gap: 0.75rem;
+  }
+
+  .countdown__separator {
+    margin: 0 0.5rem;
+  }
+
+  /* Show desktop image, hide mobile */
+  .black-friday-banner__image--desktop {
+    display: block;
+  }
+
+  .black-friday-banner__image--mobile {
+    display: none;
+  }
+}
+
+/* Desktop Styles (min-width: 1024px) */
+@media screen and (min-width: 1024px) {
+  .black-friday-banner__content-inner {
+    gap: 2.5rem;
+  }
+
+  .countdown__item {
+    padding: 1.25rem 2rem;
+    min-width: 6rem;
+  }
+
+  .black-friday-banner__countdown {
+    gap: 1rem;
+  }
+
+  .black-friday-banner__button {
+    padding: 1.25rem 3rem;
+  }
+}
+
+/* Large Desktop Styles (min-width: 1440px) */
+@media screen and (min-width: 1440px) {
+  .black-friday-banner__content-inner {
+    gap: 3rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .black-friday-banner *,
+  .black-friday-banner *::before,
+  .black-friday-banner *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .black-friday-banner {
+    display: none;
+  }
+}
+
+/* Full Width Banner */
+.black-friday-banner--full-width .black-friday-banner__content .container {
+  max-width: 100%;
+}
+
+/* No image fallback */
+.black-friday-banner__wrapper:not(:has(.black-friday-banner__image)) {
+  background-color: var(--bf-bg-color);
+}
+
+/* Loading State */
+.black-friday-banner[data-loading="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Expired State */
+.black-friday-banner[data-expired="true"] {
+  display: none;
+}
+

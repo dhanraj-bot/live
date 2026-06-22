@@ -1,0 +1,479 @@
+<style>
+/* Accordion Wrapper */
+.wk-accordion-wrapper {
+  overflow: hidden; 
+  background: #fff;
+  font-family: 'Montserrat', sans-serif;
+  padding: 16px;
+}
+/* Accordion Header */
+.wk-accordion-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 22px;
+  text-transform: uppercase;
+  color: #000;
+}
+.wk-accordion-header .icon {
+  transition: transform 0.3s ease;
+}
+.wk-accordion-wrapper.open .wk-accordion-header .icon {
+  transform: rotate(180deg); /* "+" to "×" */
+}
+/* Accordion Content */
+.wk-accordion-content {
+  display: none;
+  padding: 15px 0px 0px;
+}
+.wk-accordion-wrapper.open .wk-accordion-content {
+  display: block;
+  padding-top: 8px;
+}
+/* Retain your existing styling */
+.wk-order-summary h3 { 
+  display: none;
+}
+.wk-order-summary .item {
+  display: none;
+}
+.item img {
+  width: 100%;
+  height: 60px;
+  object-fit: cover;
+  max-width: 50px;
+}
+.item-info .title {
+  font-weight: 500;
+  margin-bottom: 2px;
+  font-size: 13px;
+}
+.item-info div {
+  font-size: 13px;
+}
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #212224;
+  line-height: 140%;
+} 
+.price-row .label{
+  color: #6A6A6A;
+}
+.price-row.to-pay {
+  font-weight: 500;
+  margin-top: 24px;
+  padding-top: 24px;
+  font-size: 16px;
+  color: #202020;
+  border-top: 1px solid #EEEEEE;
+
+}
+.wk-accordion-wrapper span.icon {
+  display: flex;
+  align-items: center;
+}
+.wk-accordion-wrapper span.icon svg {
+  width: 15px;
+  height: 15px;
+}
+.wk-order-summary .price-row.discount{
+  color: #009662;
+  padding: 0;
+  background: transparent;
+}
+span.freedelivery_text {
+  color: #009662 !important;
+  font-weight: 600;
+  font-size: 14px;
+}
+.order-total{
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 140%;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #202020;
+}
+.total-amount{
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 29px;
+  color: #202020;
+}
+@media (max-width:768px){
+  .wk-accordion-header {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .price-row {
+    font-size: 12px ;
+  }
+  .order-total{
+  font-size: 12px;
+  line-height: 100%;
+  }
+  .total-amount{
+    font-size: 16px;
+    line-height: 100%;
+  }
+}
+</style>
+
+<div class="wk-accordion-wrapper open">
+  <div class="wk-accordion-header" onclick="toggleWKAccordion(this)">
+    <span>Order Summary</span>
+    <span class="icon">{% render 'icon-accord' %}</span>
+  </div>
+
+  <div class="wk-accordion-content">
+    <div class="wk-order-summary">
+      {% for item in cart.items %}
+        <div class="item">
+          <img src="{{ item.image | image_url: width: 100 }}" alt="{{ item.product.title }}" width="" height="">
+          <div class="item-info">
+            <div class="title">{{ item.product.title }} - {{ item.variant.title }}</div>
+            <div>Price: {{ item.original_price | money }}</div>
+            <div>Quantity: {{ item.quantity }}</div>
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="price-row">
+        <span class="label">Subtotal</span>
+        <span class="subtotal-amount">{{ cart.original_total_price | money }}</span>
+      </div>
+ 
+      <div class="price-row discount">
+          <span class="label" id="discount-label">(Discount)</span>
+          {% assign cap_amount_cents = 0 %}
+          {% assign needs_cap = false %}
+          {% assign cap_name_up = cap_discount_name | upcase %}
+          {% assign cap_name_up_2 = cap_discount_name_2 | upcase %}
+          {% assign discount_title_matches_cap = false %}
+          {% for da in cart.discount_applications %}
+            {% assign da_title_up = da.title | upcase %}
+            {% assign da_code_up = da.code | upcase %}
+            {% if cap_discount_name != blank and cap_discount_amount > 0 and cap_amount_cents == 0 %}
+              {% if da_title_up == cap_name_up or da_code_up == cap_name_up %}
+                {% assign discount_title_matches_cap = true %}
+                {% assign cap_amount_cents = cap_discount_amount | times: 100 %}
+              {% endif %}
+            {% endif %}
+            {% if cap_discount_name_2 != blank and cap_discount_amount_2 > 0 and cap_amount_cents == 0 %}
+              {% if da_title_up == cap_name_up_2 or da_code_up == cap_name_up_2 %}
+                {% assign discount_title_matches_cap = true %}
+                {% assign cap_amount_cents = cap_discount_amount_2 | times: 100 %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% if discount_title_matches_cap and cart.total_discount > cap_amount_cents %}
+            {% assign needs_cap = true %}
+          {% endif %}
+          {% if needs_cap %}
+            <span id="discount-amount">-{{ cap_amount_cents | money }}</span>
+          {% else %}
+            <span id="discount-amount">-{{ cart.total_discount | money }}</span>
+          {% endif %}
+      </div> 
+ 
+      <div class="price-row">
+        <span class="label">Tax</span>
+        <span class="tax-amount">
+          {% if cart.total_tax > 0 %}
+            {{ cart.total_tax | money }}
+          {% else %}
+            Included
+          {% endif %}
+        </span>
+      </div>
+      <div class="price-row">
+        <span class="label">Delivery</span>
+        <span class="freedelivery_text">
+          Free Delivery
+        </span>
+      </div>
+
+      <div class="price-row to-pay flex items-center justify-between">
+        <span class='order-total'>Order Total</span>
+        {% if needs_cap %}
+          {% assign excess_discount = cart.total_discount | minus: cap_amount_cents %}
+          {% assign adjusted_total = cart.total_price | plus: excess_discount %}
+          <span class="total-amount">{{ adjusted_total | money }}</span>
+        {% else %}
+          <span class="total-amount">{{ cart.total_price | money }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const DISCOUNT_CAP_RULES = [
+    {
+      name: {{ cap_discount_name | json }},
+      amount: {{ cap_discount_amount | default: 0 | json }}
+    },
+    {
+      name: {{ cap_discount_name_2 | json }},
+      amount: {{ cap_discount_amount_2 | default: 0 | json }}
+    }
+  ]
+    .filter(function (rule) {
+      return rule && rule.name && String(rule.name).trim() !== '' && Number(rule.amount) > 0;
+    })
+    .map(function (rule) {
+      return {
+        name: String(rule.name).trim(),
+        nameUp: String(rule.name).trim().toUpperCase(),
+        amount: Number(rule.amount),
+        cents: Number(rule.amount) * 100
+      };
+    });
+
+  const DISCOUNT_CAP_NAME = DISCOUNT_CAP_RULES[0] ? DISCOUNT_CAP_RULES[0].name : '';
+  const DISCOUNT_CAP_AMOUNT = DISCOUNT_CAP_RULES[0] ? DISCOUNT_CAP_RULES[0].amount : 0;
+  const DISCOUNT_CAP_CENTS = DISCOUNT_CAP_RULES[0] ? DISCOUNT_CAP_RULES[0].cents : 0;
+
+  function getDiscountCodeFromCart(cartData) {
+    // Prefer cart JSON (immediate, correct) over GraphQL/DOM (can lag ~1s after load).
+    if (cartData && cartData.discount_codes && cartData.discount_codes.length > 0) {
+      const dc = cartData.discount_codes.find(function (d) { return d && d.applicable !== false && d.code; });
+      if (dc && dc.code) return String(dc.code).trim();
+    }
+    if (cartData && cartData.discount_applications && cartData.discount_applications.length > 0) {
+      for (var i = 0; i < cartData.discount_applications.length; i++) {
+        var app = cartData.discount_applications[i];
+        if (app && app.code) return String(app.code).trim();
+        if (app && app.title) return String(app.title).trim();
+      }
+    }
+    if (cartData && cartData.cart_level_discount_applications && cartData.cart_level_discount_applications.length > 0) {
+      for (var j = 0; j < cartData.cart_level_discount_applications.length; j++) {
+        var cap = cartData.cart_level_discount_applications[j];
+        if (cap && cap.code) return String(cap.code).trim();
+        if (cap && cap.title) return String(cap.title).trim();
+      }
+    }
+    if (window.currentAppliedDiscountCode) {
+      return window.currentAppliedDiscountCode;
+    }
+    var appliedEl = document.querySelector('.applied_current_coupen');
+    if (appliedEl && appliedEl.textContent.trim()) {
+      return appliedEl.textContent.trim();
+    }
+    return '';
+  }
+
+  /**
+   * Cap detection must use cart.js fields only — not window.currentAppliedDiscountCode or DOM,
+   * those update late after GraphQL and cause updateCartItemsDisplay to overwrite Liquid prices.
+   */
+  function getMatchedDiscountCapRule(cartData) {
+    if (!cartData || !DISCOUNT_CAP_RULES.length) return null;
+
+    var activeCodes = new Set();
+
+    function collectCodes(apps, onlyApplicable) {
+      if (!apps || !Array.isArray(apps)) return;
+      apps.forEach(function (app) {
+        if (!app) return;
+        if (onlyApplicable && app.applicable === false) return;
+        var title = String(app.title || '').trim().toUpperCase();
+        var code = String(app.code || '').trim().toUpperCase();
+        if (title) activeCodes.add(title);
+        if (code) activeCodes.add(code);
+      });
+    }
+
+    collectCodes(cartData.discount_applications, false);
+    collectCodes(cartData.cart_level_discount_applications, false);
+    collectCodes(cartData.discount_codes, true);
+
+    for (var i = 0; i < DISCOUNT_CAP_RULES.length; i++) {
+      if (activeCodes.has(DISCOUNT_CAP_RULES[i].nameUp)) {
+        return DISCOUNT_CAP_RULES[i];
+      }
+    }
+
+    return null;
+  }
+
+  function shouldCapDiscount(cartData) {
+    var matchedRule = getMatchedDiscountCapRule(cartData);
+    if (!matchedRule) return false;
+    if (!cartData.total_discount) return false;
+    return cartData.total_discount > matchedRule.cents;
+  }
+
+  function getCappedDiscount(cartData) {
+    var matchedRule = getMatchedDiscountCapRule(cartData);
+    if (matchedRule && shouldCapDiscount(cartData)) return matchedRule.cents;
+    return cartData.total_discount;
+  }
+
+  function getCappedTotal(cartData) {
+    var matchedRule = getMatchedDiscountCapRule(cartData);
+    if (matchedRule && shouldCapDiscount(cartData)) {
+      const excess = cartData.total_discount - matchedRule.cents;
+      return cartData.total_price + excess;
+    }
+    return cartData.total_price;
+  }
+
+  window.DISCOUNT_CAP_RULES = DISCOUNT_CAP_RULES;
+  window.DISCOUNT_CAP_NAME = DISCOUNT_CAP_NAME;
+  window.DISCOUNT_CAP_AMOUNT = DISCOUNT_CAP_AMOUNT;
+  window.DISCOUNT_CAP_CENTS = DISCOUNT_CAP_CENTS;
+  window.getMatchedDiscountCapRule = getMatchedDiscountCapRule;
+  window.shouldCapDiscount = shouldCapDiscount;
+  window.getCappedDiscount = getCappedDiscount;
+  window.getCappedTotal = getCappedTotal;
+  window.getDiscountCodeFromCart = getDiscountCodeFromCart;
+
+  function toggleWKAccordion(el) {
+    const wrapper = el.closest('.wk-accordion-wrapper');
+    wrapper.classList.toggle('open');
+  }
+
+  // Function to update order summary with new cart data
+  function updateOrderSummary(cartData) {
+    // Do not hide or update if this is an error response (e.g. 422 from cart/change.js)
+    if (!cartData || cartData.message || cartData.description) {
+      return;
+    }
+    // Check if cart is empty (only hide when we have valid cart data with no items)
+    if (!cartData.items || cartData.items.length === 0) {
+      // Hide the entire order summary if cart is empty
+      const orderSummaryWrapper = document.querySelector('.wk-accordion-wrapper');
+      if (orderSummaryWrapper) {
+        orderSummaryWrapper.style.display = 'none';
+      }
+      return;
+    } else {
+      // Show the order summary if cart has items
+      const orderSummaryWrapper = document.querySelector('.wk-accordion-wrapper');
+      if (orderSummaryWrapper) {
+        orderSummaryWrapper.style.display = 'block';
+      }
+    }
+
+    // Update cart items display
+    const cartItemsContainer = document.querySelector('.wk-order-summary');
+    if (cartItemsContainer) {
+      // Clear existing items
+      const existingItems = cartItemsContainer.querySelectorAll('.item');
+      existingItems.forEach(item => item.remove());
+      
+      // Add new items
+      cartData.items.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'item';
+        itemElement.innerHTML = `
+          <img src="${item.image}" alt="${item.product_title}" width="50" height="60">
+          <div class="item-info">
+            <div class="title">${item.product_title} - ${item.variant_title || ''}</div>
+            <div>Price: ${formatMoney(item.original_price)}</div>
+            <div>Quantity: ${item.quantity}</div>
+          </div>
+        `;
+        cartItemsContainer.insertBefore(itemElement, cartItemsContainer.querySelector('.price-row'));
+      });
+    }
+
+    // Update subtotal
+    const subtotalElement = document.querySelector('.wk-order-summary .subtotal-amount');
+    // {% comment %} if (subtotalElement) {
+    //   subtotalElement.textContent = formatMoney(cartData.items_subtotal_price);
+    // } {% endcomment %}
+
+    // Update discount section with enhanced logic (label stays constant as "(Discount)")
+    const discountRow = document.querySelector('.wk-order-summary .price-row.discount');
+    const discountLabel = document.getElementById('discount-label');
+    const discountAmount = document.getElementById('discount-amount');
+
+    // Check for discounts using multiple methods to ensure we catch all types
+    const hasDiscount = cartData.total_discount > 0 || 
+                       (cartData.discount_applications && cartData.discount_applications.length > 0) ||
+                       (cartData.cart_level_discount_applications && cartData.cart_level_discount_applications.length > 0);
+    
+    if (hasDiscount && discountRow) {
+      discountRow.style.display = 'flex';
+      if (discountLabel) {
+        discountLabel.textContent = '(Discount)';
+      }
+      const cappedDiscount = getCappedDiscount(cartData);
+
+      if (discountAmount) {
+        if (cappedDiscount > 0) {
+          discountAmount.textContent = `-${formatMoney(cappedDiscount)}`;
+        } else {
+          discountAmount.textContent = formatMoney(0);
+        }
+      }
+    } else if (discountRow) {
+      discountRow.style.display = 'none';
+      if (discountLabel) {
+        discountLabel.textContent = '(Discount)';
+      }
+    }
+
+    // Update tax
+    const taxElement = document.querySelector('.wk-order-summary .tax-amount');
+    if (taxElement) {
+      if (cartData.total_tax > 0) {
+        taxElement.textContent = formatMoney(cartData.total_tax);
+      } else {
+        taxElement.textContent = 'Included';
+      }
+    }
+
+    // Update final total (adjusted for discount cap)
+    const totalElement = document.querySelector('.wk-order-summary .total-amount');
+    if (totalElement) {
+      totalElement.textContent = formatMoney(getCappedTotal(cartData));
+    }
+  }
+
+  // Function to format money (basic implementation - you may want to use Shopify's money formatting)
+  function formatMoney(cents) {
+    if (typeof cents === 'string') {
+      cents = parseInt(cents);
+    }
+    return (cents / 100).toFixed(2);
+  }
+
+  // Function to refresh cart data from Shopify using CartDataManager
+  async function refreshCartData() {
+    try {
+      // Use CartDataManager to prevent duplicate fetches
+      const cartData = window.CartDataManager 
+        ? await window.CartDataManager.getCart() 
+        : await fetch('/cart.js').then(response => response.json());
+      
+      if (cartData) {
+        updateOrderSummary(cartData);
+      }
+    } catch (error) {
+     // console.error('Error refreshing cart data:', error);
+    }
+  }
+
+  // Export function for external use (e.g., from cart-discount.liquid)
+  window.updateOrderSummaryFromDiscount = function(cartData) {
+     updateOrderSummary(cartData);
+  };
+
+  // Initialize order summary on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    // Refresh cart data on initial load
+     refreshCartData();
+  }); 
+</script>

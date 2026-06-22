@@ -1,0 +1,452 @@
+<div class="product__sizechart_container">
+{% unless product.variants.size == 1 and product.options.size == 1 and product.options.first == 'Title' %}
+<button
+    class="btn--underline custom-aj-remove"
+    aria-controls="PopupModal-{{ block.id }}-1"
+    aria-haspopup="dialog" style="top: 95px;"
+>
+Find Your Size <span class="icon-arrow-right">
+<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5.19727 11.6199L9.0006 7.81655C9.44977 7.36738 9.44977 6.63238 9.0006 6.18322L5.19727 2.37988" stroke="#D63242" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</span>
+</button>
+{% endunless %}
+
+<basic-modal id="PopupModal-{{ block.id }}-1" class="drawer modal product_sizechart" style="--modal-width: 55rem;">
+<div class="fixed-overlay" aria-controls="PopupModal-{{ block.id }}-1"></div>
+<div class="drawer__inner">
+    <button
+    class="drawer__close-btn"
+    aria-controls="PopupModal-{{ block.id }}-1"
+    aria-label="{{ 'accessibility.close' | t }}"
+    >
+    {% render 'icon-close' %}
+    </button>
+    <div class="drawer__body v-scrollable h-full">
+    {% assign short_sizeimg = false %}
+    {% assign shirt_sizeimg = false %}
+    {% assign tshirt_sizeimg = false %}
+    {% assign jacket_sizeimg = false %}
+
+    {% for tag in product.tags %}
+        {% if tag contains 'Shorts'
+        or tag contains 'shorts'
+        or tag contains 'Bottom'
+        or tag contains 'bottom'
+        or tag contains 'Jeans'
+        or tag contains 'jeans'
+        or tag contains 'Pants'
+        or tag contains 'pants'
+        %}
+        {% assign short_sizeimg = 'SHORTS' %}
+        {% break %}
+        {% endif %}
+        {% if tag contains 'Shirts' or tag contains 'shirts' %}
+        {% assign shirt_sizeimg = 'SHIRTS' %}
+        {% break %}
+        {% endif %}
+        {% if tag contains 'T-Shirts' or tag contains 't-shirts' or tag contains 'T-shirts' %}
+        {% assign tshirt_sizeimg = 'T-SHIRTS' %}
+        {% break %}
+        {% endif %}
+        {% if tag contains 'Jackets' or tag contains 'jackets' or tag contains 'jacket' %}
+        {% assign jacket_sizeimg = 'JACKETS' %}
+        {% break %}
+        {% endif %}
+    {% endfor %}
+
+     <img
+        alt="SizeChart"
+        loading="lazy"
+        width="350"
+        height="350"
+        decoding="async"
+        data-nimg="1"
+        class="size-chat-image"
+        src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Bottom.jpg?&width=350"
+        >
+
+    {% if short_sizeimg %}
+        <img
+        alt="SizeChart"
+        loading="lazy"
+        width="350"
+        height="350"
+        decoding="async"
+        data-nimg="1"
+        class="size-chat-image"
+        src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Bottom.jpg?&width=350"
+        >
+    {% endif %}
+    {% if shirt_sizeimg %}
+        <img
+        alt="SizeChart"
+        loading="lazy"
+        width="350"
+        height="350"
+        decoding="async"
+        data-nimg="1"
+        class="size-chat-image"
+        src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Shirt.jpg?&width=350"
+        >
+    {% endif %}
+    {% if tshirt_sizeimg %}
+        <img
+        alt="SizeChart"
+        loading="lazy"
+        width="350"
+        height="350"
+        decoding="async"
+        data-nimg="1"
+        class="size-chat-image"
+        src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/T-_shirt.jpg?&width=350"
+        >
+    {% endif %}
+    {% if jacket_sizeimg %}
+        <img
+        alt="SizeChart"
+        loading="lazy"
+        width="350"
+        height="350"
+        decoding="async"
+        data-nimg="1"
+        class="size-chat-image"
+        src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Jacket.jpg?&width=350"
+        >
+    {% endif %}
+    {% assign chest_sizes = product.metafields.custom.chest_in_centimeter | split: ',' %}
+    <div class="variant-selector">
+        <!-- Toggle Buttons -->
+        <div class="unit-toggle-wrapper">
+        <button type="button" class="unit-toggle active" data-unit="in">in</button>
+        <button type="button" class="unit-toggle" data-unit="cm">cm</button>
+        </div>
+
+        <!-- Size Chart Table -->
+        <table class="variant-table">
+        <thead>
+            <tr>
+            {% comment %} <th></th> {% endcomment %}
+            <th>Size</th>
+
+            {% assign show_waist = true %}
+            {% assign show_hip = true %}
+            {% assign show_length = true %}
+            {% assign show_chest = false %}
+
+            {% comment %} {% for variant in product.variants %}
+                {% if variant.metafields.magento.size_chart_waist %}
+                {% assign show_waist = true %}
+                {% endif %}
+                {% if variant.metafields.magento.size_chart_hip %}
+                {% assign show_hip = true %}
+                {% endif %}
+                {% if variant.metafields.magento.size_chart_length %}
+                {% assign show_length = true %}
+                {% endif %}
+                {% if variant.metafields.magento.size_chart_chest %}
+                {% assign show_chest = true %}
+                {% endif %}
+            {% endfor %} {% endcomment %}
+
+            {% if show_waist %}
+                <th class="col-waist unit-in">Waist (in)</th>
+                <th class="col-waist unit-cm hidden">Waist (cm)</th>
+            {% endif %}
+            {% if show_hip %}
+                <th class="col-hip unit-in">Hip (in)</th>
+                <th class="col-hip unit-cm hidden">Hip (cm)</th>
+            {% endif %}
+            {% if show_length %}
+                <th class="col-length unit-in">Length (in)</th>
+                <th class="col-length unit-cm hidden">Length (cm)</th>
+            {% endif %}
+            {% if show_chest %}
+                <th class="col-chest unit-in">Chest (in)</th>
+                <th class="col-chest unit-cm hidden">Chest (cm)</th>
+            {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for option in product.options_with_values %}
+            {% if option.name == 'Lower Size' %}
+                {% for value in option.values %}
+                {% assign matched_variant = null %}
+
+                {% for variant in product.variants %}
+                    {% if variant.options contains value %}
+                    {% assign matched_variant = variant %}
+                    {% break %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if matched_variant %}
+                    <tr
+                    class="variant-row {% unless matched_variant.available %}out-of-stock{% endunless %}"
+                    data-variant-id="{{ matched_variant.id }}"
+                    data-available="{{ matched_variant.available }}"
+                    >
+                    {% comment %} <td>
+                        <input
+                        type="radio"
+                        name="product-variant"
+                        id="variant-{{ matched_variant.id }}"
+                        value="{{ matched_variant.id }}"
+                        {% unless matched_variant.available %}
+                            disabled
+                        {% endunless %}
+                        {% if forloop.first and matched_variant.available %}
+                            checked
+                        {% endif %}
+                        >
+                    </td> {% endcomment %}
+                    <td>
+                        <label for="variant-{{ matched_variant.id }}">
+                        {% assign label = value %}
+                        {% if label == 'XXL' %}
+                            {% assign display_label = '2XL' %}
+                        {% elsif label == 'XXXL' %}
+                            {% assign display_label = '3XL' %}
+                        {% elsif label == 'XXXXL' %}
+                            {% assign display_label = '4XL' %}
+                        {% elsif label == 'XXXXXL' %}
+                            {% assign display_label = '5XL' %}
+                        {% else %}
+                            {% assign display_label = label %}
+                        {% endif %}
+
+                        {{ display_label }}
+                        </label>
+                    </td>
+
+                    {% if show_waist %}
+                        {% assign size_Waist = matched_variant.metafields.magento.size_chart_waist %}
+                        <td class="col-waist unit-in">{{ size_Waist }}</td>
+                        <td class="col-waist unit-cm hidden">{{ size_Waist | times: 2.54 | round }}</td>
+                    {% endif %}
+
+                    {% if show_hip %}
+                        {% assign size__hip = matched_variant.metafields.magento.size_chart_hip %}
+                        <td class="col-hip unit-in">{{ size__hip }}</td>
+                        <td class="col-hip unit-cm hidden">{{ size__hip | times: 2.54 | round }}</td>
+                    {% endif %}
+
+                    {% if show_length %}
+                        {% assign size__length = matched_variant.metafields.magento.size_chart_length %}
+                        <td class="col-length unit-in">{{ size__length }}</td>
+                        <td class="col-length unit-cm hidden">{{ size__length | times: 2.54 | round }}</td>
+                    {% endif %}
+
+                    {% if show_chest %}
+                        {% assign size_Chest = matched_variant.metafields.magento.size_chart_chest %}
+                        <td class="col-chest unit-in">{{ size_Chest }}</td>
+                        <td class="col-chest unit-cm hidden">{{ size_Chest | times: 2.54 | round }}</td>
+                    {% endif %}
+                    </tr>
+                {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% endfor %}
+        </tbody>
+        </table>
+
+        <div class="product-form" style="margin-top: 20px;">
+        {% comment %} <button
+            type="button"
+            class="add-to-cart"
+            {% unless product.selected_or_first_available_variant.available %}
+            disabled
+            {% endunless %}
+        >
+            Add to Cart
+        </button> {% endcomment %}
+        <a href="{{ routes.cart_url }}" class="size_view-bag-btn btn btn--primary" style="display: none;">View Bag</a>
+        </div>
+    </div>
+
+    <style>
+        .variant-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        }
+        img.size-chat-image {
+            margin: 0 auto 20px auto;
+            display: flex;
+        }
+
+        .variant-table th {
+        background: #f3f3f3;
+        padding: 12px;
+        text-align: center;
+        font-weight: 600;
+        }
+        .variant-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        vertical-align: middle;
+        text-align: center;
+        }
+
+        .variant-row:hover {
+        background-color: #f9f9f9;
+        }
+
+        .out-of-stock {
+        color: #999;
+        opacity: 0.7;
+        }
+
+        .add-to-cart {
+        background: rgb(214, 50, 66);
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        }
+
+        .add-to-cart:disabled {
+        background: #ddd;
+        color: #999;
+        cursor: not-allowed;
+        }
+
+        .add-to-cart.adding {
+        background: #555;
+        }
+
+        input[type="radio"] {
+        accent-color: #000;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const addToCartBtn = document.querySelector('.add-to-cart');
+        const viewBagBtn = document.querySelector('.size_view-bag-btn');
+        const variantRadios = document.querySelectorAll('input[name="product-variant"]');
+
+        // Update button state on variant selection
+        variantRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+            addToCartBtn.disabled = !this.checked || !this.value;
+            // Show add to cart button and hide view bag button when variant changes
+            addToCartBtn.style.display = 'flex';
+            viewBagBtn.style.display = 'none';
+            });
+        });
+
+        // Sleek Theme-specific cart drawer refresh
+        function refreshSleekCartDrawer() {
+            // Method 1: Trigger Sleek's native cart reload
+            if (typeof window.SleekTheme !== 'undefined' && typeof window.SleekTheme.Cart === 'object') {
+            // window.SleekTheme.Cart.loadCart();
+
+            document.dispatchEvent(new CustomEvent('cart:refresh', {
+                bubbles: true,
+                detail: { open: true }
+            }));
+            return;
+            }
+
+            // Method 3: Native fetch fallback using CartDataManager
+            const fetchPromise = window.CartDataManager 
+              ? window.CartDataManager.getCart() 
+              : fetch('/cart.js').then(response => response.json());
+            
+            fetchPromise
+            .then(cart => {
+                document.querySelectorAll('.cart-count, .header-cart-count').forEach(el => {
+                el.textContent = cart.item_count;
+                });
+
+                document.dispatchEvent(new CustomEvent('cart:refresh', {
+                bubbles: true,
+                detail: { open: false }
+                }));
+
+                document.dispatchEvent(new CustomEvent('cart:updated', {
+                detail: { cart: cart }
+                }));
+            });
+        }
+
+        // Add to cart handler
+        addToCartBtn.addEventListener('click', function() {
+            const selectedVariant = document.querySelector('input[name="product-variant"]:checked');
+            if (!selectedVariant) return;
+
+
+            const originalText = addToCartBtn.textContent;
+
+            addToCartBtn.disabled = true;
+            addToCartBtn.textContent = 'Adding...';
+
+            fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                items: [{
+                id: selectedVariant.value,
+                quantity: 1
+                }]
+            })
+            })
+            .then(response => response.json())
+            .then(data => {
+            refreshSleekCartDrawer();
+
+            addToCartBtn.textContent = 'Added!';
+            setTimeout(() => {
+                addToCartBtn.textContent = originalText;
+                addToCartBtn.disabled = false;
+                // Hide add to cart button and show view bag button
+                addToCartBtn.style.display = 'none';
+                viewBagBtn.style.display = 'flex';
+            }, 2000);
+            })
+            .catch(error => {
+            console.error('Error:', error);
+            addToCartBtn.textContent = 'Error - Try Again';
+            addToCartBtn.disabled = false;
+            });
+        });
+
+        // Handle product-ajax error and refresh cart counter
+        document.addEventListener('product-ajax:error', function(evt) {
+            console.error('Product AJAX Error:', evt.detail.errorMessage);
+            refreshSleekCartDrawer(); // Refresh cart counter just in case
+        });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButtons = document.querySelectorAll('.unit-toggle');
+
+            toggleButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                toggleButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const unit = this.getAttribute('data-unit');
+
+                document.querySelectorAll('.unit-in').forEach(el => {
+                el.classList.toggle('hidden', unit !== 'in');
+                });
+
+                document.querySelectorAll('.unit-cm').forEach(el => {
+                el.classList.toggle('hidden', unit !== 'cm');
+                });
+            });
+            });
+        });
+    </script>
+    
+    </div>
+</div>
+</basic-modal>
+</div>

@@ -1,0 +1,66 @@
+<div
+  data-section-index="{{ section.index }}"
+  class="top-bar color-{{ section.settings.color_scheme }} page-width section--padding hidden lg:flex"
+  style="--section-padding-top: {{ section.settings.padding_top }}px;--section-padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="top-bar__links">
+    {% if section.settings.menu != blank %}
+      {% assign menu = linklists[section.settings.menu] %}
+      <nav class="header__menu flex" role="navigation" aria-label="Primary">
+        <ul class="flex flex-wrap">
+            {% for link in menu.links %}
+                <li><a class="menu__item flex items-center relative" href="{{ link.url }}">{{ link.title }}</a></li>
+                {% unless forloop.last %} | {% endunless %}
+            {% endfor %}
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Top Bar",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-inverse"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation Menu"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 12,
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 12,
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Top Bar"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,513 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+{{ 'account-page.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'account-page.js' | asset_url }}" defer="defer"></script>
+
+<div
+  class="customer account section"
+  style="--section-padding-top: {{ section.settings.padding_top }}px;--section-padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+<!-- Customer Account Dashboard Template -->
+<div class="customer-account-dashboard">
+    <div class="dashboard-container section--padding">
+      <!-- Left Sidebar Navigation -->
+      <div class="dashboard-sidebar">
+        <nav class="dashboard-nav">
+          <ul class="nav-list">
+            <li class="nav-item">
+             <button class="nav-link active" data-tab="profile">
+                <span class="nav-text">Profile</span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" data-tab="orders">
+                <span class="nav-text">My Orders</span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" data-tab="wishlist">
+                <span class="nav-text">My Wishlist</span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" data-tab="addresses">
+                <span class="nav-text">Addresses</span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" data-tab="wallet">
+                <span class="nav-text">Powerlook Wallet</span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link logout-link">
+                <a href="{{ routes.account_logout_url }}" class="btn btn--logout btn-primary">{{ 'customer.log_out' | t }}</a>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Mobile Navigation Cards -->
+      <div class="dashboard-mobile-nav">
+        <div class="mobile-nav-container">
+
+          <!-- Navigation List -->
+          <div class="mobile-nav-list">
+            <div class="mobile-nav-item" data-tab="profile">
+              <span class="nav-item-text">Profile</span>
+              <span class="nav-item-arrow">{% render 'icon-caret-right' %}</span>
+            </div>
+            <div class="mobile-nav-item" data-tab="orders">
+              <span class="nav-item-text">My Orders</span>
+              <span class="nav-item-arrow">{% render 'icon-caret-right' %}</span>
+            </div>
+            <div class="mobile-nav-item" data-tab="wishlist">
+              <span class="nav-item-text">My Wishlist</span>
+              <span class="nav-item-arrow">{% render 'icon-caret-right' %}</span>
+            </div>
+            <div class="mobile-nav-item" data-tab="addresses">
+              <span class="nav-item-text">Addresses</span>
+              <span class="nav-item-arrow">{% render 'icon-caret-right' %}</span>
+            </div>
+            <div class="mobile-nav-item" data-tab="wallet">
+              <span class="nav-item-text">Powerlook Wallet</span>
+              <span class="nav-item-arrow">{% render 'icon-caret-right' %}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Drawer -->
+      <div class="mobile-drawer" id="mobile-drawer">
+        <div class="drawer-overlay" id="drawer-overlay"></div>
+        <div class="drawer-content">
+          <div class="drawer-header">
+            <button class="drawer-close" id="drawer-close">{% render 'icon-caret-right' %}</button>
+            <h3 class="drawer-title" id="drawer-title">Profile</h3>
+          </div>
+          <div class="drawer-body" id="drawer-body">
+            <!-- Content will be dynamically loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="dashboard-content">
+        <!-- Profile Tab Content -->
+        <div class="tab-content active" id="profile">
+          <div class="content-header">
+            <h2 class="content-title">My Profile</h2>
+            <p class="content-subtitle">
+              You can edit/update your profile information by click on edit profile button.
+            </p>
+          </div>
+
+          <div class="profile-info">
+            <div class="profile-row">
+              <div class="profile-field">
+                <label class="field-label">FULL NAME</label>
+                <div class="field-value">
+                  {{ customer.first_name }}
+                  {{ customer.last_name }}
+                </div>
+              </div>
+              <div class="profile-field">
+                <label class="field-label">EMAIL</label>
+                <div class="field-value">{{ customer.email }}</div>
+              </div>
+            </div>
+
+            <div class="profile-row">
+              <div class="profile-field">
+                <label class="field-label">Date of birth</label>
+                <div class="field-value">{{ customer.metafields.custom.date_of_birth }}</div>
+              </div>
+            </div>
+
+            <div class="profile-row">
+              <div class="profile-field">
+                <label class="field-label">Gender</label>
+                <div class="field-value">{{ customer.metafields.custom.gender }}</div>
+              </div>
+            </div>
+          </div>
+  </div>
+
+        <!-- Edit Profile Modal -->
+        <div class="modal-overlay" id="edit-profile-modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>General Information</h3>
+              <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <form class="edit-profile-form" id="edit-profile-form">
+              <div class="form-group">
+                <label class="form-label">FULL NAME</label>
+                <input type="text" class="form-input" id="full-name" value="{{ customer.first_name }}" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">LAST NAME</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="last-name"
+                  placeholder="Enter name"
+                  value="{{ customer.last_name }}"
+                >
+              </div>
+              <div class="form-group">
+                <label class="form-label">EMAIL ADDRESS</label>
+                <input type="email" class="form-input" id="email" value="{{ customer.email }}" required>
+              </div>
+              <div class="profile-field">
+                <label class="field-label">PHONE NUMBER</label>
+                {% assign profile_phone = customer.phone | default: '+91 9039467266' | replace: '+91 ', '' | replace: '+91', '' %}
+                <div class="field-value">{{ profile_phone | strip }}</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PHONE NUMBER</label>
+                {% assign profile_phone_input = customer.phone | default: '+91 9039467266' | replace: '+91 ', '' | replace: '+91', '' %}
+                <input
+                  type="tel"
+                  class="form-input"
+                  id="phone"
+                  value="{{ profile_phone_input | strip }}"
+                  required
+                >
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="cancel-edit">CANCEL</button>
+                <button type="submit" class="btn btn-primary">SAVE</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Orders Tab Content -->
+        <div class="tab-content" id="orders">
+          <div class="content-header">
+            <h2 class="content-title">My Orders</h2>
+          </div>
+
+          <div class="orders-content">
+            {% if customer.orders.size > 0 %}
+              <div class="orders-list">
+                 {% assign sorted_customer_orders = customer.orders | sort: 'created_at' | reverse %}
+
+                  {% for order in sorted_customer_orders  %}
+                  <div class="order-item">
+                    <div class="order-header">
+                      <h4>Order {{ order.name }}</h4>
+                      {% assign has_delivery_tag = false %}
+{% for tag in order.tags %}
+  {% if tag contains 'Deliverydate_' %}
+    {% assign has_delivery_tag = true %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% if order.cancelled %}
+  <span class="order-cancelled">Cancelled</span>
+{% elsif has_delivery_tag %}
+  <span class="order-delivered order-status">Delivered</span>
+{% else %}
+  <span class="order-status">{{ order.financial_status }}</span>
+{% endif %}
+                    </div>
+                    <div class="order-details">
+                      <p>Date: {{ order.created_at | date: '%B %d, %Y' }}</p>
+                      <p>Total: {{ order.total_price | money }}</p>
+                      <p>Items: {{ order.line_items.size }}</p>
+                    </div>
+                    <div class="order-actions">
+                      <a href="{{ order.customer_url }}" class="btn btn-outline">View Details</a>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="empty-state">
+                <p>You haven't placed any orders yet.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Wishlist Tab Content -->
+        <div class="tab-content" id="wishlist">
+          <div class="content-header">
+            <h2 class="content-title">My Wishlist</h2>
+          </div>
+
+          <div class="wishlist-content">
+            <wishlist-page
+              show-product-title
+              show-price
+              move-to-cart
+              wishlist-empty-link="/collections/all"
+            ></wishlist-page>
+          </div>
+        </div>
+
+        <!-- Addresses Tab Content -->
+        <div class="tab-content" id="addresses">
+          <div class="content-header address-tab">
+            <h2 class="content-title">My Addresses</h2>
+            <div class="address-actions">
+              <button class="btn btn-address" id="add-new-address-btn">{% render 'plus-icon' %} Add New Address</button>
+            </div>
+          </div>
+
+          <div class="addresses-content">
+            {% if customer.addresses.size > 0 %}
+              <div class="addresses-list">
+                {% for address in customer.addresses %}
+                  <div class="address-item"
+                    data-address-id="{{ address.id }}"
+                    data-first-name="{{ address.first_name | escape }}"
+                    data-last-name="{{ address.last_name | escape }}"
+                    data-address1="{{ address.address1 | escape }}"
+                    data-address2="{{ address.address2 | escape }}"
+                    data-city="{{ address.city | escape }}"
+                    data-province="{{ address.province | escape }}"
+                    data-province-code="{{ address.province_code | escape }}"
+                    data-zip="{{ address.zip | escape }}"
+                    data-country="{{ address.country | escape }}"
+                    data-country-code="{{ address.country_code | escape }}"
+                    data-phone="{{ address.phone | escape }}">
+                    <div class="address-info">
+                      <div class="address-head">
+                        <h4>
+                          {{ address.first_name }}
+                          {{ address.last_name }}
+                        </h4>
+                        <div class="address-actions">
+                          <button class="btn edit-address-btn" data-address-id="{{ address.id }}">Edit</button>
+                          <button class="btn delete-address-btn" data-address-id="{{ address.id }}">Remove</button>
+                        </div>
+                      </div>
+                      <div class="address-details">
+                        <p>{{ address.address1 }}</p>
+                        {% if address.address2 %}
+                          <p>{{ address.address2 }}</p>
+                        {% endif %}
+                        <p>
+                          {{ address.city }}, {{ address.province }} {{ address.zip }}
+                        </p>
+                        <p>{{ address.country }}</p>
+                        {% if address.phone %}
+                          {% assign display_phone = address.phone | remove: '+91 ' | remove: '+91' %}
+                          <p class="address-phn">Mobile: {{ display_phone | strip }}</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="empty-state">
+                <p>No addresses saved yet.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Wallet Tab Content -->
+        <div class="tab-content" id="wallet">
+          <div class="content-header">
+            <h2 class="content-title">Powerlook Wallet</h2>
+            <p class="content-subtitle">Manage your wallet balance and transactions.</p>
+          </div>
+          <div id="flits-store-credit-content"><div class="flits_initial_loader" data-injected="true"><div class="LoadingModule_flits_loading_div"><div class="LoadingModule_flits_spinner"></div></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden iframe for standard form submission -->
+  <iframe name="address-form-target" id="address-form-target" style="display:none" aria-hidden="true"></iframe>
+
+  <!-- Address Edit Modal -->
+  <div class="modal-overlay" id="address-edit-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Address</h3>
+        <button class="modal-close" id="close-address-modal">&times;</button>
+      </div>
+      <form class="address-edit-form" id="address-edit-form" method="post" target="address-form-target">
+        <input type="hidden" name="form_type" value="customer_address">
+        <input type="hidden" name="utf8" value="✓">
+        <input type="hidden" name="_method" value="put">
+        <input type="hidden" id="edit-address-id" name="id">
+        <div class="form-group">
+          <label class="form-label">FIRST NAME</label>
+          <input type="text" class="form-input" name="address[first_name]" id="edit-first-name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">LAST NAME</label>
+          <input type="text" class="form-input" name="address[last_name]" id="edit-last-name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ADDRESS</label>
+          <input type="text" class="form-input" name="address[address1]" id="edit-address1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">APARTMENT, SUITE, ETC. (OPTIONAL)</label>
+          <input type="text" class="form-input" name="address[address2]" id="edit-address2">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">CITY</label>
+            <input type="text" class="form-input" name="address[city]" id="edit-city" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">STATE/PROVINCE</label>
+            <input type="text" class="form-input" name="address[province]" id="edit-province" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">ZIP/POSTAL CODE</label>
+            <input type="text" class="form-input" name="address[zip]" id="edit-zip" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">COUNTRY</label>
+            <input type="text" class="form-input" name="address[country]" id="edit-country" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PHONE</label>
+          <input type="tel" class="form-input" name="address[phone]" id="edit-phone">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="cancel-address-edit">CANCEL</button>
+          <button type="submit" class="btn btn-primary update_default_address">UPDATE ADDRESS</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add New Address Modal -->
+  <div class="modal-overlay" id="add-address-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add New Address</h3>
+        <button class="modal-close" id="close-add-modal">&times;</button>
+      </div>
+      {%- comment -%} Liquid form tag adds authenticity_token; plain HTML forms POST without CSRF and Shopify rejects the save. {%- endcomment -%}
+      {% form 'customer_address',
+        customer.new_address,
+        id: 'add-address-form',
+        class: 'address-edit-form',
+        target: 'address-form-target'
+      %}
+        <div class="form-group">
+          <label class="form-label">FIRST NAME</label>
+          <input type="text" class="form-input" name="address[first_name]" id="add-first-name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">LAST NAME</label>
+          <input type="text" class="form-input" name="address[last_name]" id="add-last-name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ADDRESS</label>
+          <input type="text" class="form-input" name="address[address1]" id="add-address1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">APARTMENT, SUITE, ETC. (OPTIONAL)</label>
+          <input type="text" class="form-input" name="address[address2]" id="add-address2">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">CITY</label>
+            <input type="text" class="form-input" name="address[city]" id="add-city" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">STATE/PROVINCE</label>
+            <input type="text" class="form-input" name="address[province]" id="add-province" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">ZIP/POSTAL CODE</label>
+            <input type="text" class="form-input" name="address[zip]" id="add-zip" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">COUNTRY</label>
+            <input type="text" class="form-input" name="address[country]" id="add-country" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PHONE</label>
+          <input type="tel" class="form-input" name="address[phone]" id="add-phone">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="cancel-add-address">CANCEL</button>
+          <button type="submit" class="btn btn-primary add_new_address">ADD ADDRESS</button>
+        </div>
+      {% endform %}
+    </div>
+  </div>
+
+  <!-- Address Delete Confirmation Modal -->
+  <div class="modal-overlay" id="address-delete-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Delete Address</h3>
+        <button class="modal-close" id="close-delete-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this address? This action cannot be undone.</p>
+        <div id="address-delete-form">
+          <input type="hidden" id="delete-address-id">
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" id="cancel-address-delete">CANCEL</button>
+            <button type="submit" class="btn btn-primary btn-danger delete_address_button">DELETE ADDRESS</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "custom-main-account",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "custom-main-account"
+
+    }
+  ]
+
+}
+
+{% endschema %}

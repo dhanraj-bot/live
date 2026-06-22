@@ -1,0 +1,63 @@
+{%- if sidebar_collection_filter != blank and sidebar_collection_filter.values != blank -%}
+  {%- liquid
+    assign collection_context = context | default: 'toolbar'
+    assign collection_display_class = display_class | default: ''
+  -%}
+  <form
+    class="face-form toolbar-collection-form {{ collection_display_class }}"
+    method="GET"
+    action="{{ request.path }}"
+    is="facet-form"
+    data-section-id="{{ section_id }}"
+    data-history
+  >
+    <div data-filter data-index="toolbar-{{ collection_context }}-page" hidden>
+      <input type="hidden" name="page" value="">
+      {%- if results.current_type != blank or results.current_vendor != blank -%}
+        <input
+          type="hidden"
+          name="q"
+          value="{{ results.current_vendor | default: results.current_type | escape }}"
+        >
+      {%- endif -%}
+      {%- if request.page_type == 'search' -%}
+        <input type="hidden" name="q" value="{{ results.terms | escape }}">
+      {%- endif -%}
+      {%- if results.sort_by != blank -%}
+        <input type="hidden" name="sort_by" value="{{ results.sort_by | escape }}">
+      {%- endif -%}
+    </div>
+    <div data-filter data-index="toolbar-{{ collection_context }}-{{ sidebar_collection_filter.param_name | escape }}">
+      <div class="toolbar-collection-chips">
+        {%- for filter_value in sidebar_collection_filter.values -%}
+          {%- liquid
+            assign toolbar_collection_id = 'toolbar-collection-' | append: collection_context | append: '-' | append: section_id | append: '-' | append: forloop.index
+            assign is_disabled = false
+            if filter_value.count == 0 and filter_value.active == false
+              assign is_disabled = true
+            endif
+          -%}
+          <input
+            class="visually-hidden toolbar-collection-input"
+            id="{{ toolbar_collection_id }}"
+            type="checkbox"
+            name="{{ filter_value.param_name }}"
+            value="{{ filter_value.value | escape }}"
+            {% if filter_value.active %}
+              checked
+            {% endif %}
+            {% if is_disabled %}
+              disabled
+            {% endif %}
+          >
+          <label
+            for="{{ toolbar_collection_id }}"
+            class="toolbar-collection-chip{% if filter_value.active %} is-active{% endif %}{% if is_disabled %} is-disabled{% endif %}"
+          >
+            {{ filter_value.label | escape }}
+          </label>
+        {%- endfor -%}
+      </div>
+    </div>
+  </form>
+{%- endif -%}

@@ -1,0 +1,63 @@
+{% comment %}
+  Checkout Offer Popup
+  Shows offer recommendations when user clicks checkout button
+  Based on cart item count and discount code status
+{% endcomment %}
+
+{% if section.settings.checkout_popup_enable %}
+<div id="checkout-offer-popup" 
+     class="checkout-offer-popup" 
+     style="display: none;" 
+     aria-hidden="true" 
+     role="dialog" 
+     aria-modal="true" 
+     aria-labelledby="checkout-offer-popup-title"
+     data-enabled="true"
+     data-message-2-items="{{ section.settings.checkout_popup_message_2_items | default: 'Buy 2 products and get ₹250 off.' }}"
+     data-message-3-items="{{ section.settings.checkout_popup_message_3_items | default: 'Buy 3 products and get ₹500 off.' }}"
+     data-tier2-coupon="{{ section.settings.checkout_popup_tier2_coupon | default: 'B3G500' | upcase }}"
+     data-continue-url="{{ section.settings.checkout_popup_continue_url | default: '/collections/all' }}">
+  <div class="checkout-offer-popup__overlay"></div>
+  <div class="checkout-offer-popup__container">
+    <div class="checkout-offer-popup__icon">
+      {% if section.settings.checkout_popup_icon != blank %}
+        <img
+          src="{{ section.settings.checkout_popup_icon | image_url: width: 500}}"
+          alt="Checkout Offer Popup Icon"
+          width="232"
+          height="232"
+          loading="lazy"
+        >
+      {% endif %}
+    </div>
+    <button type="button" class="checkout-offer-popup__close" aria-label="Close popup">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div class="checkout-offer-popup__content">
+      <h2 id="checkout-offer-popup-title" class="checkout-offer-popup__title">
+        {{ section.settings.checkout_popup_title | default: "Wait! You're Missing Out!" }}
+      </h2>
+      
+      <p id="checkout-offer-popup-message" class="checkout-offer-popup__message">
+        {{ section.settings.checkout_popup_message_2_items | default: 'Buy 2 products and get ₹250 off.' }}
+      </p>
+      
+      <div class="checkout-offer-popup__actions">
+        <a href="{{ section.settings.checkout_popup_continue_url | default: '/collections/all' }}" 
+           class="checkout-offer-popup__btn checkout-offer-popup__btn--primary" 
+           id="checkout-offer-continue-shopping">
+          {{ section.settings.checkout_popup_continue_btn | default: 'Continue Shopping' }}
+        </a>
+        <button type="button" 
+                class="checkout-offer-popup__btn checkout-offer-popup__btn--secondary" 
+                id="checkout-offer-proceed">
+          {{ section.settings.checkout_popup_proceed_btn | default: 'No, I want to Checkout' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

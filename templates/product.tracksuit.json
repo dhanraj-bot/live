@@ -1,0 +1,432 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {
+        "text_alignment": "start"
+      }
+    },
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h4"
+          }
+        },
+        "product_badge": {
+          "type": "product_badge",
+          "settings": {}
+        },
+        "sku_PXaUmt": {
+          "type": "sku",
+          "settings": {
+            "text_style": "body",
+            "show_sku": true
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "seprator_Cp3c84": {
+          "type": "seprator",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_type": "variant_image",
+            "button_style": "standard",
+            "button_size": 40,
+            "size_title": "Size Chart",
+            "size_chart_from_page": ""
+          }
+        },
+        "information_note_Jcj3xg": {
+          "type": "information_note",
+          "settings": {
+            "notecontent": "Please select a size."
+          }
+        },
+        "seprator_TediM6": {
+          "type": "seprator",
+          "settings": {}
+        },
+        "dis_code_xKyGiD": {
+          "type": "dis_code",
+          "name": "Product offer",
+          "settings": {
+            "mainheading": "Offers*"
+          }
+        },
+        "seprator_YrGgEp": {
+          "type": "seprator",
+          "settings": {}
+        },
+        "similar_styles_TYMiRQ": {
+          "type": "similar-styles",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_quantity_selector": true,
+            "show_dynamic_checkout": false,
+            "show_gift_card_recipient": false
+          }
+        },
+        "custom_liquid_Erw7Rd": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'no-return-and-exchange' %}"
+          }
+        },
+        "seprator_Rcbija": {
+          "type": "seprator",
+          "settings": {}
+        },
+        "custom_liquid_nHXF9C": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<form><div class=\"ZipCodeRestrict zipcode_product_page\"></div></form>"
+          }
+        },
+        "seprator_pP79gg": {
+          "type": "seprator",
+          "settings": {}
+        },
+        "icon_with_text": {
+          "type": "icon-with-text",
+          "settings": {
+            "layout": "horizontal",
+            "title_font": "body",
+            "title_size": "text-base",
+            "icon_1": "none",
+            "image_1": "shopify://shop_images/Layer_1.png",
+            "heading_1": "Free Shipping On All Orders",
+            "icon_2": "package",
+            "image_2": "shopify://shop_images/Capa_1.png",
+            "heading_2": "Returns/Exchanges valid for 7 days from delivery"
+          }
+        },
+        "seprator_YWdpHw": {
+          "type": "seprator",
+          "settings": {}
+        },
+        "pickup_availability": {
+          "type": "pickup_availability",
+          "disabled": true,
+          "settings": {}
+        },
+        "spec_collapsible_tab_C7pE4J": {
+          "type": "spec_collapsible_tab",
+          "settings": {
+            "heading": "Key Highlights",
+            "content": "",
+            "custom_liquid": "",
+            "page": ""
+          }
+        },
+        "seprator_djFMBE": {
+          "type": "seprator",
+          "settings": {}
+        },
+        "text_N7gGGd": {
+          "type": "text",
+          "settings": {
+            "customClass": "description_main_heading",
+            "text": "Product Description",
+            "text_style": "body"
+          }
+        },
+        "collapsible-row-2": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Product Details",
+            "subheading": "Detail and Highlight",
+            "show_description": true,
+            "show_specifications_metafield": false,
+            "icon": "T-shirt",
+            "content": "",
+            "custom_liquid": "",
+            "page": "",
+            "default_open": false
+          }
+        },
+        "retuns_refund_tab_PDdi97": {
+          "type": "retuns_refund_tab",
+          "settings": {
+            "heading": "Return & Refund Policy",
+            "subheading": "Know about our policy",
+            "icon": "T-shirt",
+            "content": "<p>Returns and exchanges are available within 7 days from the delivery date. For more details, please visit our <a href=\"/pages/returns-exchange-refund\" title=\"Returns, Exchange & Refund\">Returns, Exchange & Refund Policy</a> page.</p>",
+            "default_open": false
+          }
+        },
+        "collapsible_tab_3LWhGr": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Manufacturing Details",
+            "subheading": "Marketed and manufactured by",
+            "show_description": false,
+            "show_specifications_metafield": false,
+            "icon": "Manufacturing",
+            "content": "<p><strong>Country of origin:</strong>India</p><p><strong>Manufacture detail:</strong>Powerlook Apparels Pvt Ltd Lotus Corporate Park Wing G02 - 1502, Ram Mandir Lane, off Western Express Highway, Goregaon, Mumbai, 400063</p>",
+            "custom_liquid": "",
+            "page": "",
+            "default_open": false
+          }
+        },
+        "collapsible_tab_UCTCYg": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Save extra with Offers",
+            "subheading": "",
+            "show_description": false,
+            "show_specifications_metafield": false,
+            "icon": "gift",
+            "content": "<p>Enjoy special discounts or choose easy EMI options with our exclusive payment offers.</p>",
+            "custom_liquid": "",
+            "page": "",
+            "default_open": false
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "product_badge",
+        "sku_PXaUmt",
+        "price",
+        "seprator_Cp3c84",
+        "variant_picker",
+        "information_note_Jcj3xg",
+        "seprator_TediM6",
+        "dis_code_xKyGiD",
+        "seprator_YrGgEp",
+        "similar_styles_TYMiRQ",
+        "buy_buttons",
+        "custom_liquid_Erw7Rd",
+        "seprator_Rcbija",
+        "custom_liquid_nHXF9C",
+        "seprator_pP79gg",
+        "icon_with_text",
+        "seprator_YWdpHw",
+        "pickup_availability",
+        "spec_collapsible_tab_C7pE4J",
+        "seprator_djFMBE",
+        "text_N7gGGd",
+        "collapsible-row-2",
+        "retuns_refund_tab_PDdi97",
+        "collapsible_tab_3LWhGr",
+        "collapsible_tab_UCTCYg"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "enable_sticky_info": true,
+        "media_size": "large",
+        "gallery_layout": "vertical-carousel",
+        "mobile_thumbnails": "hide",
+        "enable_image_zoom": true,
+        "enable_video_looping": true,
+        "showtimer": false,
+        "saletext": "<p>Sale ends in :</p>",
+        "type": "fixed_time",
+        "style": "number",
+        "duration": "every_month",
+        "time": "2025/11/26 06:00 PM",
+        "padding_top": 0,
+        "padding_bottom": 20
+      }
+    },
+    "sticky_atc_bar_yrbXiU": {
+      "type": "sticky-atc-bar",
+      "name": "t:sections.sticky-atc-bar.name",
+      "settings": {
+        "container": "full",
+        "visibility": "mobile",
+        "show_atc_button": true,
+        "show_dynamic_checkout_buttons": false,
+        "show_quantity": true,
+        "showextra_text_sticky": false,
+        "extra_text_sticky": "Get this at 400 off*"
+      }
+    },
+    "collapsible_tabs_qMwbjX": {
+      "type": "collapsible-tabs",
+      "blocks": {
+        "collapsible_item_AQPXwa": {
+          "type": "collapsible_item",
+          "disabled": true,
+          "settings": {
+            "icon": "none",
+            "heading": "More About The “{{ product.title }}\"",
+            "content": "",
+            "custom_liquid": "{{ product.metafields.magento.more_about_the  }}",
+            "page": "",
+            "open": false
+          }
+        },
+        "collapsible_item_NV7CDf": {
+          "type": "collapsible_item",
+          "disabled": true,
+          "settings": {
+            "icon": "none",
+            "heading": "FAQ",
+            "content": "",
+            "custom_liquid": "{{ product.metafields.magento.product_faq  }}",
+            "page": "",
+            "open": false
+          }
+        }
+      },
+      "block_order": [
+        "collapsible_item_AQPXwa",
+        "collapsible_item_NV7CDf"
+      ],
+      "name": "t:sections.collapsible-tabs.presets.name",
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "",
+        "header_layout": "vertical",
+        "heading": "",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "text_size": "text-base",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "btn--primary",
+        "column_gap": "large",
+        "row_gap": "inherit",
+        "item_style": "standard",
+        "item_color_scheme": "",
+        "item_heading_font": "heading",
+        "item_heading_size": "h4",
+        "item_icon_size": "extra-large",
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "1761130705cb929f80": {
+      "type": "apps",
+      "blocks": {
+        "loox_reviews_loox_dynamic_section_kNENFz": {
+          "type": "shopify://apps/loox-reviews/blocks/loox-dynamic-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
+          "settings": {
+            "only_photos": false,
+            "aggregated": false,
+            "limit": 12,
+            "hide_thumbnails": false,
+            "maxwidth": 1400,
+            "is_sample": false
+          }
+        }
+      },
+      "block_order": [
+        "loox_reviews_loox_dynamic_section_kNENFz"
+      ],
+      "settings": {
+        "include_margins": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "custom_liquid_KYpgXX": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<div id=\"looxReviews\" data-product-id=\"{{product.id}}\" class=\"loox-reviews-default\" data-limit-mobile=\"2\">{{ product.metafields.loox.reviews }}</div>",
+        "color_scheme": "",
+        "padding_top": 20,
+        "padding_bottom": 0
+      }
+    },
+    "section_seprator_kBFmD3": {
+      "type": "section-seprator",
+      "name": "section seprator",
+      "settings": {}
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "heading": "Frequently Bought Together",
+        "heading_size": "h3",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "limit": 12,
+        "columns": 4,
+        "column_gap": "extra-small",
+        "row_gap": "inherit",
+        "enable_slider": true,
+        "controls_position": "inside",
+        "pcard_image_ratio": "",
+        "columns_mobile": "1",
+        "swipe_on_mobile": true,
+        "padding_top": 0,
+        "padding_bottom": 20,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "section_seprator_Hm3mA6": {
+      "type": "section-seprator",
+      "name": "section seprator",
+      "settings": {}
+    },
+    "recently_viewed_products_q9x77W": {
+      "type": "recently-viewed-products",
+      "name": "t:sections.recently-viewed-products.name",
+      "settings": {
+        "color_scheme": "",
+        "heading": "Recently viewed products",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "limit": 8,
+        "columns": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "enable_slider": true,
+        "controls_position": "inside",
+        "pcard_image_ratio": "",
+        "columns_mobile": "1",
+        "swipe_on_mobile": true,
+        "padding_top": 0,
+        "padding_bottom": 50,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main",
+    "sticky_atc_bar_yrbXiU",
+    "collapsible_tabs_qMwbjX",
+    "1761130705cb929f80",
+    "custom_liquid_KYpgXX",
+    "section_seprator_kBFmD3",
+    "related-products",
+    "section_seprator_Hm3mA6",
+    "recently_viewed_products_q9x77W"
+  ]
+}

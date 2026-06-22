@@ -1,0 +1,127 @@
+{% comment %}
+  PDP icon text strip (3-column style)
+  Accepts:
+  - heading_1, image_1, icon_1
+  - heading_2, image_2, icon_2
+  - heading_3, image_3, icon_3
+{% endcomment %}
+
+<style>
+  .pdp-icon-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-radius: 0;
+    {% comment %} padding: 20px 0px ; {% endcomment %}
+    {% comment %} margin-top: 12px; {% endcomment %}
+  }
+  .pdp-icon-strip--two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pdp-icon-strip__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    padding: 8px 16px;
+  }
+  .pdp-icon-strip__item + .pdp-icon-strip__item {
+    border-left: 1px solid #D2D2D266;
+  }
+  .pdp-icon-strip__item .icon {
+    width: 24px;
+    height: 24px;
+  }
+  .pdp-icon-strip__item img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+  .pdp-icon-strip__text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: center;
+    max-width:120px;
+    color:#2A2A2A;
+  }
+  @media (max-width: 767.98px) {
+    .pdp-icon-strip__item {
+      padding: 4px 6px;
+    }
+  }
+</style>
+
+{%- assign hide_return_exchange = false -%}
+{%- for col in product.collections -%}
+  {%- if col.metafields.custom.no_return_exchange == true -%}
+    {%- assign hide_return_exchange = true -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<div class="pdp-icon-strip{% if hide_return_exchange %} pdp-icon-strip--two-col{% endif %}">
+  {% if heading_1 != blank %}
+    <div class="pdp-icon-strip__item">
+      {% if image_1 != blank %}
+        <img
+          src="{{ image_1 | image_url }}"
+          {% if image_1.alt != blank %}
+            alt="{{ image_1.alt | escape }}"
+          {% else %}
+            role="presentation"
+          {% endif %}
+          loading="lazy"
+          width="20"
+          height="20"
+        >
+      {% else %}
+        {% render 'icons', icon: icon_1 %}
+      {% endif %}
+      <span class="pdp-icon-strip__text">{{ heading_1 }}</span>
+    </div>
+  {% endif %}
+
+  {% if heading_2 != blank %}
+    <div class="pdp-icon-strip__item">
+      {% if image_2 != blank %}
+        <img
+          src="{{ image_2 | image_url }}"
+          {% if image_2.alt != blank %}
+            alt="{{ image_2.alt | escape }}"
+          {% else %}
+            role="presentation"
+          {% endif %}
+          loading="lazy"
+          width="20"
+          height="20"
+        >
+      {% else %}
+        {% render 'icons', icon: icon_2 %}
+      {% endif %}
+      <span class="pdp-icon-strip__text">{{ heading_2 }}</span>
+    </div>
+  {% endif %}
+
+  {% if heading_3 != blank and hide_return_exchange != true %}
+    <div class="pdp-icon-strip__item">
+      {% if image_3 != blank %}
+        <img
+          src="{{ image_3 | image_url }}"
+          {% if image_3.alt != blank %}
+            alt="{{ image_3.alt | escape }}"
+          {% else %}
+            role="presentation"
+          {% endif %}
+          loading="lazy"
+          width="20"
+          height="20"
+        >
+      {% else %}
+        {% render 'icons', icon: icon_3 %}
+      {% endif %}
+      <span class="pdp-icon-strip__text">{{ heading_3 }}</span>
+    </div>
+  {% endif %}
+</div>

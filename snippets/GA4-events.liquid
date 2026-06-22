@@ -1,0 +1,1503 @@
+<!-- ************************** GA4 JS START****************************************** -->
+
+<script>
+// LOGO CLICK EVENT
+document.addEventListener('DOMContentLoaded', function () {
+  const logo = document.querySelector('.header__logo--image');
+
+  if (logo) {
+    logo.addEventListener('click', function () {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'logo_click',
+        page_location: window.location.href,
+        page_title: document.title,
+        page_type: '{{ template }}',
+        userID: '{{ customer.id }}',
+        user_type: '{{ customer.tags | join: "," }}'
+      });
+    //  console.log("GA4 Event Sent: logo_click");
+    });
+  }
+// LOGO CLICK EVENT
+}); 
+
+// TOP NAVIGATION CLICK
+document.addEventListener("DOMContentLoaded", function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  function pushTopNavClick(ctaText, category, selectType) {
+    gtag('event', 'top_navigation_click', {
+      cta_text: ctaText,
+      category: category || "NA",
+      select_type: selectType,
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    });
+    //console.log("GA4 Event Sent: top_navigation_click", { ctaText, category, selectType });
+  }
+
+  // Header nav summary clicks
+  document.querySelectorAll('nav summary').forEach(summary => {
+    summary.addEventListener('click', () => {
+      const ctaText = summary.textContent.trim();
+      pushTopNavClick(ctaText, ctaText, 'header');
+    });
+  });
+
+  // Mega menu link clicks
+  document.querySelectorAll('.mega-menu__link').forEach(link => {
+    link.addEventListener('click', () => {
+      const ctaText = link.textContent.trim();
+      const details = link.closest('details');
+      const summary = details?.querySelector('summary');
+      const category = summary?.textContent.trim() || "NA";
+      pushTopNavClick(ctaText, category, 'header');
+    });
+  });
+
+  // Dropdown nav link clicks
+  document.querySelectorAll('.dropdown__nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      const ctaText = link.textContent.trim();
+      const details = link.closest('details');
+      const summary = details?.querySelector('summary');
+      const category = summary?.textContent.trim() || "NA";
+      pushTopNavClick(ctaText, category, 'header');
+    });
+  });
+
+  // Mega menu details clicks
+  document.querySelectorAll('details.details-mega a').forEach(link => {
+    link.addEventListener('click', () => {
+      const ctaText = link.textContent.trim();
+      const details = link.closest('details.details-mega');
+      const summary = details?.querySelector('summary');
+      const category = summary?.textContent.trim() || "NA";
+      pushTopNavClick(ctaText, category, 'header');
+    });
+  });
+
+  // Main nav links (direct li > a)
+  document.querySelectorAll('nav > ul.flex.flex-wrap > li > a').forEach(link => {
+    link.addEventListener('click', () => {
+      const ctaText = link.textContent.trim();
+      pushTopNavClick(ctaText, 'NA', 'header');
+    });
+  });
+
+  // Desktop account button
+  const desktopAccountBtn = document.querySelector('a.account-button');
+  if (desktopAccountBtn) {
+    desktopAccountBtn.addEventListener("click", () => {
+      const ctaText = desktopAccountBtn.textContent.trim() || "Account";
+      pushTopNavClick(ctaText, "my_account_interaction", "header");
+    });
+  }
+
+  // Hamburger menu toggle button
+  const mobileMenu = document.querySelector('#MenuDrawer');
+  const hamburgerBtn = document.querySelector('.menu-drawer-button');
+  if (hamburgerBtn) {
+    hamburgerBtn.addEventListener("click", () => {
+      pushTopNavClick("hamburger_menu_toggle", "NA", "hamburger");
+    });
+  }
+
+  // Hamburger direct links
+  if (mobileMenu) {
+    mobileMenu.querySelectorAll('a.menu-drawer__item-link').forEach(link => {
+      if (!link.closest('details')) {
+        link.addEventListener("click", () => {
+          const ctaText = link.textContent.trim();
+          pushTopNavClick(ctaText, "NA", "hamburger");
+        });
+      }
+    });
+
+    // Hamburger top-level nested links
+    mobileMenu.querySelectorAll('details[level="top"] ul > li a').forEach(link => {
+      link.addEventListener("click", () => {
+        const ctaText = link.textContent.trim();
+        const parent = link.closest('details[level="top"]');
+        const summary = parent?.querySelector('summary');
+        const category = summary ? summary.textContent.trim() : "NA";
+        pushTopNavClick(ctaText, category, "hamburger");
+      });
+    });
+
+    // Hamburger sub-level links
+    mobileMenu.querySelectorAll('details[level="top"] details a').forEach(link => {
+      link.addEventListener("click", () => {
+        const ctaText = link.textContent.trim();
+        const topLevel = link.closest('details[level="top"]');
+        const summary = topLevel?.querySelector('summary');
+        const category = summary ? summary.textContent.trim() : "NA";
+        pushTopNavClick(ctaText, category, "hamburger");
+      });
+    });
+
+    // ✅ NEW: Hamburger Account Button (inside #MenuDrawer)
+    const mobileAccountBtn = mobileMenu.querySelector('a.account-button');
+    if (mobileAccountBtn) {
+      mobileAccountBtn.addEventListener("click", () => {
+        const ctaText = mobileAccountBtn.textContent.trim() || "Account";
+        pushTopNavClick(ctaText, "my_account_interaction", "hamburger");
+      });
+    }
+  }
+
+  // ✅ NEW: Top Bar Links (Track Order, Store Locator, Contact Us)
+  document.querySelectorAll('.top-bar__links nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      const ctaText = link.textContent.trim();
+      pushTopNavClick(ctaText, "top_bar", "header");
+    });
+  });
+});
+// TOP NAVIGATION CLICK
+  
+// TOP CART CLICK
+document.addEventListener("DOMContentLoaded", function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  function pushCartClickEvent() {
+    gtag('event', 'top_cart_click', {
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    }); 
+  }
+
+  const cartIcon = document.querySelector('a[href*="/cart"], a.cart-drawer-button');
+  if (cartIcon) {
+    cartIcon.addEventListener('click', pushCartClickEvent);
+  }
+});
+// TOP CART CLICK
+
+// PRODUCT CARD LINK   
+document.addEventListener("DOMContentLoaded", function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  function pushProductCardClick(ctaText, sectionName) {
+    gtag('event', 'product_card_click', {
+      cta_text: ctaText,
+      section_name: sectionName,
+      page_type: pageType,
+      userID: userID,      // Sent, but cannot be registered as a custom dimension
+      user_type: userType
+    });
+
+    {% comment %} console.log("GTAG Event Sent: product_card_click", {
+      cta_text: ctaText,
+      section_name: sectionName,
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    }); {% endcomment %}
+  }
+
+  // Attach event listener to all product cards
+  document.querySelectorAll('.collection-product-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      const ctaText = card.querySelector('.collection-card__title')?.textContent.trim() || "Product";
+      const section = card.closest('[data-section-name]')?.getAttribute('data-section-name') || "Unknown Section";
+
+      pushProductCardClick(ctaText, section);
+    });
+  });
+});
+// PRODUCT CARD LINK 
+
+// VIEW MORE CLICK 
+document.addEventListener("DOMContentLoaded", function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  function pushViewMoreClick(ctaText, sectionName) {
+    gtag('event', 'view_more_click', {
+      cta_text: ctaText,
+      section_name: sectionName,
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    });
+
+    {% comment %} console.log("GTAG Event Sent: view_more_click", {
+      cta_text: ctaText,
+      section_name: sectionName,
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    }); {% endcomment %}
+  }
+
+  // Attach event listeners to all "View More" buttons
+  document.querySelectorAll('.view-more-button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const ctaText = btn.textContent.trim() || "View More";
+      const section = btn.closest('[data-section-name]')?.getAttribute('data-section-name') || "Unknown Section";
+
+      pushViewMoreClick(ctaText, section);
+    });
+  });
+});
+// VIEW MORE CLICK 
+
+// FILTER INTEGRACTION 
+document.querySelector('.face-form')?.addEventListener('change', function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  const priceMinInput = document.querySelector('input[name="filter.v.price.gte"]');
+  const priceMaxInput = document.querySelector('input[name="filter.v.price.lte"]');
+
+  const priceMin = priceMinInput?.value || "0";
+  const priceMax = priceMaxInput?.value || priceMaxInput?.getAttribute('max') || "0";
+
+  const colorInputs = document.querySelectorAll('input[name="filter.v.t.shopify.color-pattern"]:checked');
+  const sizeInputs = document.querySelectorAll('input[name="filter.v.t.shopify.size"]:checked');
+  const sleeveInputs = document.querySelectorAll('input[name="filter.v.m.magento.sleeves"]:checked');
+
+  const getLabelText = (input) => {
+    const label = document.querySelector(`label[for="${input.id}"]`);
+    if (!label) return '';
+    return label.textContent.trim().split('(')[0].trim();
+  };
+
+  const getUniqueValues = (inputs) => {
+    const values = Array.from(inputs).map(getLabelText);
+    return [...new Set(values)];
+  };
+
+  const selectedColors = getUniqueValues(colorInputs);
+  const selectedSizes = getUniqueValues(sizeInputs);
+  const selectedSleeves = getUniqueValues(sleeveInputs);
+
+  // Trigger gtag events individually for each selected filter
+  selectedColors.forEach(value => {
+    gtag('event', 'filter_interactions', {
+      cta_text: value,
+      section_name: 'color',
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    });
+  //  console.log('GA4 filter_interactions sent for color:', value);
+  });
+
+  selectedSizes.forEach(value => {
+    gtag('event', 'filter_interactions', {
+      cta_text: value,
+      section_name: 'size',
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    });
+   // console.log('GA4 filter_interactions sent for size:', value);
+  });
+
+  selectedSleeves.forEach(value => {
+    gtag('event', 'filter_interactions', {
+      cta_text: value,
+      section_name: 'sleeves',
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    });
+  //  console.log('GA4 filter_interactions sent for sleeves:', value);
+  });
+
+  // Send price range filter event
+  if (priceMin !== "0" || priceMax !== "0") {
+    const priceRange = `₹${priceMin} to ₹${priceMax}`;
+    gtag('event', 'filter_interactions', {
+      cta_text: priceRange,
+      section_name: 'price',
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    });
+   // console.log('GA4 filter_interactions sent for price:', priceRange);
+  }
+});
+// FILTER INTEGRACTION  
+
+// Reset INTERACTION
+document.addEventListener('DOMContentLoaded', function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  function trackResetClick(event) {
+    gtag('event', 'reset_interactions', {
+      cta_text: 'reset',
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    });
+   // console.log('GA4 Event Sent: reset_interactions');
+  }
+
+  // Attach listener to ALL current reset links
+  document.querySelectorAll('.facet-clear-all, .facet-remove').forEach(link => {
+    link.addEventListener('click', trackResetClick);
+  });
+
+  // For dynamically loaded elements (AJAX filtering)
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll('.facet-clear-all, .facet-remove').forEach(link => {
+      if (!link.dataset.ga4Tracked) {
+        link.dataset.ga4Tracked = 'true';
+        link.addEventListener('click', trackResetClick);
+      }
+    });
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+// Reset INTERACTION
+
+// SORT INTERACTION   
+  document.addEventListener("change", function (event) {
+    const target = event.target;
+
+    // Check if the changed element is the sort dropdown
+    if (target && target.id === "SortBy") {
+      const selectedText = target.options[target.selectedIndex]?.text?.trim() || "Unknown";
+
+    //  console.log("✅ sort_interactions fired:", selectedText);
+
+      gtag('event', 'sort_interactions', {
+        cta_text: selectedText,
+        section_name: 'Sort',
+        page_type: '{{ template | handleize }}',
+        userID: '{{ customer.id | default: "guest" }}',
+        user_type: '{{ customer.tags | join: "," | default: "guest" }}'
+      });
+    }
+  }); 
+// SORT INTERACTION
+
+// SIZECHART INTERACTION 
+document.addEventListener("DOMContentLoaded", function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+ 
+  document.querySelectorAll('button[aria-controls^="PopupModal-size_chart"]').forEach(btn => {
+    btn.addEventListener('click', function () {
+      gtag('event', 'size_chart_interaction', {
+        cta_text: 'size chart',
+        page_type: pageType,
+        userID: userID,
+        user_type: userType
+      });
+    //  console.log('✅ GA4 Event Sent: size_chart_interaction - size chart');
+    });
+  });
+ 
+  document.querySelectorAll('button.drawer__close-btn[aria-controls^="PopupModal-size_chart"]').forEach(btn => {
+    btn.addEventListener('click', function () {
+      gtag('event', 'size_chart_interaction', {
+        cta_text: 'close',
+        page_type: pageType,
+        userID: userID,
+        user_type: userType
+      });
+    //  console.log('✅ GA4 Event Sent: size_chart_interaction - close');
+    });
+  });
+}); 
+// SIZECHART INTERACTION 
+
+// PINCODE CHECK
+document.addEventListener("DOMContentLoaded", function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  const pincodeButtons = document.querySelectorAll('button.zipcode_submit');
+
+  if (pincodeButtons.length) {
+    pincodeButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        gtag('event', 'pincode_check', {
+          cta_text: 'Pincode check',
+          page_type: pageType,
+          userID: userID,
+          user_type: userType
+        });
+
+       // console.log('✅ GA4 Event Sent: pincode_check');
+      });
+    });
+  } else {
+   // console.warn('❌ Pincode check button not found.');
+  }
+});
+// PINCODE CHECK
+
+// SHARECLICK
+document.addEventListener("DOMContentLoaded", function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+  const productName = '{{ product.title | escape }}';
+  const productId = '{{ product.selected_or_first_available_variant.sku }}';
+
+  function getPlatformFromURL(url) {
+    if (url.includes('facebook.com')) return 'facebook';
+    if (url.includes('twitter.com')) return 'twitter';
+    if (url.includes('pinterest.com')) return 'pinterest';
+    return 'other';
+  }
+
+  document.querySelectorAll('.sharing__links a').forEach(link => {
+    link.addEventListener('click', function () {
+      const ctaText = getPlatformFromURL(link.href);
+
+      gtag('event', 'share_click', {
+        cta_text: ctaText,
+        product_name: productName,
+        product_id: productId,
+        page_type: pageType,
+        userID: userID,
+        user_type: userType
+      });
+
+    //  console.log('✅ GA4 Event Sent: share_click →', ctaText);
+    });
+  });
+});
+// SHARECLICK
+
+// TOPWISHLIST CLICK
+document.addEventListener("DOMContentLoaded", function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  const wishlistBtn = document.querySelector('.wishlist-header-link a');
+
+  if (wishlistBtn) {
+    wishlistBtn.addEventListener('click', function () {
+      gtag('event', 'top_wishlist_click', {
+        page_type: pageType,
+        userID: userID,
+        user_type: userType
+      });
+
+    //  console.log('✅ GA4 Event Sent: top_wishlist_click');
+    });
+  } else {
+  //  console.warn('❌ Wishlist button not found');
+  }
+});
+// TOPWISHLIST CLICK
+
+// REVIEW CLICK
+document.addEventListener("DOMContentLoaded", function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+  const productName = '{{ product.title | escape }}';
+  const productID = '{{ product.selected_or_first_available_variant.sku }}';
+
+  // Loox review rating distribution rows (review click interaction)
+  const reviewRows = document.querySelectorAll('.rating-dist-row');
+
+  reviewRows.forEach(row => {
+    row.addEventListener('click', function () {
+      const rating = row.getAttribute('data-rating') || 'unknown';
+      gtag('event', 'review_product_click', {
+        cta_text: `filter_star_${rating}`,
+        product_name: productName,
+        product_id: productID,
+        page_type: pageType,
+        userID: userID,
+        user_type: userType
+      });
+    //  console.log(`✅ GA4 Event Sent: review_product_click (rating ${rating})`);
+    });
+  });
+
+  // Optional: track "Write Review" button if available
+  const writeReviewBtn = document.querySelector('.loox-write-review-btn'); // update selector if different
+  if (writeReviewBtn) {
+    writeReviewBtn.addEventListener('click', function () {
+      gtag('event', 'review_product_click', {
+        cta_text: 'write_product_review',
+        product_name: productName,
+        product_id: productID,
+        page_type: pageType,
+        userID: userID,
+        user_type: userType
+      });
+    //  console.log(`✅ GA4 Event Sent: review_product_click (write review)`);
+    });
+  }
+});
+// REVIEW CLICK
+
+// ACCORDIAN CLICK
+document.addEventListener('DOMContentLoaded', function () {
+const pageType = '{{ template | handleize }}';
+const userID = '{{ customer.id | default: "guest" }}';
+const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  document.querySelectorAll('.accordion-details__summary').forEach(function (accordion) {
+    accordion.addEventListener('click', function () {
+      const parent = accordion.closest('details');
+      const contentTitle = accordion.innerText.trim();
+
+      // Wait for the browser to update the DOM (open/close toggle)
+      requestAnimationFrame(function () {
+        const isOpen = parent.hasAttribute('open');
+
+        const eventData = {
+          cta_text: isOpen ? 'open' : 'close',
+          content_title: contentTitle || 'N/A',
+          page_type: pageType,
+          userID: userID,
+          user_type: userType
+        };
+
+        console.log('gtag event - accordian_interaction:', eventData);
+
+        gtag('event', 'accordian_interaction', eventData);
+      });
+    });
+  });
+  document.addEventListener('click', function (e) {
+    //console.log('clicked');
+    const btn = e.target.closest('.apply-discount-button');
+    if (!btn) return;
+
+    // Get coupon code from button
+    let couponCode = btn.getAttribute('data-discount-code')?.trim();
+
+    // If manual input, read from input field
+    if (!couponCode) {
+      const couponInput = document.querySelector('#manualCouponInput');
+      couponCode = couponInput?.value.trim() || '';
+    }
+
+    // Only send if code exists
+    if (couponCode) {
+      const eventData = {
+        cta_text: btn.getAttribute('data-button-state') || 'apply',
+        content_title: couponCode,
+        page_type: pageType,
+        userID: userID,
+        user_type: userType
+      };
+
+      //console.log('✅ GA4 Event Sent: apply_coupon', eventData);
+
+      if (typeof gtag === 'function') {
+        gtag('event', 'apply_coupon', eventData);
+      } else {
+      //  console.warn('❌ gtag not defined');
+      }
+    } else {
+    //  console.warn('⚠️ No coupon code found for GA event');
+    }
+  });
+});
+// ACCORDIAN CLICK
+
+  // Delegated Enter key listener
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter') return;
+    const inCouponField = e.target.closest('#code');
+    if (!inCouponField) return;
+
+    const btn = document.querySelector('.apply-discount-button');
+    if (btn) btn.click();
+  });
+{% comment %} })(); {% endcomment %}
+
+
+// CONTACT US INTERACTION
+document.addEventListener('DOMContentLoaded', function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  document.querySelectorAll('.cstm_contact a').forEach(link => {
+    link.addEventListener('click', function () {
+      let ctaText = '';
+
+      const href = this.getAttribute('href');
+
+      if (href.startsWith('tel:')) {
+        ctaText = 'call_now';
+      } else if (href.startsWith('https://wa.me')) {
+        ctaText = 'chat_now';
+      } else if (href.startsWith('mailto:')) {
+        ctaText = 'email_now';
+      }
+
+      if (ctaText) {
+        const eventData = {
+          cta_text: ctaText,
+          page_type: pageType,
+          userID: userID,
+          user_type: userType
+        };
+
+       // console.log('gtag event - contact_us_interaction:', eventData);
+        gtag('event', 'contact_us_interaction', eventData);
+      }
+    });
+  });
+});
+// CONTACT US INTERACTION
+
+// STORE LOCATOR INTERACTION
+document.addEventListener('DOMContentLoaded', () => {
+/* ── Dynamic Shopify values ───────────────────────────── */
+const pageType = '{{ template | handleize }}';
+const userID   = '{{ customer.id | default: "guest" }}';
+const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+/* ── Attach click listeners to all Direction links ────── */
+document.querySelectorAll('.store_locator a.btn.btn--primary')
+  .forEach(btn => {
+    btn.addEventListener('click', () => {
+      /* Grab the store (section) name from the closest card title */
+      const card        = btn.closest('.store_locator .multicolumn-card__info');
+      const sectionName = card?.querySelector('.store_locator .multicolumn-card__title')?.textContent.trim() || 'unknown';
+
+      /* Fire GA‑4 event */
+      gtag('event', 'store_locator_interaction', {
+        cta_text:    'direction',
+        section_name: sectionName,
+        page_type:    pageType,
+        userID:       userID,
+        user_type:    userType
+      });
+
+   //   console.log('✅ GA4 Event Sent: store_locator_interaction →', sectionName);
+    });
+  });
+});
+// STORE LOCATOR INTERACTION
+
+// ADD MONEY CLICK
+(function waitForAddMoneyButton() {
+const addMoneyBtn = document.querySelector('.wk_add_money_btn.add_money');
+const amountInput = document.querySelector('#wk_money_input');
+
+if (addMoneyBtn && amountInput) {
+  const pageType = '{{ template | handleize }}';
+  const userID   = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  addMoneyBtn.addEventListener('click', function () {
+    const walletAmount = parseFloat(amountInput.value);
+
+    if (!walletAmount || walletAmount <= 0) {
+   //   console.warn('❌ Invalid wallet amount. GA4 event not fired.');
+      return;
+    }
+
+    gtag('event', 'add_money_click', {
+      cta_text: 'add_money',
+      section_name: 'My Wallet',
+      wallet_amount: walletAmount,
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    });
+
+  //  console.log('✅ GA4 Event Sent: add_money_click → ₹' + walletAmount);
+  });
+
+ // console.log('✅ Add Money Button listener attached');
+} else {
+  // Try again after 500ms
+  setTimeout(waitForAddMoneyButton, 500);
+}
+})();
+// ADD MONEY CLICK
+
+// ACCOUNT INTERACTION 
+document.addEventListener('DOMContentLoaded', function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  // Function to send GA4 account interaction event
+  function sendAccountInteraction(tabName) {
+    gtag('event', 'account_interaction', {
+      cta_text: tabName,
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    });
+  //  console.log(`✅ GA4 Event Sent: account_interaction → ${tabName}`);
+  }
+
+  // Target all desktop nav buttons
+  document.querySelectorAll('.dashboard-sidebar .nav-link[data-tab]').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const tabName = this.getAttribute('data-tab');
+      if (tabName) {
+        sendAccountInteraction(tabName);
+      }
+    });
+  });
+
+  // Target all mobile nav items
+  document.querySelectorAll('.mobile-nav-item[data-tab]').forEach(item => {
+    item.addEventListener('click', function () {
+      const tabName = this.getAttribute('data-tab');
+      if (tabName) {
+        sendAccountInteraction(tabName);
+      }
+    });
+  });
+});
+
+// SEARCH TERM ENTERED
+document.addEventListener("DOMContentLoaded", function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  function pushSearchEvent(searchTerm, selectType, productName = "NA") {
+    if (!searchTerm) return;
+
+    gtag('event', 'search_term_entered', {
+      search_term: searchTerm.trim(),
+      select_type: selectType,
+      page_type: pageType,
+      product_name: productName,
+      userID: userID,
+      user_type: userType
+    });
+
+    {% comment %} console.log("GA4 Event Sent: search_term_entered", {
+      search_term: searchTerm,
+      select_type: selectType,
+      page_type: pageType,
+      product_name: productName,
+      userID,
+      user_type: userType
+    }); {% endcomment %}
+  }
+
+  const searchInput = document.querySelector('.search__input');
+ 
+  if (searchInput) {
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        const term = searchInput.value.trim();
+        if (term) {
+          pushSearchEvent(term, 'enter_click', "NA");
+        }
+      }
+    });
+  }
+ 
+  const searchIcon = document.querySelector('.search__icon-search');
+  if (searchIcon && searchInput) {
+    searchIcon.addEventListener('click', function () {
+      const term = searchInput.value.trim();
+      if (term) {
+        pushSearchEvent(term, 'search_icon', "NA");
+      }
+    });
+  }
+ 
+  document.querySelectorAll('.search__products-recommendation a.text-pcard-title').forEach(link => {
+    link.addEventListener('click', function () {
+      const term = searchInput.value.trim();
+      const productName = link.textContent.trim();
+      if (term && productName) {
+        pushSearchEvent(term, 'suggested_search', productName);
+      }
+    });
+  });
+ 
+  document.querySelectorAll('.search__most-searched-keywords a').forEach(link => {
+    link.addEventListener('click', function () {
+      const term = link.textContent.trim().replace(',', '');
+      if (term) {
+        pushSearchEvent(term, 'suggested_search', "NA");
+      }
+    });
+  });
+});
+// SEARCH TERM ENTERED
+
+// FOllOW US
+document.addEventListener("DOMContentLoaded", function () {
+const pageType = '{{ template | handleize }}';
+const userID = '{{ customer.id | default: "guest" }}';
+const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+function pushFollowEvent(ctaText) {
+  gtag('event', 'follow_us', {
+    cta_text: ctaText,
+    page_type: pageType,
+    userID: userID,
+    user_type: userType
+  });
+
+  {% comment %} console.log("GA4 Event Sent: follow_us", {
+    cta_text: ctaText,
+    page_type: pageType,
+    userID,
+    user_type: userType
+  }); {% endcomment %}
+}
+
+const socialLinks = document.querySelectorAll('.footer__list-social a, .footer_social_icons a');
+
+socialLinks.forEach(link => {
+  const href = link.href.toLowerCase();
+
+  if (href.includes('facebook.com')) {
+    link.addEventListener('click', () => pushFollowEvent('facebook'));
+  } else if (href.includes('instagram.com')) {
+    link.addEventListener('click', () => pushFollowEvent('instagram'));
+  } else if (href.includes('pinterest.com')) {
+    link.addEventListener('click', () => pushFollowEvent('pinterest'));
+  } else if (href.includes('youtube.com')) {
+    link.addEventListener('click', () => pushFollowEvent('youtube'));
+  }
+});
+});
+// FOllOW US  
+
+// BOTTOM NAVIGATION
+document.addEventListener("DOMContentLoaded", function () {
+const pageType = '{{ template | handleize }}';
+const userID = '{{ customer.id | default: "guest" }}';
+const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+function sendBottomNavEvent(ctaText, category) {
+  gtag('event', 'bottom_navigation', {
+    cta_text: ctaText,
+    category: category,
+    page_type: pageType,
+    userID: userID,
+    user_type: userType
+  });
+
+  {% comment %} console.log("GA4 Event Sent: bottom_navigation", {
+    cta_text: ctaText,
+    category,
+    page_type: pageType,
+    userID,
+    user_type: userType
+  }); {% endcomment %}
+}
+
+// Mapping categories based on footer headings
+const categoryMap = {
+  'About': 'useful_links',
+  'Shop': 'categories',
+  'Customer Care': 'support'
+};
+
+// Select all footer links
+const footerLinks = document.querySelectorAll('.footer-block a');
+
+footerLinks.forEach(link => {
+  link.addEventListener('click', function () {
+    let ctaText = link.textContent.trim().toLowerCase().replace(/\s+/g, '_'); // like 't-shirts' -> 't_shirts'
+    let parentBlock = link.closest('.footer-block');
+    let heading = parentBlock?.querySelector('.footer-block__heading')?.textContent?.trim();
+    let category = categoryMap[heading] || 'other';
+
+    // Special handling for email and phone links
+    const href = link.getAttribute('href');
+    if (href?.startsWith('mailto:')) {
+      ctaText = 'support_mail_click';
+      category = 'support';
+    } else if (href?.startsWith('tel:')) {
+      ctaText = 'support_phone_number_click';
+      category = 'support';
+    }
+
+    sendBottomNavEvent(ctaText, category);
+  });
+});
+});
+// BOTTOM NAVIGATION
+
+// LOGIN SIGNUP SUCCESS
+document.addEventListener("DOMContentLoaded", function () {
+const userID = "{{ customer.id }}";
+const userType = "{{ customer.tags | join: ',' | default: 'guest' }}";
+const pageType = "{{ template | handleize }}";
+
+// Fire only if user has just logged in or signed up
+if (userID) {
+  const referrer = document.referrer;
+  let selectType = "log_in";
+
+  if (referrer.includes("/register")) {
+    selectType = "sign_up";
+  }
+
+  // Send event to GA4 using gtag
+  gtag('event', 'login_signup_success', {
+    select_type: selectType,
+    page_type: pageType,
+    userID: userID,
+    user_type: userType
+  });
+
+  {% comment %} console.log("✅ GA4 gtag Event Sent: login_signup_success", {
+    select_type: selectType,
+    page_type: pageType,
+    userID,
+    user_type: userType
+  }); {% endcomment %}
+}
+});
+// LOGIN SIGNUP SUCCESS
+
+// SUBSCRIBE CLICK
+document.addEventListener("DOMContentLoaded", function () {
+const form = document.querySelector('.newsletter-form-footer');
+const button = form?.querySelector('button[type="submit"]');
+const emailInput = form?.querySelector('input[type="email"]');
+
+if (form && button && emailInput) {
+  form.addEventListener("submit", function (e) {
+    const email = emailInput.value.trim();
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (isValidEmail) {
+      // Fire GA4 event using gtag.js
+      gtag('event', 'subscribe_click', {
+        cta_text: 'subscribe',
+        page_type: '{{ template | handleize }}',
+        userID: '{{ customer.id }}',
+        user_type: '{{ customer.tags | join: "," | default: "guest" }}'
+      });
+
+     // console.log('✅ gtag subscribe_click event sent');
+    } else {
+   //   console.warn('❌ Invalid email — event not sent');
+    }
+  });
+}
+});
+// SUBSCRIBE CLICK
+
+// VIEW ITEM LIST
+function sendViewItemListGA4() {
+  const productCards = document.querySelectorAll('.product-card');
+
+  const items = [];
+
+  productCards.forEach((card, index) => {
+    const titleElement = card.querySelector('.product-card__title a');
+    const priceElement = card.querySelector('.f-price-item--sale') || card.querySelector('.f-price-item--regular');
+    const quickView = card.closest('.f-column.card')?.querySelector('quick-view-modal');
+
+    const productId = quickView?.getAttribute('data-variant-sku') || `sku-${index}`;
+    const productName = titleElement?.innerText?.trim() || 'NA';
+
+    const itemCategory = quickView?.getAttribute('data-collection-title') || 'NA';
+    const itemCategoryId = quickView?.getAttribute('data-collection-id') || 'NA';
+
+    const swatchElement = card.querySelector('.swatch-color[title]');
+    const itemSize = swatchElement?.getAttribute('title')?.split('-')?.pop()?.trim() || 'NA';
+
+    const price = parseFloat(priceElement?.innerText.replace(/[^0-9.]/g, '')) || 0;
+
+    items.push({
+      item_id: productId,
+      item_name: productName,
+      item_brand: 'Powerlook',
+      item_category: itemCategory,
+      item_category2: itemCategoryId,
+      item_category3: 'NA',
+      item_category4: itemSize,
+      item_category5: 'Men',
+      price: price,
+      discount: 0
+    });
+  });
+
+  if (items.length) {
+    gtag('event', 'view_item_list', {
+      item_list_name: 'All Products',
+      item_list_id: 'all_products',
+      page_type: '{{ template | handleize }}',
+      items: items,
+      userID: '{{ customer.id }}',
+      user_type: '{{ customer.tags | join: "," | default: "guest" }}'
+    });
+  //  console.log('✅ GA4 view_item_list sent:', items);
+  } else {
+  //  console.warn('⚠️ No product items found to send.');
+  }
+}
+ 
+window.addEventListener('load', () => {
+  setTimeout(sendViewItemListGA4, 2000);  
+}); 
+// VIEW ITEM LIST 
+
+// SELECT ITEM 
+document.addEventListener('DOMContentLoaded', function () {
+  const productCards = document.querySelectorAll('.product-card');
+
+  productCards.forEach((card, index) => {
+    const productLink = card.querySelector('.product-card__title a');
+
+    if (!productLink) return;
+
+    productLink.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const productName = productLink.innerText.trim() || 'NA';
+      const productHandle = productLink.getAttribute('href')?.split('/products/')[1] || `product-${index}`;
+      const quickView = card.closest('.f-column.card')?.querySelector('quick-view-modal');
+      const productId = quickView?.getAttribute('data-variant-sku') || `sku-${index}`;
+
+      const productUrl = `/products/${productHandle}`;
+ 
+      fetch(productUrl)
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+ 
+          const specBlocks = doc.querySelectorAll('.product-specifications .MoreDetailsSection_specificationContainer__UarA0');
+          let specifications = [];
+
+          specBlocks.forEach(block => {
+            const label = block.querySelector('h6')?.innerText.trim();
+            const value = block.querySelector('p')?.innerText.trim();
+            if (label && value) {
+              specifications.push(`${label}: ${value}`);
+            }
+          });
+
+          const specFinal = specifications.length ? specifications.join(', ') : 'NA';
+ 
+          let selectedSize = 'NA';
+          const sizeInput = doc.querySelector('fieldset[name^="Size"] input[type="radio"]:checked');
+          if (sizeInput) {
+            selectedSize = sizeInput.value?.trim() || 'NA';
+          }
+ 
+          const itemData = {
+            item_id: productId,
+            item_name: productName,
+            item_brand: 'Powerlook',
+            item_category: '{{ collection.title | default: 'Shirts' }}',  
+            item_category2: 'NA',
+            item_category3: specFinal,
+            item_category4: selectedSize,
+            item_category5: 'Men',
+            price: '{{ product.price }}' 
+          };
+ 
+          gtag('event', 'select_item', {
+            item_list_name: 'All Products',
+            item_list_id: 'all_products',
+            items: [itemData],
+            userID: '{{ customer.id }}',
+            user_type: '{{ customer.tags | join: "," | default: "guest" }}'
+          });
+
+         // console.log('✅ GA4 select_item sent:', itemData);
+ 
+          setTimeout(() => {
+            window.location.href = productUrl;
+          }, 300);
+        });
+    });
+  });
+}); 
+// SELECT ITEM
+
+// ADD TO WISHLIST
+document.addEventListener('DOMContentLoaded', function () {
+  function getProductSpecifications() {
+    const specRoot = document.querySelector('.product-specifications');
+    if (!specRoot) return 'NA';
+
+    const specs = Array.from(specRoot.querySelectorAll('h6')).map((heading) => {
+      const label = heading.innerText?.trim();
+      const value = heading.nextElementSibling?.innerText?.trim();
+      return value ? `${label}: ${value}` : null;
+    }).filter(Boolean);
+
+    return specs.length ? specs.join(', ') : 'NA';
+  }
+
+  function getSelectedSize() {
+    const selected = document.querySelector('fieldset[name^="Size"] input[type="radio"]:checked');
+    return selected?.value?.trim() || 'NA';
+  }
+
+  function getCommonItemDetails(contextEl) {
+    const productHandle = contextEl?.getAttribute('data-product-handle') || 'NA';
+    const variantId = contextEl?.getAttribute('data-variant-id') || 'NA';
+    const productTitleEl = document.querySelector('h1.product__title') || document.querySelector('.product-card__title a');
+    const productName = productTitleEl?.innerText?.trim() || 'NA';
+    const priceEl = document.querySelector('.price--highlight') || document.querySelector('.f-price-item--sale') || document.querySelector('.f-price-item--regular');
+    const price = parseFloat(priceEl?.innerText?.replace(/[^0-9.]/g, '')) || 0;
+
+    return {
+      item_id: variantId,
+      item_name: productName,
+      item_brand: 'Powerlook',
+      item_category: '{{ collection.title | default: 'Shirts' }}',  
+      item_category2: 'NA', 
+      item_category3: getProductSpecifications(),
+      item_category4: getSelectedSize(),
+      item_category5: 'Men',
+      price: price
+    };
+  }
+ 
+  function attachWishlistTracking(buttonSelector, listName, listId) {
+    document.querySelectorAll(buttonSelector).forEach((btn) => {
+      btn.addEventListener('click', function () {
+        const itemData = getCommonItemDetails(btn.closest('[data-product-handle], .product-card'));
+
+        gtag('event', 'add_to_wishlist', {
+          item_list_name: `home_${listName}`,
+          item_list_id: listId,
+          items: [itemData],
+          page_type: '{{ template | handleize }}',
+          userID: '{{ customer.id }}',
+          user_type: '{{ customer.tags | join: "," | default: "guest" }}'
+        });
+
+       // console.log('🖤 GA4 add_to_wishlist fired:', itemData);
+      });
+    });
+  }
+ 
+  attachWishlistTracking(
+    'wishlist-button-collection button',
+    'listing_section',  
+    'all_products'  
+  );
+ 
+  attachWishlistTracking(
+    'wishlist-button-block button',
+    'pdp_section',  
+    'all_products'
+  );
+});
+// ADD TO WISHLIST
+
+// VIEW ITEM PDP 
+document.addEventListener("DOMContentLoaded", function () {
+  // Ensure this script runs only on Product Page
+  if (typeof Shopify === 'undefined' || Shopify?.template !== 'product') return;
+
+  function getSpecifications() {
+    const specRoot = document.querySelector('.product-specifications');
+    if (!specRoot) return 'NA';
+
+    const specs = Array.from(specRoot.querySelectorAll('h6')).map((heading) => {
+      const key = heading?.innerText?.trim();
+      const value = heading?.nextElementSibling?.innerText?.trim();
+      return value ? `${key}: ${value}` : null;
+    }).filter(Boolean);
+
+    return specs.length ? specs.join(', ') : 'NA';
+  }
+
+  function getSelectedSize() {
+    const selected = document.querySelector('fieldset input[type="radio"]:checked');
+    return selected?.value?.trim() || 'NA';
+  }
+
+  function getProductCategory() {
+    const breadcrumb = document.querySelector('.breadcrumbs__link'); // Customize if needed
+    return breadcrumb?.innerText?.trim() || 'Shirts';
+  }
+
+  const titleEl = document.querySelector('h1.product__title');
+  const priceEl = document.querySelector('.price--highlight') ||
+                  document.querySelector('.f-price-item--sale') ||
+                  document.querySelector('.f-price-item--regular');
+
+  const productName = titleEl?.innerText?.trim() || 'NA';
+  const price = parseFloat(priceEl?.innerText?.replace(/[^0-9.]/g, '')) || 0;
+
+  const item = {
+    item_id: window.meta?.product?.variants?.[0]?.sku?.toString() || 'NA',
+    item_name: productName,
+    item_brand: 'Powerlook',
+    item_category: getProductCategory(),
+    item_category2: 'NA',
+    item_category3: getSpecifications(),
+    item_category4: getSelectedSize(),
+    item_category5: 'Men',
+    price: price,
+    discount: 0
+  };
+
+  gtag('event', 'view_item', {
+    item_list_name: 'pdp_section',
+    item_list_id: 'all_products',
+    page_type: '{{ template | handleize }}',
+    userID: '{{ customer.id }}',
+    user_type: '{{ customer.tags | join: "," | default: "guest" }}',
+    items: [item]
+  });
+
+  //console.log('GA4 view_item event fired:', item);
+}); 
+// VIEW ITEM PDP
+
+// VIEW CART
+document.addEventListener("DOMContentLoaded", function () {
+  const isCartPage = window.location.pathname === '/cart' || window.location.pathname.includes('/cart');
+  if (!isCartPage) {
+    //console.log('⛔ Not on cart page');
+    return;
+  }
+
+ // console.log("🛒 Cart page detected");
+
+  // Use CartDataManager to prevent duplicate fetches
+  const fetchPromise = window.CartDataManager 
+    ? window.CartDataManager.getCart() 
+    : fetch('/cart.js').then(res => res.json());
+  
+  fetchPromise
+    .then(cart => {
+      if (!cart?.items?.length) {
+       // console.log("🛒 Cart is empty");
+        return;
+      }
+
+      const cartDOMItems = document.querySelectorAll('.cart-item');
+      const items = [];
+
+      cart.items.forEach((item, index) => {
+        const variantId = item.sku?.toString() || 'NA';
+        const cartRow = cartDOMItems[index];
+
+        let specifications = [];
+        let selectedSize = 'NA';
+
+        if (cartRow) {
+          const options = cartRow.querySelectorAll('.cart-item__options .cart-item__option-name');
+
+          options.forEach((labelEl) => {
+            const label = labelEl?.innerText?.trim();
+            const value = labelEl?.nextElementSibling?.innerText?.trim();
+
+            if (label && value) {
+              if (label.toLowerCase() === 'size') {
+                selectedSize = value;
+              } else {
+                specifications.push(`${label}: ${value}`);
+              }
+            }
+          });
+        }
+
+        const specFinal = specifications.length ? specifications.join(', ') : 'NA';
+
+        items.push({
+          item_id: variantId,
+          item_name: item.product_title || 'NA',
+          item_brand: 'Powerlook',
+          item_category: 'Shirts', // assuming fixed or you can make dynamic via breadcrumbs
+          item_category2: 'NA', // Not present on cart
+          item_category3: specFinal,
+          item_category4: selectedSize,
+          item_category5: 'Men',
+          price: item.final_price / 100,
+          quantity: item.quantity,
+          discount: 0
+        });
+      });
+
+      const itemListName = sessionStorage.getItem('item_list_name') || 'home_default';
+      const itemListId = sessionStorage.getItem('item_list_id') || 'default';
+
+      const payload = {
+        page_type: 'cart',
+        item_list_name: itemListName,
+        item_list_id: itemListId,
+        userID: '{{ customer.id }}',
+        user_type: '{{ customer.tags | join: "," | default: "guest" }}',
+        items: items
+      };
+
+      gtag('event', 'view_cart', payload);
+    //  console.log('✅ GA4 view_cart event fired:', payload);
+    })
+    .catch(err => console.error('❌ Failed to fetch cart data:', err)
+  );
+}); 
+// VIEW CART 
+
+// REMOVED FROM CART
+document.addEventListener("DOMContentLoaded", function () {
+  const isCartPage = window.location.pathname.includes('/cart');
+  if (!isCartPage) return;
+ 
+  const removeButtons = document.querySelectorAll('[href*="quantity=0"]');
+
+  removeButtons.forEach((btn) => {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      const row = btn.closest('.cart-item');
+      if (!row) return;
+ 
+      const urlParams = new URLSearchParams(btn.href.split('?')[1]);
+      const idParam = urlParams.get('id'); // format: VARIANT_ID:HASH
+      const variantId = idParam?.split(':')[0];
+
+      if (!variantId) return;
+ 
+      let specifications = [];
+      let selectedSize = 'NA';
+
+      const options = row.querySelectorAll('.cart-item__options .cart-item__option-name');
+      options.forEach((labelEl) => {
+        const label = labelEl?.innerText?.trim();
+        const value = labelEl?.nextElementSibling?.innerText?.trim();
+        if (label && value) {
+          if (label.toLowerCase() === 'size') {
+            selectedSize = value;
+          } else {
+            specifications.push(`${label}: ${value}`);
+          }
+        }
+      });
+
+      const specFinal = specifications.length ? specifications.join(', ') : 'NA';
+ 
+      const meta = JSON.parse(sessionStorage.getItem(`product_meta_${variantId}`)) || {};
+
+      const itemListName = sessionStorage.getItem('item_list_name') || 'home_default';
+      const itemListId = sessionStorage.getItem('item_list_id') || 'default';
+
+      const payload = {
+        page_type: 'cart',
+        item_list_name: itemListName,
+        item_list_id: itemListId,
+        userID: '{{ customer.id }}',
+        user_type: '{{ customer.tags | join: "," | default: "guest" }}',
+        items: [{
+          item_id: variantId,
+          item_name: row.querySelector('.cart-item__title')?.innerText.trim() || 'NA',
+          item_brand: meta.item_brand || 'Powerlook',
+          item_category: meta.item_category || 'Shirts',
+          item_category2: meta.item_category2 || 'NA',
+          item_category3: specFinal,
+          item_category4: selectedSize,
+          item_category5: meta.item_category5 || 'Men',
+          price: parseFloat(
+            row.querySelector('.price')?.innerText.replace(/[^\d.]/g, '')
+          ) || 0,
+          quantity: parseInt(
+            row.querySelector('input.quantity__input')?.value
+          ) || 1,
+          discount: 0
+        }]
+      };
+
+      gtag('event', 'remove_from_cart', payload);
+     // console.log('🗑️ GA4 remove_from_cart event fired:', payload);
+ 
+      window.location.href = btn.href;
+    });
+  });
+});  
+// REMOVED FROM CART
+ 
+document.addEventListener('DOMContentLoaded', function () {
+  const pageType = '{{ template | handleize }}';
+  const userID = '{{ customer.id | default: "guest" }}';
+  const userType = '{{ customer.tags | join: "," | default: "guest" }}';
+
+  // Address Interaction Event
+  function pushAddressInteractionEvent(ctaText) {
+      gtag('event', 'address_interaction', {
+        cta_text: ctaText,
+        page_type: pageType,
+        userID: userID,
+        user_type: userType
+      });
+      {% comment %} console.log("GA4 Event Sent: address_interaction", {
+        cta_text: ctaText,
+        page_type: pageType,
+        userID: userID,
+        user_type: userType
+    }); {% endcomment %}
+  }
+
+  // Add New Address button
+  const addNewAddressBtn = document.querySelector('button.add_new_address');
+  if (addNewAddressBtn) {
+    addNewAddressBtn.addEventListener('click', () => {
+      const ctaText = addNewAddressBtn.textContent.trim() || 'add address';
+      pushAddressInteractionEvent(ctaText);
+    });
+  }
+
+  // Edit Address buttons
+  const editAddressBtn = document.querySelector('button.update_default_address');
+  if (editAddressBtn) {
+    editAddressBtn.addEventListener('click', () => {
+      const ctaText = editAddressBtn.textContent.trim() || 'edit';
+      pushAddressInteractionEvent(ctaText);
+    });
+  }
+  
+  // Delete Address buttons
+  document.querySelectorAll('button.delete_address_button').forEach(button => {
+    button.addEventListener('click', () => {
+      const ctaText = button.textContent.trim() || 'remove';
+     // console.log('cta text', ctaText)
+      pushAddressInteractionEvent(ctaText);
+    });
+  });
+ 
+  function pushOrderDetailClickEvent(ctaText, orderId) {
+    gtag('event', 'order_detail_click', {
+      cta_text: ctaText,
+      order_id: orderId,
+      page_type: pageType,
+      userID: userID,
+      user_type: userType
+    });
+  }
+ 
+  document.querySelectorAll('a[href*="/account/orders/"]').forEach(link => {
+    link.addEventListener('click', () => {
+      const ctaText = link.textContent.trim() || 'view_details'; 
+      const href = link.getAttribute('href');
+      const orderId = href ? href.split('/').pop() : link.textContent.trim();
+      pushOrderDetailClickEvent(ctaText, orderId);
+    });
+  });
+  
+});  
+</script>

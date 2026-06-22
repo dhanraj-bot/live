@@ -1,0 +1,86 @@
+<!-- Remove Item Modal / Bottom Sheet -->
+<div
+  class="remove-item-overlay"
+  id="removeItemOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="removeItemTitle"
+>
+  <!-- Loader -->
+  <div class="remove-item-overlay__loading" aria-hidden="true">
+    {% render 'loading-spinner', class: 'remove-item-overlay__spinner loading__spinner' %}
+  </div>
+
+  <!-- Modal -->
+  <div class="remove-item-modal" id="removeItemModal">
+    <!-- Mobile Handle -->
+    <span class="remove-item-modal__handle" aria-hidden="true"></span>
+
+    <!-- Header -->
+    <div class="remove-item-modal__header">
+      <h2 class="remove-item-modal__title" id="removeItemTitle">Remove Item From Cart?</h2>
+
+      <button
+        type="button"
+        class="remove-item-modal__close"
+        id="removeItemClose"
+        aria-label="Close"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="remove-item-modal__body">
+      <img
+        class="remove-item-modal__image"
+        width="80"
+        height="100"
+        id="removeItemImage"
+        src=""
+        alt="Product"
+      >
+
+      <p class="remove-item-modal__question">Do you want to move this item to wishlist or remove from cart?</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="remove-item-modal__footer">
+      <!-- Remove Button -->
+      <button
+        type="button"
+        class="remove-item-modal__btn remove-item-modal__btn--remove"
+        id="removeItemConfirm"
+      >
+        {{ 'general.cart.remove' | t }}
+      </button>
+
+      <!-- Wishlist Button (Flits integrated safely) -->
+      <button
+        type="button"
+        class="remove-item-modal__btn remove-item-modal__btn--wishlist"
+        id="removeItemWishlist"
+      >
+        <div
+          id="flitsWishlistBtn"
+          class="flits-collection-page-wishlist-button"
+          data-flits-product-id=""
+          data-flits-product-handle=""
+          data-flits-product-title=""
+          data-flits-product-image=""
+          data-flits-product-wsl-count=""
+        ></div>
+      </button>
+    </div>
+  </div>
+</div>

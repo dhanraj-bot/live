@@ -1,0 +1,19 @@
+{% unless cart == empty %}
+<style>
+  .cart-edd-free {
+    color: #009b0b;
+    font-weight: 600 !important;
+  }
+  .cart-edd-days {
+    color: #111d2d;
+    font-weight: 600 !important;
+  }
+</style>
+<div class="estimate_deliverytext free-shipping-goal" data-cart-edd data-cut-off-time="{{ settings.edd_cut_off_time | default: '16:00' }}"> 
+    <span class="free-shipping-image">
+      <img src="https://cdn.shopify.com/s/files/1/0750/2685/8234/files/Xpress_2.svg?v=1773140938" width="" height="">
+    </span>
+    <div class="static_delivery_text">{{ block.settings.estimatetext }}</div>
+    <div class="dynamic_delivery_text" style="display: none;"></div>
+</div>
+{% endunless %}

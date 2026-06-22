@@ -1,0 +1,115 @@
+<style>
+      /* ========================= Header Wishlist Css Start ========================= */
+  .wishlist-header-link .flits-custom-header-wishlist {
+    --icon-size: 22px;
+    --icon-fill: transparent;
+    --icon-stroke: #000000;
+    --icon-stroke-width: 1px;
+    --counter-size: 15px;
+    display: flex;
+    position: relative;
+  }
+  .wishlist-header-link .flits-wishlist-icon svg {
+    display: block;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    overflow: visible;
+    pointer-events: none;
+  }
+  .wishlist-header-link .flits-wishlist-icon svg path {
+    fill: var(--icon-fill);
+    stroke: var(--icon-stroke);
+    stroke-width: var(--icon-stroke-width);
+    vector-effect: non-scaling-stroke;
+  }
+  .wishlist-header-link .flits-wishlist-count {
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    background-color: var(--color-cart-bubble);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .wishlist-header-link .flits-wishlist-count {
+    opacity: 1;
+    transition: 0.2s opacity;
+    position: absolute;
+    top: -1rem;
+    inset-inline-end: -0.2rem;
+  }
+  .cart-count--absolute {
+    inset-inline-end: 0rem !important;
+  }
+  .wishlist-header-link .flits-wishlist-count {
+      top: -0.8rem;
+  }
+  .flits-custom-header-wishlist .flits-wishlist-icon {
+      fill: #f1f1f1;
+      stroke: black;
+      margin-top: -1px;
+      /* margin-right: 10px; */
+  }
+
+  .save-for-later-container .flits-custom-header-wishlist .flits-wishlist-icon path {
+    stroke-width: 1.4px !important;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .save-for-later-container .flits-custom-header-wishlist.wk-selected .flits-wishlist-icon {
+      fill: black;
+  }
+  body .flits-reward-button-text{
+    display: none !important;
+  }
+  body button.flits-reward-button{
+    padding: 7px !important;
+    bottom: 60px;
+    height: auto !important;
+  }
+  {% if template contains 'customers/account' %}
+  page-transition.loading-spinner{
+    display: none !important;
+  }
+  body [class*="NavigationTotalWrapper_flits_tab_box__"]{
+    min-height: 450px;
+  }
+  {% endif %}
+
+  /* ========================= Header Wishlist Css End ========================= */
+</style>
+<script>
+  document.addEventListener('collection:rerendered', function (event) {
+    document.dispatchEvent(new CustomEvent('Flits:AjaxCollection:CollectionUpdated'));
+  });
+  if(window.location.pathname == '/cart'){
+    document.addEventListener('Flits:AjaxCart:CartUpdated', function (event) {
+      document.dispatchEvent(new CustomEvent('Flits:AjaxCollection:CollectionUpdated'));
+    });
+    document.addEventListener('cart:updated', function(event) {
+      document.dispatchEvent(new CustomEvent('Flits:AjaxCollection:CollectionUpdated'));
+    }); 
+  }
+  {% unless customer %}
+    const flitsData = localStorage.getItem('flits');
+
+    if (flitsData) {
+      const parsedData = JSON.parse(flitsData);
+
+      // Remove only this property
+      delete parsedData.flits_wishlist_products;
+
+      // Save updated object back
+      localStorage.setItem('flits', JSON.stringify(parsedData));
+    }
+  {% endunless %}
+  window.redirectToWishTab = function (e) {
+    e.preventDefault();
+    e.stopPropagation(); // VERY IMPORTANT
+    window.location.assign('/account/#wishlist');
+  };
+</script>

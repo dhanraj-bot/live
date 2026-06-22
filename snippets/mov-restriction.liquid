@@ -1,0 +1,122 @@
+{% comment %}
+  Minimum Order Value (MOV) Restriction
+  Simple implementation: Shows message and blocks checkout when cart total < ₹500
+  Settings are in main-cart.liquid section schema
+{% endcomment %}
+
+{%- liquid
+  assign mov_enabled = section.settings.mov_enable | default: true
+  assign mov_minimum = section.settings.mov_minimum_amount | default: '500' | times: 100
+  assign mov_message = section.settings.mov_error_message | default: 'Minimum order value should be ₹500 to proceed with checkout.'
+  assign cart_subtotal = cart.total_price
+  assign mov_valid = true
+  
+  if mov_enabled and cart_subtotal < mov_minimum
+    assign mov_valid = false
+  endif
+-%}
+
+{% if mov_enabled %}
+
+<style>
+  .mov-message {
+    display: none;
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+    border-radius: 0.5rem;
+    padding: 10px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .mov-message.show {
+    display: block;
+  }
+  .mov-message svg {
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+  .mov-btn-disabled {
+    opacity: 0.8 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+  }
+</style>
+
+<div id="mov-message" class="mov-message{% unless mov_valid %} show{% endunless %}" data-minimum="{{ mov_minimum }}">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+    <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <span>{{ mov_message }}</span>
+</div>
+
+<script>
+(function() {
+  var MOV_MINIMUM = {{ mov_minimum }};
+  var movMessage = document.getElementById('mov-message');
+  
+  // Get all checkout buttons
+  function getCheckoutButtons() {
+    return document.querySelectorAll('#cart-checkout-btn, button[name="checkout"], .gokwik-checkout button');
+  }
+  
+  // Enable checkout buttons
+  function enableButtons() {
+    getCheckoutButtons().forEach(function(btn) {
+      btn.classList.remove('mov-btn-disabled');
+      btn.removeAttribute('disabled');
+    });
+  }
+  
+  // Disable checkout buttons
+  function disableButtons() {
+    getCheckoutButtons().forEach(function(btn) {
+      btn.classList.add('mov-btn-disabled');
+    });
+  }
+  
+  // Check MOV and update UI
+  function checkMOV() {
+    var cartData = window.cartData || (window.CartDataManager && window.CartDataManager.cache);
+    var cartTotal = cartData ? cartData.total_price : {{ cart_subtotal }};
+    
+    if (cartTotal >= MOV_MINIMUM) {
+      movMessage.classList.remove('show');
+      enableButtons();
+      return true;
+    } else {
+      movMessage.classList.add('show');
+      disableButtons();
+      return false;
+    }
+  }
+  
+  // Listen for cart updates
+  document.addEventListener('cart:updated', function(e) {
+    if (e.detail && e.detail.cart) {
+      window.cartData = e.detail.cart;
+    }
+    checkMOV();
+  });
+  
+  // Initial setup
+  function init() {
+    checkMOV();
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  
+  // Re-check after DOM updates
+  setTimeout(checkMOV, 500);
+  setTimeout(checkMOV, 1000);
+})();
+</script>
+{% endif %}

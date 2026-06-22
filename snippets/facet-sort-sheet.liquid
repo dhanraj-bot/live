@@ -1,0 +1,41 @@
+{%- assign sort_by = results.sort_by | default: results.default_sort_by -%}
+<!-- Bottom Sheet -->
+<div class="mobile-sort__sheet" id="MobileSortSheet">
+
+  <div class="mobile-sort__overlay" data-close-mobile-sort></div>
+
+  <div class="mobile-sort__content">
+
+    <!-- Header -->
+    <div class="flex flex-col gap-2">
+      <div class="mobile-sort__header">
+        <span>Sort By</span>
+        <button class="mobile-sort__close" data-close-mobile-sort>
+          {% render 'icon-close', size: 'large' %}
+        </button>
+      </div>
+    </div>
+
+    <!-- Options -->
+    <ul class="mobile-sort__list">
+      {% for option in results.sort_options %}
+        <li class="mobile-sort__item">
+          <a
+            href="{{ option.url }}"
+            class="mobile-sort__option {% if option.value == sort_by %}is-active{% endif %}"
+            data-value="{{ option.value | escape }}"
+          >
+            <span>{{ option.name }}</span>
+
+            <span class="mobile-sort__radio">
+              {% if option.value == sort_by %}
+                <span class="mobile-sort__radio-dot"></span>
+              {% endif %}
+            </span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+  </div>
+</div>

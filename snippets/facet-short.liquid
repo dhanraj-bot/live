@@ -1,0 +1,56 @@
+{%- liquid
+  assign sort_by = results.sort_by | default: results.default_sort_by
+  assign selected_option_name = ''
+  for option in results.sort_options
+    if option.value == sort_by
+      assign selected_option_name = option.name
+      break
+    endif
+  endfor
+-%}
+<div class="custom-sort">
+  <button type="button" class="custom-sort__trigger">
+    <span>
+      {{ 'products.facets.sort_by_label' | t }}
+      <span class="selected-option">{{ selected_option_name | escape }}</span>
+    </span>
+    {% render 'icon-caret-down', size:"medium" %}
+  </button>
+
+  <select
+    name="sort_by"
+    class="visually-hidden custom-sort__native"
+    id="SortBy"
+    aria-describedby="a11y-refresh-page-message"
+    is="facet-short"
+  >
+    {%- for option in results.sort_options -%}
+      <option
+        value="{{ option.value | escape }}"
+        {% if option.value == sort_by %}
+          selected="selected"
+        {% endif %}
+      >
+        {{ option.name | escape }}
+      </option>
+    {%- endfor -%}
+  </select>
+
+  <div class="custom-sort__dropdown">
+    <ul>
+      {% for option in results.sort_options %}
+        <li>
+          <a
+            href="{{ option.url }}"
+            class="custom-sort__option {% if option.value == sort_by %}active{% endif %}"
+            data-value="{{ option.value | escape }}"
+            data-label="{{ option.name | escape }}"
+          >
+            {{ option.name }}
+          </a>
+          <div class="divider"></div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,419 @@
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign compare_at_price = variant.compare_at_price
+  assign price = variant.price
+  assign on_sale = false
+  if compare_at_price > price
+    assign on_sale = true
+  endif
+
+  assign show_soldout = settings.pcard_show_badge_soldout
+  assign show_on_sale_badge = settings.pcard_show_sale_badge
+  assign show_color_swatches = settings.pcard_enable_color_swatches
+
+  unless on_sale
+    assign show_on_sale_badge = false
+  endunless
+
+  if show_vendor == null
+    assign show_vendor = settings.pcard_show_vendor
+  endif
+
+  if show_type == null
+    assign show_type = settings.pcard_show_type
+  endif
+
+  if show_product_option == null
+    assign show_product_option = settings.pcard_show_color_swatch
+  endif
+
+  assign first_media_type = product.featured_media.media_type
+  assign featured_media = product.featured_media
+
+  if first_media_type == 'model' or first_media_type == 'video'
+    assign featured_media = product.featured_media.preview_image
+  endif
+
+  if image_ratio == blank
+    assign image_ratio = settings.pcard_image_ratio | default: '1'
+  endif
+  if image_ratio == 'adapt'
+    if featured_media != blank
+      assign image_ratio = featured_media.aspect_ratio
+    else
+      assign image_ratio = '1'
+    endif
+  endif
+
+  assign second_image = ''
+  if settings.pcard_show_second_img and product.images.size > 1 and product.images[1] != blank
+    assign second_image = product.images[1]
+  endif
+
+  if enable_quick_add == null
+    assign enable_quick_add = settings.pcard_show_cart_button
+  endif
+
+  if enable_quick_view == null
+    assign enable_quick_view = settings.pcard_show_quickview_button
+  endif
+
+  assign mobile_hide_quick_add = settings.pcard_mobile_hide_quick_add
+
+  assign custom_tags = product.tags | where: 'tag__'
+
+  assign atc_button_tag = 'a'
+  unless settings.pcard_choose_options_actions == 'product_page'
+    assign atc_button_tag = 'button'
+  endunless
+
+  assign product_url = product.url
+
+  if remove_params
+    assign product_url = product_url | split: '?' | first
+  endif
+
+  assign card_wrapper_class = ''
+  if custom_class != blank
+    assign card_wrapper_class = card_wrapper_class | append: ' ' | append: custom_class
+  endif
+  if mobile_hide_quick_add
+    assign card_wrapper_class = card_wrapper_class | append: ' mobile-hide-quick-add'
+  endif
+
+  assign quick_view_suffix = quick_view_suffix | default: ''
+  assign quick_view_modal_id = 'QuickView-' | append: product.id | append: '-' | append: section.id | append: quick_view_suffix
+
+  assign loading = 'lazy'
+  assign fetchpriority = 'low'
+  if section_index < 3 and index == 1
+    assign loading = 'eager'
+    assign fetchpriority = 'high'
+  endif
+
+  assign image_sizes = image_sizes | default: '450px'
+  assign image_widths = '70, 140, 165, 355, 450, 535, 710, 800, 900, 1070, 1200, 1420, 1600, 1800'
+-%}
+<div
+  class="
+    product-card product-card-style-{{ settings.pcard_style }}{% if settings.pcard_style == 'card' %} color-{{ settings.pcard_color_scheme }}{% endif %}{{ card_wrapper_class }}{% if list_on_mobile %} product-card-list-on-mobile{% endif %}
+    {%- if product.available == false and show_soldout -%}soldout_product_item{% endif %}
+  "
+  data-product-id="{{ product.id }}"
+  data-variant-sku="{{ product.selected_or_first_available_variant.sku }}"
+  data-category="{{ product.type }}"
+  data-subcategory="{{ product.tags | join: ',' }}"
+  data-price="{{ product.price | divided_by: 100 }}"
+>
+  <div class="product-card__wrapper h-full">
+    {% comment %} Flits Wishlist added by team start {% endcomment %}
+    <div class="flits-collection-page-wishlist-button" data-flits-product-handle="{{ product.handle }}" data-flits-product-id="{{ product.id }}" data-flits-product-title="{{ product.title }}" data-flits-product-image="{{ product.featured_image | image_url }}" data-flits-product-wsl-count="{{ product.metafields.Flits.wsl-count }}"></div>
+    {% comment %} Flits Wishlist added by team end {% endcomment %}
+    <div class="product-card__image-wrapper{% if second_image == blank %} product-card__image-wrapper--main-only{% endif %} {% if list_on_mobile %}desktop-{% endif %}color-{{ settings.pcard_overlay_color_scheme }} bg-none">
+      <a href="{{ product.url }}" aria-label="{{ product.title | escape }}" tabindex="-1">
+        <motion-element data-motion="zoom-out-sm" class="block">
+          {%- if featured_media -%}
+            {%- unless first_media_type == 'video' or first_media_type == 'external_video' -%}
+              <div
+                class="media-wrapper product-card__image product-card__image--main"
+                style="--aspect-ratio: {{ image_ratio }}"
+              >
+                {%- assign first_image_widths = image_widths | append: ', ' | append: featured_media.width -%}
+
+                {{
+                  featured_media
+                  | image_url: width: featured_media.width
+                  | image_tag:
+                    loading: loading,
+                    fetchpriority: fetchpriority,
+                    class: 'motion-reduce',
+                    widths: first_image_widths,
+                    width: featured_media.width,
+                    height: featured_media.height,
+                    sizes: image_sizes,
+                    is: 'image-lazy'
+                }}
+              </div>
+              {%- unless second_image == blank -%}
+                <div
+                  class="media-wrapper product-card__image product-card__image--second inset-full hidden md:block"
+                  style="--aspect-ratio: {{ image_ratio }}"
+                >
+                  {%- assign second_image_widths = image_widths | append: ', ' | append: second_image.width -%}
+                  {{
+                    second_image
+                    | image_url: width: second_image.width
+                    | image_tag:
+                      loading: 'lazy',
+                      class: 'motion-reduce',
+                      width: second_image.width,
+                      height: second_image.height,
+                      widths: second_image_widths,
+                      sizes: image_sizes,
+                      is: 'image-lazy'
+                  }}
+                </div>
+              {%- endunless -%}
+            {%- else -%}
+              <div class="media media--adapt" style="--media-ratio: {{ image_ratio }};">
+                {% render 'video',
+                  video: product.featured_media,
+                  muted: true,
+                  autoplay: true,
+                  loop: true,
+                  cover_image: featured_media,
+                  show_play_button: false
+                %}
+              </div>
+            {%- endunless -%}
+          {%- else -%}
+            <div class="product-card__image product-card__image--main" style="--aspect-ratio: {{ image_ratio }};">
+              {{- 'product-1' | placeholder_svg_tag: 'placeholder-svg' -}}
+            </div>
+          {%- endif -%}
+        </motion-element>
+      </a>
+      {% assign show_new_badge = false %}
+      {% if product.tags contains 'New Arrival' or product.tags contains 'New Arrivals' %}
+        {% assign show_new_badge = 'NEW ARRIVAL' %}
+      {% endif %}
+      {% if show_new_badge %}
+        <div class="product-card_arrivalbadge" style="background-color: #453D2B;">
+          {{ show_new_badge }}
+        </div>
+      {% endif %}
+      {% comment %} Dynamic badge based on badge_ prefix tag {% endcomment %}
+      {% assign dynamic_badge_text = false %}
+      {% for tag in product.tags %}
+        {% assign tag_lower = tag | downcase %}
+        {% if tag_lower contains 'badge_' %}
+          {% assign dynamic_badge_text = tag | split: 'badge_' | last | split: 'Badge_' | last %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+      {% if dynamic_badge_text %}
+        <div class="product-card_arrivalbadge" style="background-color: {% if dynamic_badge_text contains 'Red' %}#D63242{% else %} #453D2B {% endif %};">
+          {{ dynamic_badge_text }}
+        </div>
+      {% endif %}
+      {% if product.metafields.loox.avg_rating %}
+        <div class="loox-custom-rating">
+          {{ product.metafields.loox.avg_rating }}
+          <svg class="loox-icon" viewBox="0 0 24 24" data-lx-fill="full" style="color: #111111;" role="presentation">
+            <<use href="#looxicons-rating-icon"></use>
+          </svg>
+          <span class="rating-divider">|</span> {{ product.metafields.loox.num_reviews }}
+        </div>
+      {% endif %}
+      {%- assign similar_styles_products = product.metafields.custom.product_variant.value -%}
+      {%- if hide_similar_icon != true and similar_styles_products != blank -%}
+        {%- assign similar_styles_source_id = 'SimilarStylesCard-' | append: section.id | append: '-' | append: product.id | append: '-' | append: index -%}
+        <button
+          class="product-card__similar-button"
+          type="button"
+          aria-controls="RelatedProductsSheet-Global"
+          aria-expanded="false"
+          data-related-products-trigger
+          data-related-products-target="RelatedProductsSheetContent-Global"
+          data-similar-styles-source="{{ similar_styles_source_id }}"
+        >
+          {% render 'view-similar-icon' %}
+        </button>
+        <template id="{{ similar_styles_source_id }}" data-similar-styles-content data-similar-styles-layout="cards">
+          {% render 'similar-styles-plp', product: product %}
+        </template>
+      {%- endif -%}
+      {% comment %}
+        {% assign contains_offer_collection = '' %}
+        {% for collection in product.collections %}
+            {% case collection.handle %}
+              {% when 'buy-2-999' %}
+                  {% assign contains_offer_collection = '1' %}
+              {% break %}
+            {% endcase %}
+        {% endfor %}
+        {% case contains_offer_collection %}
+            {% when '1' %}
+            <div class="product-card_arrivalbadge" style="background: linear-gradient(61deg, rgb(0, 0, 0) 75%, transparent 70%);">
+            Buy 2 @ 999/-
+            </div>
+            {% endcase %}
+      {% endcomment %}
+      {%- if product.available == false or on_sale or custom_tags.size > 0 -%}
+        <div class="product-card__badge">
+          {%- if product.available == false and show_soldout -%}
+            <span class="f-badge f-badge--soldout" aria-hidden="true">
+              {{- 'products.product.sold_out' | t -}}
+            </span>
+          {%- endif -%}
+          {%- if show_on_sale_badge and product.available -%}
+            {%- liquid
+              assign sale_badge = ''
+              assign amount = 0
+              case settings.pcard_sale_badge_type
+                when 'show_percentage'
+                  if compare_at_price > price
+                    assign amount = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price
+                  endif
+                  assign sale_badge = amount | times: -1 | append: '%'
+                when 'show_amount'
+                  if compare_at_price > price
+                    assign amount = compare_at_price | minus: price | money
+                  endif
+                  assign sale_badge = 'products.product.price.save_price_html' | t: amount: amount
+                else
+                  assign sale_badge = 'products.product.on_sale' | t
+              endcase
+            -%}
+            <span class="f-badge f-badge--sale" aria-hidden="true">{{- sale_badge -}}</span>
+          {%- endif -%}
+          {%- for tag in custom_tags -%}
+            {%- liquid
+              assign tag_content = tag | split: '__' | last
+              assign type = tag_content | split: '_' | first
+              assign tag_name = tag_content | split: '_' | last
+            -%}
+            <span class="f-badge f-badge--{{ type }}">{{ tag_name }}</span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      {%- if enable_quick_add -%}
+        {%- liquid
+          assign product_form_id = 'quick-add-' | append: section.id | append: product.id
+          assign qty_rules = false
+          if variant.quantity_rule.min > 1 or variant.quantity_rule.max != null or variant.quantity_rule.increment > 1
+            assign qty_rules = true
+          endif
+        -%}
+        {%- if product.variants.size > 1 or qty_rules -%}
+          <div class="product-card__actions product-card__main-actions">
+            <{{ atc_button_tag }}
+              {% if settings.pcard_choose_options_actions == 'product_page' %}
+                href="{{- product_url -}}"
+              {% else %}
+                aria-controls="{{ quick_view_modal_id }}"
+                aria-haspopup="dialog"
+              {% endif %}
+              class="product-card__atc product-card__action-button btn {{ settings.pcard_button_style }}"
+            >
+              <span class="product-card__atc-icon product-card__action-icon inline-flex md:hidden">
+                {%- render 'icon-cart', name: settings.cart_icon -%}
+              </span>
+              <span class="product-card__atc-text product-card__action-text">
+                {{- 'products.product.choose_options' | t -}}
+              </span>
+            </{{ atc_button_tag }}>
+          </div>
+        {%- else -%}
+          {%- form 'product',
+            product,
+            id: product_form_id,
+            class: 'product-card__actions product-card__main-actions',
+            novalidate: 'novalidate',
+            data-type: 'add-to-cart-form',
+            is: 'product-form'
+          -%}
+            <input
+              type="hidden"
+              name="id"
+              value="{{- variant.id -}}"
+              class="product-variant-id"
+              {% if variant.available == false %}
+                disabled
+              {% endif %}
+            >
+            <button
+              id="{{ product_form_id }}-submit"
+              type="submit"
+              name="add"
+              {% if variant.available == false %}
+                disabled
+              {% endif %}
+              aria-label="{{ 'products.product.add_to_cart' | t }}"
+              class="product-card__atc product-card__action-button btn {{ settings.pcard_button_style }}"
+            >
+              <span class="product-card__atc-icon product-card__action-icon inline-flex md:hidden">
+                {%- render 'icon-cart', name: settings.cart_icon -%}
+              </span>
+              <span class="product-card__atc-text product-card__action-text">
+                {%- if variant.available -%}
+                  {{- 'products.product.add_to_cart' | t -}}
+                {%- else -%}
+                  {{- 'products.product.sold_out' | t -}}
+                {%- endif -%}
+              </span>
+              {% render 'loading-spinner' %}
+            </button>
+          {%- endform -%}
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+    <div class="product-card__info text-{{ settings.pcard_content_alignment }}">
+      {%- if show_vendor -%}
+        <p class="product-card__vendor text-sm m-0">
+          <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+          {{ product.vendor }}
+        </p>
+      {%- endif -%}
+      {%- if show_type -%}
+        <p class="product-card__type text-sm m-0">
+          <span class="visually-hidden">{{ 'accessibility.product_type' | t }}</span>
+          {{ product.type }}
+        </p>
+      {%- endif -%}
+      <h3 class="product-card__title text-pcard-title">
+        <a class="reversed-link" href="{{ product.url }}">{{- product.title -}}</a>
+      </h3>
+<div class="loox-rating" data-id="{{ card_product.id }}" data-rating="{{ card_product.metafields.loox.avg_rating }}" data-raters="{{ card_product.metafields.loox.num_reviews }}"></div>
+{% render 'price', product: product, alignment: settings.pcard_content_alignment %}
+      {%- if show_color_swatches -%}
+        {%- render 'pcard-color-swatch', product: product -%}
+      {%- endif -%}
+      {% comment %}
+        <div class="member-price ">Member Price : ₹690</div>
+
+        <div class="express-shipping ">
+          <span class="shipping-icon">
+            {% render 'thunder-icon' %}
+          </span>
+          Express Shipping
+        </div>
+      {% endcomment %}
+      {% if customer %}
+        {% if settings.edd_show_on_cards %}
+          <hr class="clickpost-divider">
+          <div class="clickpost-edd__heading clickpost-edd__card-block" data-edd-display="days">
+            {%- if settings.edd_next_day_delivery_icon != blank -%}
+              <img
+                class="clickpost-edd__option-icon clickpost-edd__card-icon--tomorrow"
+                src="{{ settings.edd_next_day_delivery_icon | image_url: width: 48 }}"
+                alt=""
+                width="24"
+                height="24"
+                loading="lazy"
+                aria-hidden="true"
+              >
+            {%- endif -%}
+            {%- if settings.edd_standard_delivery_icon != blank -%}
+              <img
+                class="clickpost-edd__option-icon clickpost-edd__card-icon--days"
+                src="{{ settings.edd_standard_delivery_icon | image_url: width: 48 }}"
+                alt=""
+                width="24"
+                height="24"
+                loading="lazy"
+                aria-hidden="true"
+              >
+            {%- endif -%}
+            <p class="clickpost-edd__option_content">
+              {{ settings.edd_standard_delivery_heading | default: 'Get it by : 2-5 Days' }}
+            </p>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+  {%- if settings.pcard_choose_options_actions == 'open_popup' or enable_quick_view -%}
+    {% render 'quick-view-modal', modal_id: quick_view_modal_id, product: product %}
+  {%- endif -%}
+</div>

@@ -1,0 +1,319 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 30,
+        "padding_bottom": 100
+      }
+    },
+    "rich_text_idGzFL": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_VmyVMr": {
+          "type": "heading",
+          "settings": {
+            "heading": "Store Locator",
+            "heading_size": "h1",
+            "heading_highlight_style": "underline"
+          }
+        }
+      },
+      "block_order": [
+        "heading_VmyVMr"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "customClass": "store_locator",
+        "color_scheme": "",
+        "content_alignment": "center",
+        "padding_top": 50,
+        "padding_bottom": 50,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
+    "image_with_text_overlay_3tA9EA": {
+      "type": "image-with-text-overlay",
+      "name": "t:sections.image-with-text-overlay.name",
+      "settings": {
+        "container": "fixed",
+        "image": "shopify://shop_images/Powerlook_Store_Banner.jpg",
+        "desktop_height": "adapt",
+        "overlay_opacity": 0,
+        "enable_parallax": false,
+        "parallax_direction": "vertical",
+        "color_scheme": "",
+        "content_position": "middle-left",
+        "content_alignment": "left",
+        "mobile_height": "auto",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "custom_icon_with_text_t4EbWm": {
+      "type": "custom-icon-with-text",
+      "blocks": {
+        "column_YnMcEK": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/A3.jpg",
+            "image_width": "full",
+            "title": "Mumbai (Andheri West)",
+            "heading_size": "h3",
+            "text": "<p>Kamal Apartment, 3, near Oriental Bank, Lokhandwala Complex, Andheri West, Mumbai, 400053, India</p><p>Contact Details:<br/>Phone: +91 90045 06236</p><p>Business Hours:<br/>11:00 AM to 10:30 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//19.144978,72.823271",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_kNFAph": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/Untitled_design_bea94254-3561-4580-ad9b-0086cc87ef12.jpg",
+            "image_width": "full",
+            "title": "Mumbai (Andheri West)",
+            "heading_size": "h3",
+            "text": "<p>Shop No 11A, Dhavalgiri Building, Lokhandwala Market, Andheri West, Mumbai, 400053, India</p><p>Contact Details:<br/>Phone: +91 77386 26054</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p><p></p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//19.14109,72.82579/@19.1410716,72.7433883,26328m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI1MDgxOS4wIKXMDSoASAFQAw%3D%3D",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_QhxXe8": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/bandra.jpg",
+            "image_width": "full",
+            "title": "Mumbai (Bandra West)",
+            "heading_size": "h3",
+            "text": "<p>Shop No 3A & 3B, Ground Floor, Mira Bella Building, 512 Linking Road, Bandra West, Mumbai, 400050, India</p><p>Contact Details:<br/>Phone: +91 82912 26282</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//19.064655,72.834766",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_KXbeHn": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/Bangalore.jpg",
+            "image_width": "full",
+            "title": "Bangalore",
+            "heading_size": "h3",
+            "text": "<p>Shop No 67, next to Police Station, Commercial Street, Bangalore, 560001, India</p><p>Contact Details:<br/>Phone: +91 77380 83047</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//12.985066,77.607281",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_De7Tdx": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/borivali_2.jpg",
+            "image_width": "full",
+            "title": "Mumbai (Borivali West)",
+            "heading_size": "h3",
+            "text": "<p>Shop no. 001, A wing, Shubhjivan Arcade, Opp. Moksh Plaza, S.V. Road, Borivali west, Mumbai, 400092, India</p><p>Contact Details:<br/>Phone: 070458 41105</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//19.225645,72.855046",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_hDBwbb": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/V2.jpg",
+            "image_width": "full",
+            "title": "East Avenue, Vadodara",
+            "heading_size": "h3",
+            "text": "<p>G-1, 73 East Avenue, Nr Bhailal Amin Marg, Sarabhai Campus, Genda Circle, Vadodara, 390017, India</p><p>Contact Details:<br/>Phone: +91 84528 46641</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://maps.app.goo.gl/K2fdNas4isM6Jjhn8",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_pHVc7B": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/R-city.jpg",
+            "image_width": "full",
+            "title": "Mumbai (Ghatkopar)",
+            "heading_size": "h3",
+            "text": "<p>F17, First Floor, R City Mall, L.B.S. Marg, Ghatkopar West, Mumbai, 400086, India</p><p>Contact Details:<br/>Phone: +91 91364 46947</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//19.099843,72.916635",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_73neBd": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/Indore.jpg",
+            "image_width": "full",
+            "title": "Indore",
+            "heading_size": "h3",
+            "text": "<p>Unit No. G-64 A, Ground floor, Phoenix Citadel, Survey No. 248/1/1, next to Mumbai-Agra Bypass, Indore, 452016, India</p><p>Contact Details:<br/>Phone: +91 98676 27623</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//22.74629,75.93537",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_RQ6ket": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/Vasai.jpg",
+            "image_width": "full",
+            "title": "Mumbai (Nallasopara East)",
+            "heading_size": "h3",
+            "text": "<p>The Capital Mall, Unit No LG-08, Survey No.52, New Link Road, Village, Achole, Nallasopara East, Palghar, 401209, India</p><p>Contact Details:<br/>Phone: +91 77188 12541</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//19.406747,72.821782",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_inY9tz": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/Pune.jpg",
+            "image_width": "full",
+            "title": "Pune",
+            "heading_size": "h3",
+            "text": "<p>Unit No S26A, Second Floor, Phoenix Market City, Viman Nagar Road, Pune , Pune, 411014, India</p><p>Contact Details:<br/>Phone: +91 8452942639</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//18.5625,73.91666",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_y8VpML": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/surat_1.jpg",
+            "image_width": "full",
+            "title": "Surat",
+            "heading_size": "h3",
+            "text": "<p>G10 & F110, Avadh Kontina, Vip road, Vesu, Surat, 395007, India</p><p>Contact Details:<br/>Phone: ‎+91 70488 13724</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//21.141711,72.784027",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_zGq6qU": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/thane.jpg",
+            "image_width": "full",
+            "title": "Mumbai (Thane)",
+            "heading_size": "h3",
+            "text": "<p>Shop no. 4 , Rameshwar society, Ram Maruti Road, Thane West, Mumbai, 400602, India</p><p>Contact Details:<br/>Phone: +91 98923 33819</p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/dir//19.188251,72.972232",
+            "mobile_layout": "inherit"
+          }
+        },
+        "column_8Tq8yQ": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/miraroad_1.jpg",
+            "image_width": "full",
+            "title": "Mumbai (Mira Road)",
+            "heading_size": "h3",
+            "text": "<p>Shop No. 12 & 13, Ground Floor, Karan Shanti Nagar CHS LTD, Mira Road East, Thane, Maharashtra - 401107</p><p>Contact Details:<br/>Coming soon </p><p>Business Hours:<br/>11:00 AM to 10:00 PM (open 7 days a week)</p>",
+            "description_text": "",
+            "text_size": "text-lg",
+            "button_label": "Direction",
+            "button_style": "btn--primary",
+            "button_link": "https://www.google.com/maps/place/19%C2%B016'50.7%22N+72%C2%B051'28.5%22E/@19.280755,72.8553418,17z/data=!3m1!4b1!4m4!3m3!8m2!3d19.28075!4d72.8579167?entry=ttu&g_ep=EgoyMDI2MDIxMS4wIKXMDSoASAFQAw%3D%3D",
+            "mobile_layout": "inherit"
+          }
+        }
+      },
+      "block_order": [
+        "column_YnMcEK",
+        "column_kNFAph",
+        "column_QhxXe8",
+        "column_KXbeHn",
+        "column_De7Tdx",
+        "column_hDBwbb",
+        "column_pHVc7B",
+        "column_73neBd",
+        "column_RQ6ket",
+        "column_inY9tz",
+        "column_y8VpML",
+        "column_zGq6qU",
+        "column_8Tq8yQ"
+      ],
+      "name": "custom-icon-with-text",
+      "settings": {
+        "customClass": "store_locator",
+        "color_scheme": "",
+        "heading": "",
+        "heading_size": "h1",
+        "heading_highlight_style": "none",
+        "subheading": "",
+        "description": "",
+        "text_size": "text-base",
+        "column_alignment": "left",
+        "columns_desktop": 3,
+        "column_gap": "extra-large",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 50,
+        "padding_bottom": 100,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "rich_text_idGzFL",
+    "image_with_text_overlay_3tA9EA",
+    "custom_icon_with_text_t4EbWm"
+  ]
+}

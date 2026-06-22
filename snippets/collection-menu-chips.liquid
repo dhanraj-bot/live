@@ -1,0 +1,34 @@
+{%- liquid
+  assign collection_display_class = display_class | default: ''
+-%}
+
+{%- if menu_link != blank and menu_link.links != blank -%}
+  <nav
+    class="toolbar-collection-form toolbar-menu-chips {{ collection_display_class }}"
+    aria-label="{{ menu_link.title | escape }}"
+  >
+    <div class="toolbar-collection-chips">
+      {%- for childlink in menu_link.links -%}
+        {%- liquid
+          assign is_active = false
+          if childlink.active or childlink.child_active or childlink.url == request.path or childlink.url == collection.url
+            assign is_active = true
+          endif
+
+          if childlink.object != blank and childlink.object.handle == collection.handle
+            assign is_active = true
+          endif
+        -%}
+        <a
+          class="toolbar-collection-chip{% if is_active %} is-active{% endif %}"
+          href="{{ childlink.url }}"
+          {% if is_active %}
+            aria-current="page"
+          {% endif %}
+        >
+          {{ childlink.title | escape }}
+        </a>
+      {%- endfor -%}
+    </div>
+  </nav>
+{%- endif -%}

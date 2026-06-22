@@ -1,0 +1,299 @@
+{%- liquid
+  assign enable_rtl = settings.enable_rtl
+  assign language_support_rtl = settings.language_support_rtl
+  if enable_rtl and language_support_rtl != blank
+    assign shop_locale = localization.language.iso_code
+    assign language_support_rtl_list = language_support_rtl | split: ','
+    assign is_rtl = language_support_rtl_list | where: shop_locale
+    if is_rtl.size > 0
+      assign enable_rtl = true
+    else
+      assign enable_rtl = false
+    endif
+  endif
+-%}
+<!doctype html>
+<html
+  class="no-js{% if cart != empty %} cart-has-items{% endif %}"
+  lang="{{ request.locale.iso_code }}"
+  {% if enable_rtl %}
+    dir="rtl"
+  {% endif %}
+>
+  <head>
+    <!-- Gokwik theme code start -->
+    <link rel="dns-prefetch" href="https://pdp.gokwik.co/">
+    <link rel="dns-prefetch" href="https://api.gokwik.co">
+    {% render 'gokwik' %}
+    <!-- Gokwik theme code End -->
+    <!-- Google tag (gtag.js) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      window.addEventListener('load', function () {
+        gtag('config', 'G-47TJZPYRHP');
+      });
+    </script>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    {% comment %} <title>
+      {{- page_title -}}
+      {%- if current_tags -%}
+        {%- assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+      {%- endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- if template == 'password' -%}
+        {{- shop.name -}}
+      {%- else -%}
+        {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+      {%- endif -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %} {% endcomment %}
+
+    {%- liquid
+      render 'meta-tags'
+      render 'css-variables'
+
+      echo 'vendor.css' | asset_url | stylesheet_tag: preload: true
+      echo 'theme.css' | asset_url | stylesheet_tag: preload: true
+      echo 'custom.css' | asset_url | stylesheet_tag: preload: true
+      echo 'basic.css' | asset_url | stylesheet_tag: preload: true
+      echo 'section-main-product.css' | asset_url | stylesheet_tag
+      echo 'component-product-variant-picker.css' | asset_url | stylesheet_tag
+      echo 'component-deferred-media.css' | asset_url | stylesheet_tag
+
+      if enable_rtl
+        echo 'rtl.css' | asset_url | stylesheet_tag: preload: true
+      endif
+    -%}
+
+    {{ content_for_header }}
+    <script src="{{ 'vendor.min.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'theme.min.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'custom.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'basic.js' | asset_url }}" defer="defer"></script>
+    <script>
+      window.CLICKPOST_EDD_CUTOFF = "{{ settings.edd_cut_off_time | default: '16:00' }}";
+    </script>
+    {% if request.page_type == 'index' %}
+      <script>
+        window.addEventListener(
+          'load',
+          function () {
+            var clickpostScript = document.createElement('script');
+            clickpostScript.src = "{{ 'clickpost-edd.js' | asset_url }}";
+            clickpostScript.defer = true;
+            document.head.appendChild(clickpostScript);
+          },
+          { once: true }
+        );
+      </script>
+    {% else %}
+      <script src="{{ 'clickpost-edd.js' | asset_url }}" defer="defer"></script>
+    {% endif %}
+    {%- if request.page_type contains 'customers/' -%}
+      <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+    {%- endif -%}
+    <script>
+      if (Shopify.designMode) {
+        document.documentElement.classList.add('shopify-design-mode');
+      }
+    </script>
+
+    {%- if request.design_mode -%}
+      <script src="{{ 'theme-editor.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {%- render 'js-variables' -%}
+
+    {% comment %} Custom metafield for head tag like GTag tracking {% endcomment %}
+    {{ shop.metafields.foxtheme.code_head.value }}
+    {% comment %} End custom metafield for head tag like GTag tracking {% endcomment %}
+
+    {%- if settings.envType == 'production' and request.design_mode == false -%}
+      {% render 'relic' %}
+    {%- endif -%}
+
+    {% unless template == 'collection' %}
+      <link
+        rel="preload"
+        as="style"
+        href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+        onload="this.rel='stylesheet'"
+      >
+      <noscript>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+      </noscript>
+    {% endunless %}
+
+    <script>
+      window.RFQ_CUSTOMER = {
+        id: {{ customer.id | json }},
+        email: {{ customer.email | json }},
+        first_name: {{ customer.first_name | json }},
+        last_name: {{ customer.last_name | json }},
+        phone: {{ customer.phone | json }},
+        tags: {{ customer.tags | json }},
+        default_address: {
+          address1: {{ customer.default_address.address1 | json }},
+          address2: {{ customer.default_address.address2 | json }},
+          city: {{ customer.default_address.city | json }},
+          province: {{ customer.default_address.province | json }},
+          country: {{ customer.default_address.country | json }},
+          zip: {{ customer.default_address.zip | json }},
+          phone: {{ customer.default_address.phone | json }}
+        }
+      };
+      if (window.RFQ_CUSTOMER && window.RFQ_CUSTOMER.default_address && window.RFQ_CUSTOMER.default_address.zip) {
+        localStorage.setItem('pincode_val', window.RFQ_CUSTOMER.default_address.zip);
+      }
+    </script>
+    {% include 'store-credit-launcher' %}
+    <style>
+      #flits-reward-widget-root-container {
+        display: none !important;
+      }
+      .flits_navigation_storeCredit[name='storeFrontCredit'],
+      .flits_navigation_link_howToManageCredit {
+        display: none !important;
+      }
+    </style>
+    {% render 'size-chart-custom-event' %}
+    {{ 'notify-me-button.css' | asset_url | stylesheet_tag }}
+    {% render 'notify-me-button-custom-event' %}
+  </head>
+
+  <body
+    class="{{ request.page_type }}-template {{ template.suffix }} blocks-corner--{{ settings.blocks_corner_radius }}{% if request.design_mode %} shopify-design-mode{% endif %} {%- if settings.enable_timer -%} header_timer {% endif %}s"
+    data-initializing
+    data-page-type="{{ template | handleize }}"
+    data-user-id="{{ customer.id | default: 'guest' }}"
+    data-user-type="{{ customer.tags | join: ',' | default: 'guest' }}"
+  >
+    {% comment %} Custom metafield for body tag like GTag tracking {% endcomment %}
+    {{ shop.metafields.foxtheme.code_body.value }}
+    {% comment %} End custom metafield for body tab like GTag tracking {% endcomment %}
+
+    <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+      {{ 'accessibility.skip_to_text' | t }}
+    </a>
+
+    {%- liquid
+      if settings.enable_page_transition
+        render 'page-transition'
+      endif
+    -%}
+
+    <div class="site-wrapper min-height-screen">
+      {% sections 'header-group' %}
+
+      <main id="MainContent" class="main-content content-for-layout focus-none" role="main" tabindex="-1">
+        {{ content_for_layout }}
+      </main>
+
+      {% sections 'footer-group' %}
+    </div>
+
+    {% sections 'overlay-group' %}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+
+    {% if settings.pcard_show_quickview_button or settings.pcard_choose_options_actions == 'open_popup' %}
+      <script src="{{ 'quick-view.js' | asset_url }}" defer="defer"></script>
+    {% endif %}
+    <script>
+      window.scThemeConfig = {
+        cartDiscountSelector: {
+          path: '.cart__footer-wrapper .cart__footer--subtotal .totals.flex.justify-between',
+          type: 0,
+        },
+        ajaxDicountSelector: {
+          path: '.drawer__footer-body .grid.gap-2 .totals.flex.justify-between',
+          type: 0,
+        },
+        ajaxTotalSelector: {
+          path: '.drawer .drawer__footer-body .grid.gap-2 .totals.flex.justify-between .totals__subtotal-value.h4.font-body-bolder',
+          type: 0,
+        },
+        cartTotalSelector: {
+          path: '.cart__footer-wrapper .cart__footer--subtotal .totals.flex.justify-between .money.mw-price',
+          type: 0,
+        },
+      };
+    </script>
+    <script src="{{ 'custom.min2.js' | asset_url }}" defer="defer"></script>
+    {% render 'GA4-events' %}
+    {% render 'kwikpass' %}
+    <script src="{{ 'wishlist-feature.js' | asset_url }}" async></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js" defer></script>
+
+    <link rel="stylesheet" href="{{ 'swish-buttons.css' | asset_url }}">
+    {%- liquid
+      if settings.enable_back_to_top
+        render 'back-to-top'
+      endif
+    -%}
+    {% sections 'mobile-banner-popup' %}
+
+    {% if template == 'collection' %}
+      {% render 'size-popup' %}
+    {% endif %}
+
+    {%- comment -%} Duplicate include removed (already included in <head>). {%- endcomment -%}
+    <!-- Begin Shopify–payment-cart JavaScript -->
+    {% comment %} <script src="https://checkout-merchant.snapmint.com/js/v1/3921" defer></script> {% endcomment %}
+    <!-- End Shopify-payment JavaScript -->
+    {% render 'flits-custom-changes' %}
+
+    {% comment %} Global Similar Products Modal {% endcomment %}
+    <modal-component id="RelatedProductsSheet-Global" class="drawer related-products-sheet drawer--right" hidden>
+      <div class="fixed-overlay" aria-controls="RelatedProductsSheet-Global"></div>
+      <div class="drawer__inner v-scrollable">
+        <button
+          class="drawer__close-btn z-1"
+          aria-controls="RelatedProductsSheet-Global"
+          aria-label="{{ 'accessibility.close' | t }}"
+        ></button>
+        <div class="drawer__content related-products-sheet__content">
+          <div class="flex items-center justify-between related-products-sheet__title">
+            <div class="">Similar to</div>
+            <button
+              class="drawer__close-btn z-1 custom-close"
+              aria-controls="RelatedProductsSheet-Global"
+              aria-label="{{ 'accessibility.close' | t }}"
+            >
+              {% render 'icon-close', size: 'medium' %}
+            </button>
+          </div>
+          <div id="RelatedProductsSheetContent-Global" class="related-products-sheet__body"></div>
+        </div>
+      </div>
+    </modal-component>
+     <script src="{{ 'notify-me-button.js' | asset_url }}" defer></script>
+  </body>
+</html>

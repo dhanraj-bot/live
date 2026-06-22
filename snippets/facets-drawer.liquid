@@ -1,0 +1,335 @@
+{%- liquid
+  assign active_values_count = 0
+  assign excluded_collection_filter_param = blank
+
+  for facet_filter in results.filters
+    assign facet_filter_label = facet_filter.label | downcase
+    if facet_filter.type != 'price_range' and facet_filter.values != blank and facet_filter_label contains 'collection'
+      assign excluded_collection_filter_param = facet_filter.param_name
+      break
+    endif
+  endfor
+
+  for filter in results.filters
+    if excluded_collection_filter_param != blank and filter.param_name == excluded_collection_filter_param
+      continue
+    endif
+
+    if filter.type == 'price_range'
+      if filter.max_value.value != blank or filter.min_value.value != blank
+        assign active_values_count = active_values_count | plus: 1
+      endif
+    else
+      for active_value in filter.active_values
+        assign active_values_count = active_values_count | plus: 1
+      endfor
+    endif
+  endfor
+
+  if results.url
+    assign results_url = results.url
+  else
+    assign terms = results.terms | escape
+    assign results_url = routes.search_url | append: '?q=' | append: terms | append: '&options%5Bprefix%5D=last&type=product'
+    if results.sort_by != blank
+      assign results_url = results_url | append: '&sort_by=' | append: results.sort_by
+    endif
+  endif
+-%}
+
+<div class="facet-drawer-wrapper">
+  <button
+    class=" flex items-center gap-2 facet-drawer-button"
+    type="button"
+    aria-controls="FacetDrawer"
+    aria-expanded="false"
+    data-facet-loading
+  >
+    {%- render 'icon-funnel' -%}
+    <span>
+      {{ 'products.facets.filter_button' | t }}
+      <facet-count
+        {% if active_values_count == 0 %}
+          hidden
+        {% endif %}
+        >({{ active_values_count }})</facet-count
+      >
+    </span>
+    {%- render 'loading-spinner', size: 'small' -%}
+  </button>
+  <drawer-component id="FacetDrawer" role="dialog" class="drawer drawer--left" hidden>
+    <div class="fixed-overlay" aria-controls="FacetDrawer"></div>
+    <div class="drawer__inner">
+      <div class="drawer__content flex flex-col h-full w-full">
+        {% comment %} {{-- ===== DESKTOP DRAWER (≥768px) ===== --}} {% endcomment %}
+        <div class="facet-drawer__desktop-layout">
+          <button class="drawer__close-btn z-1" aria-controls="FacetDrawer" type="button">
+            {% render 'icon-close', size: 'large' %}
+          </button>
+          <div class="drawer__header facet-drawer__header flex items-center">
+            <h2 class="drawer__heading h3 flex items-center gap-3">
+              <span>{{ 'products.facets.filter_button' | t }}</span>
+            </h2>
+          </div>
+          <div class="drawer__body flex-grow v-scrollable" id="FacetFiltersContainer">
+            {%- if enable_sorting -%}
+              <div class="flex items-center gap-3 md:hidden facet-short-drawer" id="SortByContainerMobile">
+                {%- render 'facet-short', results: results, label_class: 'h4' -%}
+              </div>
+            {%- endif -%}
+            {%- render 'facets', context: 'drawer', results: results -%}
+            <div class="drawer__sticky drawer__sticky--bottom w-full z-1">
+              <button class="btn btn--primary w-full" type="button" aria-controls="FacetDrawer" aria-expanded="false">
+                <span>
+                  {{ 'products.facets.apply' | t }}
+                  <facet-count
+                    {% if active_values_count == 0 %}
+                      hidden
+                    {% endif %}
+                    >({{ active_values_count }})</facet-count
+                  >
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {% comment %} {{-- ===== MOBILE TWO-PANEL FILTER (<768px) ===== --}} {% endcomment %}
+        <div class="facet-drawer__mobile-layout" id="MobileFacetFiltersContainer">
+          {%- assign has_active_mobile_category = false -%}
+          {%- assign has_active_mobile_panel = false -%}
+          {%- comment -%} Top bar {%- endcomment -%}
+          <div class="mobile-filter__topbar">
+            <span class="mobile-filter__title">Filters</span>
+
+            <a href="{{ results_url }}" class="mobile-filter__reset facet-clear-all" is="facet-remove"> Reset </a>
+          </div>
+
+          {%- comment -%} Two-panel body {%- endcomment -%}
+          <div class="mobile-filter__body">
+            {%- comment -%} Left: category list {%- endcomment -%}
+            <div class="mobile-filter__categories" id="MobileFilterCategories">
+              {%- for filter in results.filters -%}
+                {%- if excluded_collection_filter_param != blank and filter.param_name == excluded_collection_filter_param -%}
+                  {% continue %}
+                {%- endif -%}
+                {%- liquid
+                  assign cat_active_count = 0
+                  if filter.type == 'price_range'
+                    if filter.max_value.value != blank or filter.min_value.value != blank
+                      assign cat_active_count = 1
+                    endif
+                  else
+                    assign cat_active_count = filter.active_values.size
+                  endif
+                -%}
+                <button
+                  class="mobile-filter__category-item{% unless has_active_mobile_category %} is-active{% endunless %}"
+                  type="button"
+                  data-filter-index="{{ forloop.index0 }}"
+                >
+                  <span class="mobile-filter__category-name">{{ filter.label | escape }}</span>
+                  {%- if cat_active_count > 0 -%}
+                    <span class="mobile-filter__category-badge">{{ cat_active_count }}</span>
+                  {%- endif -%}
+                </button>
+                {%- assign has_active_mobile_category = true -%}
+              {%- endfor -%}
+            </div>
+
+            {%- comment -%} Right: values panel {%- endcomment -%}
+            <div class="mobile-filter__values-wrapper" id="MobileFilterValues">
+              <form
+                class="face-form mobile-filter__form"
+                method="GET"
+                action="{{ request.path }}"
+                is="facet-form"
+                data-section-id="{{ section.id }}"
+                data-history
+                update-on-change
+              >
+                <div data-filter data-index="mobile-page" hidden>
+                  <input type="hidden" name="page" value="">
+                  {%- if results.current_type != blank or results.current_vendor != blank -%}
+                    <input
+                      type="hidden"
+                      name="q"
+                      value="{{ results.current_vendor | default: results.current_type | escape }}"
+                    >
+                  {%- endif -%}
+                  {%- if request.page_type == 'search' -%}
+                    <input type="hidden" name="q" value="{{ results.terms | escape }}">
+                  {%- endif -%}
+                </div>
+
+                {%- for filter in results.filters -%}
+                  {%- if excluded_collection_filter_param != blank and filter.param_name == excluded_collection_filter_param -%}
+                    {% continue %}
+                  {%- endif -%}
+                  {%- assign filter_id = 'mobile-' | append: filter.param_name -%}
+                  <div
+                    class="mobile-filter__values-panel{% unless has_active_mobile_panel %} is-active{% endunless %}"
+                    data-panel-index="{{ forloop.index0 }}"
+                    data-filter
+                    data-index="{{ filter_id }}"
+                  >
+                    {%- case filter.type -%}
+                      {%- when 'list', 'boolean' -%}
+                        {%- liquid
+                          assign sorted_values = filter.values
+                          if filter.operator == 'AND'
+                            assign active_filter_values = filter.values | where: 'active', true
+                            assign inactive_filter_values = filter.values | where: 'active', false
+                            assign sorted_values = active_filter_values | concat: inactive_filter_values
+                          endif
+                        -%}
+                        <ul class="mobile-filter__value-list">
+                          {%- for filter_value in sorted_values -%}
+                            {%- liquid
+                              assign filter_value_id = filter_id | append: '-' | append: forloop.index
+                              assign is_disabled = false
+                              if filter_value.count == 0 and filter_value.active == false
+                                assign is_disabled = true
+                              endif
+                            -%}
+                            <li class="mobile-filter__value-item{% if is_disabled %} is-disabled{% endif %}">
+                              <input
+                                name="{{ filter_value.param_name }}"
+                                value="{{ filter_value.value | escape }}"
+                                class="mobile-filter__checkbox"
+                                id="{{ filter_value_id | escape }}"
+                                type="checkbox"
+                                {% if filter_value.active %}
+                                  checked
+                                {% endif %}
+                                {% if is_disabled %}
+                                  disabled
+                                {% endif %}
+                              >
+                              <label for="{{ filter_value_id | escape }}" class="mobile-filter__value-label">
+                                <span class="mobile-filter__value-name">{{ filter_value.label | escape }}</span>
+                                <span class="mobile-filter__value-count">{{ filter_value.count }}</span>
+                              </label>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+
+                      {%- when 'price_range' -%}
+                        {%- liquid
+                          assign min_value = filter.min_value.value | default: 0.0 | divided_by: 100.0
+                          assign max_value = filter.max_value.value | default: filter.range_max | divided_by: 100.0
+                          assign range_max = filter.range_max | divided_by: 100.0 | ceil
+                          assign step_value = max_value | minus: min_value | divided_by: 100.0 | ceil | at_most: 1
+                          assign lower_progress_limit = min_value | divided_by: range_max | times: 100.0
+                          assign higher_progress_limit = max_value | divided_by: range_max | times: 100.0
+                        -%}
+                        <div class="mobile-filter__price-range">
+                          <price-range class="grid gap-6">
+                            <div class="facet-input-wrapper flex items-center gap-6">
+                              <div class="flex flex-col gap-1">
+                                <div class="amt-text">Min. Amount</div>
+                                <div class="flex items-center flex-grow relative">
+                                  <label class="visually-hidden" for="MobileFacetFromPrice-{{ filter.param_name }}"
+                                    >From</label
+                                  >
+                                  <span class="facet-range__symbol">{{ cart.currency.symbol }}</span>
+                                  <input
+                                    class="form-control facet-range__input"
+                                    type="number"
+                                    inputmode="numeric"
+                                    name="{{ filter.min_value.param_name }}"
+                                    id="MobileFacetFromPrice-{{ filter.param_name }}"
+                                    autocomplete="off"
+                                    placeholder="0"
+                                    min="0"
+                                    max="{{ max_value | ceil }}"
+                                    step="{{ step_value }}"
+                                    {% if filter.min_value.value %}
+                                      value="{{ min_value | ceil }}"
+                                    {% endif %}
+                                  >
+                                </div>
+                              </div>
+                              <div class="flex flex-col gap-1">
+                                <div class="amt-text">Max. Amount</div>
+                                <div class="flex items-center flex-grow relative">
+                                  <label class="visually-hidden" for="MobileFacetToPrice-{{ filter.param_name }}"
+                                    >To</label
+                                  >
+                                  <span class="facet-range__symbol">{{ cart.currency.symbol }}</span>
+                                  <input
+                                    class="form-control facet-range__input"
+                                    type="number"
+                                    inputmode="numeric"
+                                    name="{{ filter.max_value.param_name }}"
+                                    id="MobileFacetToPrice-{{ filter.param_name }}"
+                                    autocomplete="off"
+                                    placeholder="{{ range_max | ceil }}"
+                                    min="{{ min_value | ceil }}"
+                                    max="{{ range_max | ceil }}"
+                                    step="{{ step_value }}"
+                                    {% if filter.max_value.value %}
+                                      value="{{ max_value | ceil }}"
+                                    {% endif %}
+                                  >
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="facet-range-wrapper relative"
+                              style="--range-min: {{ lower_progress_limit }}%; --range-max: {{ higher_progress_limit }}%;"
+                            >
+                              <input
+                                class="facet-range facet-range__min w-full pointer-events-none"
+                                type="range"
+                                min="0"
+                                max="{{ range_max | ceil }}"
+                                step="{{ step_value }}"
+                                value="{{ min_value | ceil }}"
+                                id="MobileFacetRangeFrom-{{ filter.param_name }}"
+                              >
+                              <input
+                                class="facet-range facet-range__max w-full pointer-events-none absolute"
+                                type="range"
+                                min="0"
+                                max="{{ range_max | ceil }}"
+                                step="{{ step_value }}"
+                                value="{{ max_value | ceil }}"
+                                id="MobileFacetRangeTo-{{ filter.param_name }}"
+                              >
+                            </div>
+                          </price-range>
+                        </div>
+                    {%- endcase -%}
+                  </div>
+                  {%- assign has_active_mobile_panel = true -%}
+                {%- endfor -%}
+              </form>
+            </div>
+          </div>
+
+          {%- comment -%} Bottom action bar {%- endcomment -%}
+          <div class="mobile-filter__bottom-bar">
+            <button
+              class="drawer__close-btn"
+              type="button"
+              aria-controls="FacetDrawer"
+            >
+              Close
+            </button>
+            <button
+              class="mobile-filter__apply-btn"
+              type="button"
+              aria-controls="FacetDrawer"
+            >
+              Apply
+              <span class="mobile-filter__apply-count" id="MobileFilterApplyCount">
+                {%- if active_values_count > 0 -%}{{ active_values_count }} Filters{%- else -%}Filters{%- endif -%}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </drawer-component>
+</div>

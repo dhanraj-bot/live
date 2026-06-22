@@ -1,0 +1,108 @@
+{% comment %}Sitemap Section Automatically lists all collections, all blogs, and all pages.{% endcomment %}
+
+<section class="sitemap page-width section--padding" aria-label="Sitemap"
+style="--section-padding-top: {{ section.settings.padding_top }}px;--section-padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="sitemap__container">
+
+    {%- comment -%} All Collections {%- endcomment -%}
+    {% for collection in collections %}
+      {% unless collection.handle == 'all' %}
+      {% if collection.products_count > 0 %}
+        <div class="sitemap__group">
+          <h3 class="sitemap__heading">
+            <a href="{{ collection.url }}">{{ collection.title }}</a>
+          </h3>
+            <div class="sitemap__links-row">
+              {% for product in collection.products %}
+                <a href="{{ product.url }}" class="sitemap__link">{{ product.title }}</a>{% unless forloop.last %} | {% endunless %}
+              {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+
+    {%- comment -%} All Blogs {%- endcomment -%}
+    {% for block in section.blocks %}
+      {% if block.type == 'blog_block' %}
+        {% assign blog = blogs[block.settings.blog] %}
+        {% if blog %}
+        {% if blog.articles_count > 0 %}
+          <div class="sitemap__group">
+            <h3 class="sitemap__heading">
+              <a href="{{ blog.url }}">{{ blog.title }}</a>
+            </h3>
+              <div class="sitemap__links-row">
+                {% for article in blog.articles %}
+                  <a href="{{ article.url }}" class="sitemap__link">{{ article.title }}</a>{% unless forloop.last %} | {% endunless %}
+                {% endfor %}
+              </div>
+          </div>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {%- comment -%} All Pages {%- endcomment -%}
+    <div class="sitemap__group">
+      <h3 class="sitemap__heading">Pages</h3>
+      <div class="sitemap__links-row">
+        {% for page in pages %}
+          <a href="{{ page.url }}" class="sitemap__link">{{ page.title }}</a>{% unless forloop.last %} | {% endunless %}
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sitemap",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 12,
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 12,
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px"
+    }
+  ],
+  "max_blocks": 20,
+  "blocks": [
+    {
+      "type": "blog_block",
+      "name": "Blog",
+      "settings": [
+        {
+          "type": "blog",
+          "id": "blog",
+          "label": "Blog"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sitemap"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,61 @@
+{%- comment -%}
+  USAGE: {% render 'notify-me-button', product: product, variant: current_variant %}
+  Place after your add-to-cart button inside the product form.
+{%- endcomment -%}
+
+{%- liquid
+  assign variant_id = variant.id | default: product.selected_or_first_available_variant.id
+  assign customer_id = customer.id | default: 0
+  assign is_available = variant.available | default: product.selected_or_first_available_variant.available
+-%}
+
+{{- '' -}}
+{{- '' -}}
+
+<div
+  class="notify-me-wrapper{% if custom_class != blank %} {{ custom_class }}{% endif %}"
+  data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+  data-available="{{ product.selected_or_first_available_variant.available }}"
+  data-customer-id="{{ customer.id | default: '0' }}"
+  {% unless product.selected_or_first_available_variant.available %}style="display:block;"{% endunless %}
+>
+  <button
+    type="button"
+    class="notify-me-btn"
+    id="notify-me-btn-{{ variant_id }}"
+  >
+    <span class="notify-me-btn__icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+    </span>
+    <span class="notify-me-btn__label">Notify Me When Available</span>
+  </button>
+
+  <div
+    class="notify-me-message notify-me-message--hidden"
+    id="notify-me-msg-{{ variant_id }}"
+    role="status"
+    aria-live="polite"
+  >
+    <span class="notify-me-message__icon">✓</span>
+    <span class="notify-me-message__text">
+      {% if custom_class == 'sticky_notify_me' %}
+        You’ll be notified when it’s available.
+      {% else %}
+        You’ll be notified when it’s available.
+      {% endif %}
+    </span>
+  </div>
+</div>
