@@ -18,15 +18,15 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "product_badge": {
-          "type": "product_badge",
-          "settings": {}
-        },
         "title": {
           "type": "title",
           "settings": {
             "heading_size": "h1"
           }
+        },
+        "product_badge": {
+          "type": "product_badge",
+          "settings": {}
         },
         "sku_PXaUmt": {
           "type": "sku",
@@ -274,8 +274,8 @@
         }
       },
       "block_order": [
-        "product_badge",
         "title",
+        "product_badge",
         "sku_PXaUmt",
         "price",
         "clickpost_edd_mobile_dAEtxV",

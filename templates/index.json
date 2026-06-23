@@ -71,12 +71,12 @@
     "slideshow_4a3BDn": {
       "type": "slideshow",
       "blocks": {
-        "slide_ykLBj3": {
+        "slide_qHy8Mk": {
           "type": "slide",
           "settings": {
             "color_scheme": "",
-            "background": "shopify://shop_images/1-1.jpg",
-            "background_mobile": "shopify://shop_images/mobile_e2ab734e-a6a6-4cba-9913-f7ef876bfa30.jpg",
+            "background": "shopify://shop_images/5-_1_942be226-07b2-45e8-8ca6-93a05270bfb0.jpg",
+            "background_mobile": "shopify://shop_images/mobile_35.jpg",
             "image_overlay_opacity": 0,
             "content_position": "middle-center",
             "text_alignment": "center",
@@ -86,26 +86,7 @@
             "description": "",
             "description_size": "text-base",
             "button_label": "",
-            "button_link": "shopify://collections/back-to-college",
-            "button_style": "btn--primary"
-          }
-        },
-        "slide_rzhCfM": {
-          "type": "slide",
-          "settings": {
-            "color_scheme": "",
-            "background": "shopify://shop_images/banner_46.jpg",
-            "background_mobile": "shopify://shop_images/mob_2.jpg",
-            "image_overlay_opacity": 0,
-            "content_position": "middle-center",
-            "text_alignment": "center",
-            "title": "",
-            "heading_size": "hd1",
-            "subheading": "",
-            "description": "",
-            "description_size": "text-base",
-            "button_label": "",
-            "button_link": "shopify://collections/fathers-day",
+            "button_link": "shopify://collections/shirts-view-all",
             "button_style": "btn--primary"
           }
         },
@@ -125,25 +106,6 @@
             "description_size": "text-base",
             "button_label": "",
             "button_link": "shopify://collections/fashion-with-football",
-            "button_style": "btn--primary"
-          }
-        },
-        "slide_qHy8Mk": {
-          "type": "slide",
-          "settings": {
-            "color_scheme": "",
-            "background": "shopify://shop_images/5-_1_942be226-07b2-45e8-8ca6-93a05270bfb0.jpg",
-            "background_mobile": "shopify://shop_images/mobile_35.jpg",
-            "image_overlay_opacity": 0,
-            "content_position": "middle-center",
-            "text_alignment": "center",
-            "title": "",
-            "heading_size": "hd1",
-            "subheading": "",
-            "description": "",
-            "description_size": "text-base",
-            "button_label": "",
-            "button_link": "shopify://collections/shirts-view-all",
             "button_style": "btn--primary"
           }
         },
@@ -168,10 +130,8 @@
         }
       },
       "block_order": [
-        "slide_ykLBj3",
-        "slide_rzhCfM",
-        "slide_fc3QUL",
         "slide_qHy8Mk",
+        "slide_fc3QUL",
         "slide_6ghyYy"
       ],
       "name": "t:sections.slideshow.name",
@@ -311,10 +271,10 @@
         "left_text": "Casual Leave Collection",
         "left_sub_text": "",
         "left_link": "shopify://collections/casual-leave",
-        "right_image": "shopify://shop_images/3_57.jpg",
-        "right_text": "Pinterest Collection",
+        "right_image": "shopify://shop_images/2000x1053-1_2.jpg",
+        "right_text": "BACK TO COLLEGE",
         "right_sub_text": "",
-        "right_link": "shopify://collections/find-pinterest-looks",
+        "right_link": "shopify://collections/back-to-college",
         "line1": false,
         "line2": true,
         "padding_top": 0,
